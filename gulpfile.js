@@ -5,7 +5,6 @@ var browserify = require("browserify");
 var source = require('vinyl-source-stream');
 var tsify = require("tsify");
 
-
 var tsProject = ts.createProject("tsconfig.json");
 
 // clean dist folder
@@ -18,7 +17,7 @@ gulp.task("default", ['clean'], function () {
   return browserify({
       basedir: '.',
       debug: true,
-      extensions: '*.ts',
+      entries: ['src/Site.ts', 'src/Target.ts', 'src/KiiApp.ts', 'src/TypeID.ts'],
       cache: {},
       packageCache: {}
   })

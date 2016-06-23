@@ -8,5 +8,9 @@
         "target": "es5"
     },
     "files": [
+        "src/KiiApp.ts",
+        "src/Site.ts",
+        "src/TypeID.ts",
+        "src/Target.ts"
     ]
 }
