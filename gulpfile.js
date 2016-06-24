@@ -17,7 +17,7 @@ gulp.task("default", ['clean'], function () {
   return browserify({
       basedir: '.',
       debug: true,
-      entries: ['src/Site.ts', 'src/Target.ts', 'src/KiiApp.ts', 'src/TypeID.ts'],
+      entries: ['src/Site.ts', 'src/Target.ts', 'src/KiiApp.ts', 'src/TypeID.ts', 'src/APIAuthor.ts'],
       cache: {},
       packageCache: {}
   })
