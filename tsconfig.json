@@ -5,6 +5,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
+        "outDir": "built",
         "target": "es5"
     },
     "files": [

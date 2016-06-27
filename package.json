@@ -4,7 +4,8 @@
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretest": "tsc test/*Test.ts --module commonjs",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -20,9 +21,11 @@
   "license": "MIT",
   "devDependencies": {
     "browserify": "^13.0.1",
+    "chai": "^3.5.0",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-typescript": "^2.13.6",
+    "mocha": "^2.5.3",
     "tsify": "^0.16.0",
     "vinyl-source-stream": "^1.1.0"
   }
