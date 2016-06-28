@@ -1,0 +1,5 @@
+test:
+  pre:
+    - npm install typings
+    - typings install env~mocha --global
+    - typings install dt~chai --global
