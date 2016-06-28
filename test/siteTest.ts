@@ -5,7 +5,6 @@ var thingIFSDK = require('../dist/thing-if-sdk.js');
 
 import {expect} from 'chai';
 var Site = thingIFSDK.Site;
-console.log(thingIFSDK);
 describe('Site', () => {
     describe('#getBaseURL', () => {
         it('base url string should be correct', () => {

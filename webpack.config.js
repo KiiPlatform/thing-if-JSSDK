@@ -16,6 +16,7 @@ if (yargs.argv.p) {
  
 var config = {
   devtool: 'source-map',
+  entry: ['./src/PublicIndex.ts'],
   output: {
     path: path.join(__dirname, '/dist'),
     filename: outputFile,
@@ -30,10 +31,9 @@ var config = {
   },
   resolve: {
     root: path.resolve('./src'),
-    extensions: [ '', '.js', '.ts', '.jsx', '.tsx' ]
+    extensions: [ '', '.ts']
   },
   plugins: plugins
- 
 };
  
 module.exports = config;
