@@ -1,8 +1,10 @@
 /// <reference path="../typings/globals/mocha/index.d.ts" />
 /// <reference path="../typings/globals/chai/index.d.ts" />
-import {Site} from '../src/Site';
-import {expect} from 'chai'
+declare var require: any
+var thingIFSDK = require('../dist/thing-if-sdk.js');
 
+import {expect} from 'chai';
+var Site = thingIFSDK.Site;
 describe('Site', () => {
     describe('#getBaseURL', () => {
         it('base url string should be correct', () => {
