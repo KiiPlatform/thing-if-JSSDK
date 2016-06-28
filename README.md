@@ -46,3 +46,6 @@ $ typings install dt~chai --global
 ```
 $ npm test
 ```
+
+##TODO
+- Declaration File for SDK
