@@ -1,5 +1,14 @@
 test:
   pre:
+    # uglify library
+    - gulp --u
+    - cp ./dist/* $CIRCLE_ARTIFACTS/
+
+   # build sdk
+    - gulp
+    - cp ./dist/* $CIRCLE_ARTIFACTS/
+
+    # install typings for dependencies
     - npm install typings
     - typings install env~mocha --global
     - typings install dt~chai --global
