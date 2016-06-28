@@ -7,7 +7,7 @@ var libraryName = 'ThingIF',
     plugins = [],
     outputFile;
  
-if (yargs.argv.p) {
+if (yargs.argv.u) {
   plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
   outputFile = libraryFileName + '.min.js';
 } else {
