@@ -2,7 +2,7 @@
 import {Promise} from 'es6-promise';
 import request from './Request';
 import {App} from '../App';
-import APIAuthor from '../APIAuthor';
+import {APIAuthor} from '../APIAuthor';
 
 export function postTrigger(
     au: APIAuthor,

@@ -5,8 +5,8 @@ import {App} from './App';
 import {Command} from './Command';
 import Trigger from './Trigger'
 import ServerCodeResult from './ServerCodeResult'
-
 import * as Options from './RequestOptions'
+
 import * as OnboardingOps from './ops/OnboardingOps'
 import * as CommandOps from './ops/CommandOps'
 import * as TriggerOps from './ops/TriggerOps'
@@ -21,7 +21,7 @@ import * as ThingOps from './ops/ThingOps'
  * @param {Object} responseObject
  */
 
-export default class APIAuthor {
+export class APIAuthor {
     public token: string;
     public app: App;
 
