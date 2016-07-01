@@ -1,13 +1,11 @@
 dependencies:
   post:
-    # install typings for dependencies
-    - npm install typings
+    # install typings of dependencies
     - typings install es6-promise
 
 test:
   pre:
     # generate typedoc
-    - npm install typedoc
     - typedoc -out $CIRCLE_ARTIFACTS/typedoc/
 
     # uglify library
