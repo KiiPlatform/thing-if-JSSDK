@@ -6,7 +6,7 @@ dependencies:
 test:
   pre:
     # generate typedoc
-    - typedoc -out $CIRCLE_ARTIFACTS/typedoc/
+    - typedoc -out $CIRCLE_ARTIFACTS/typedoc/ --externalPattern 'src/ops/*.ts' --excludeExternals
 
     # uglify library
     - gulp --u
