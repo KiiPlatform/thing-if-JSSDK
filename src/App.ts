@@ -2,7 +2,6 @@ import {Site} from './Site'
 export class App {
   private appID: string;
   private appKey: string;
-  private baseURL: string;
   private site: any;
 
   /** Instantiate Kii App with App Location.
@@ -21,23 +20,34 @@ export class App {
   /** Get base url of thing-if api
    * @return {string} base url of thing-if api
    */
-  getBaseUrl(): string{
+  getThingIFBaseUrl(): string{
+    return `${this.getRootPath()}/thing-if/apps/${this.appID}`;
+  }
+
+  /** Get base url of kii cloud api
+   * @return {string} base url of kii cloud api
+   */
+  getKiiCloudBaseUrl(): string{
+     return `${this.getRootPath()}/api/apps/${this.appID}`;   
+  }
+
+  private getRootPath(): string{
     if (typeof this.site === "string") {
-      this.baseURL = this.site
-      }else if(typeof this.site == "number"){
-          switch (this.site) {
-              case Site.US:
-                this.baseURL = "https://api.kii.com";
-              case Site.JP:
-                this.baseURL = "https://api-jp.kii.com";
-              case Site.CN3:
-                this.baseURL = "https://api-cn3.kii.com";
-              case Site.SG:
-                this.baseURL = "https://api-sg.kii.com";
-              case Site.EU:
-                this.baseURL = "https://api-eu.kii.com"
-          }
+      return this.site
+    }else if(typeof this.site == "number"){
+      switch (this.site) {
+        case Site.US:
+          return "https://api.kii.com";
+        case Site.JP:
+          return "https://api-jp.kii.com";
+        case Site.CN3:
+          return "https://api-cn3.kii.com";
+        case Site.SG:
+          return "https://api-sg.kii.com";
+        case Site.EU:
+          return "https://api-eu.kii.com"
       }
-      return `${this.baseURL}/thing-if/apps/${this.appID}`;
-   }
+    }
+    return null;
+  }
 }

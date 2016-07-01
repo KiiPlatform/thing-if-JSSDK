@@ -1,6 +1,10 @@
 // export all classes need to be publiced as ThingIF library
+export * from "./RequestOptions"
 export * from "./Site"
-export * from "./TypeID"
-export * from "./Target"
-export * from "./thingif/RequestObjects.ts"
+export * from "./App"
+export * from "./Command"
+export * from "./Predicate"
+export * from "./ServerCode"
+export * from "./ServerCodeResult"
+export * from "./Trigger"
 export * from "./APIAuthor"

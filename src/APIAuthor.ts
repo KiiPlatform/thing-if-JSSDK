@@ -2,8 +2,16 @@
 import {Promise} from 'es6-promise';
 
 import {App} from './App';
-import * as RequetObjects from './thingif/RequestObjects'
-import {onboardingThing, onboardEndnode} from './thingif/Onboarding'
+import {Command} from './Command';
+import Trigger from './Trigger'
+import ServerCodeResult from './ServerCodeResult'
+
+import * as Options from './RequestOptions'
+import * as OnboardingOps from './ops/OnboardingOps'
+import * as CommandOps from './ops/CommandOps'
+import * as TriggerOps from './ops/TriggerOps'
+import * as StateOps from './ops/StateOps'
+import * as ThingOps from './ops/ThingOps'
 
 /**
  * This callback type is called `onCompletion` and is displayed as a global symbol.
@@ -13,7 +21,7 @@ import {onboardingThing, onboardEndnode} from './thingif/Onboarding'
  * @param {Object} responseObject
  */
 
-export class APIAuthor {
+export default class APIAuthor {
     public token: string;
     public app: App;
 
@@ -27,9 +35,10 @@ export class APIAuthor {
      * @param {onCompletion} [onCompletion] callback function when completed
      * @return {Promise} promise object 
      */
-    onboardWithVendorThingID(onboardRequest: RequetObjects.OnboardWithVendorThingIDRequest, 
+    onboardWithVendorThingID(
+        onboardRequest: Options.OnboardWithVendorThingIDRequest, 
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return onboardingThing(this, true, onboardRequest.getRequestBody, onCompletion);
+        return OnboardingOps.onboardingThing(this, true, onboardRequest.getRequestBody, onCompletion);
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
@@ -37,13 +46,220 @@ export class APIAuthor {
      * @param {onCompletion} [onCompletion] - callback function when completed
      * @return {Promise} promise object 
      */
-    onboardWithThingID(onboardRequest: RequetObjects.OnboardWithThingIDRequest, 
+    onboardWithThingID(
+        onboardRequest: Options.OnboardWithThingIDRequest, 
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return onboardingThing(this, false, onboardRequest.getRequestBody, onCompletion);
+        return OnboardingOps.onboardingThing(this, false, onboardRequest.getRequestBody, onCompletion);
     }
 
-    onboardEndnodeWithGateway(onboardRequest: RequetObjects.OnboardEndnodeWithGatewayRequest, 
+    /** Onboard an Endnode by vendorThingID with an already registered gateway.
+     * @param {Object} onboardRequest - Request body when request onboarding
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    onboardEndnodeWithGateway(
+        onboardRequest: Options.OnboardEndnodeWithGatewayRequest, 
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return onboardEndnode(this, onboardRequest.getRequestBody(), onCompletion);
+        return OnboardingOps.onboardEndnode(this, onboardRequest.getRequestBody(), onCompletion);
+    }
+
+    /** Post a new command.
+     * @param {string} tareget - ID of target, where the command to be sent.
+     * @param {Object} command - Necessary fields for new command
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    postNewCommand(
+        target: string, 
+        command: Options.PostCommandRequest,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
+        return CommandOps.postNewCommand(this, target, command.getRequestBody(),onCompletion);
+    }
+
+    /** Retrieve command with specified ID.
+     * @param {string} tareget - ID of target to be retrieved.
+     * @param {string} commandID - Command ID to retrieve.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    getCommand(
+        target: string, 
+        commandID: string, 
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
+        return CommandOps.getCommand(this, target, commandID, onCompletion);
+    }
+
+    /** Retrieve commands.
+     * @param {string} tareget - ID of target to be retrieved. 
+     * @param {Object} listOpitons - Options to retrieve commands.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    listCommands(
+        target: string, 
+        listOpitons?: Options.ListQueryOptions,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Command>>{
+        return CommandOps.listCommands(this, target, listOpitons, onCompletion);
+    }
+
+    /** Post a new command trigger.
+     * @param {string} tareget - ID of target.
+     * @param {Object} requestObject - Necessary fields for new command trigger.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    postCommandTrigger(
+        target: string, 
+        requestObject: Options.CommandTriggerRequest,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        return TriggerOps.postTrigger(this,target,requestObject, onCompletion);
+    }
+
+    /** Post a new servercode trigger.
+     * @param {string} tareget - ID of target.
+     * @param {Object} requestObject - Necessary fields for new servercode trigger.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    postServerCodeTriggger(
+        target: string, 
+        requestObject: Options.ServerCodeTriggerRequest,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        return TriggerOps.postTrigger(this,target,requestObject, onCompletion);
+    }
+
+    /** Retrieve trigger.
+     * @param {string} tareget - ID of target.
+     * @param {string} triggerID - ID of trigger.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    getTrigger(
+        target: string, 
+        triggerID: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        return TriggerOps.getTrigger(this,target,triggerID, onCompletion);
+    }
+
+    /** Update a command trigger.
+     * @param {string} tareget - ID of target.
+     * @param {string} triggerID - ID of trigger.
+     * @param {Object} requestObject - The fields of trigger to be updated.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    patchCommandTrigger(
+        target: string, 
+        triggerID: string,
+        requestObject: Options.CommandTriggerRequest,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        return TriggerOps.patchTrigger(this,target,triggerID,requestObject,onCompletion);
+    }
+
+    /** Update a servercode trigger.
+     * @param {string} tareget - ID of target.
+     * @param {string} triggerID - ID of trigger.
+     * @param {Object} requestObject - The fields of trigger to be updated.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+   patchServerCodeTrigger(
+        target: string, 
+        triggerID: string,
+        requestObject: Options.CommandTriggerRequest,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        return TriggerOps.patchTrigger(this,target,triggerID,requestObject,onCompletion);
+    }
+
+    /** Enable/Disable a specified trigger.
+     * @param {string} tareget - ID of target.
+     * @param {string} triggerID - ID of trigger.
+     * @param {boolean} enable - true to enable, otherwise, disable the trigger.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    enableTrigger(
+        target: string, 
+        triggerID: string,
+        enable: boolean,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        return TriggerOps.enableTrigger(this,target,triggerID,enable,onCompletion);
+    }
+
+    /** Delete a specified trigger.
+     * @param {string} tareget - ID of target.
+     * @param {string} triggerID - ID of trigger.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    deleteTrigger(
+        target: string, 
+        triggerID: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        return TriggerOps.deleteTrigger(this,target,triggerID,onCompletion);
+    }
+
+    /** Retrive triggers.
+     * @param {string} tareget - ID of target, which trigger belonged to.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    listTriggers(
+        target: string, 
+        listOpitons?: Options.ListQueryOptions,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Trigger>>{
+        return TriggerOps.listTriggers(this,target,listOpitons,onCompletion);
+    }
+
+    /** Retrieve execution results of server code trigger.
+     * @param {string} tareget - ID of target.
+     * @param {string} triggerID - ID of trigger.
+     * @param {Object} listOpitons - Options to retrieve.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    listServerCodeExecutionResults(
+        target: string,
+        triggerID: string,
+        listOpitons?: Options.ListQueryOptions,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Array<ServerCodeResult>>{
+        return TriggerOps.listServerCodeResults(this,target,triggerID,listOpitons,onCompletion);
+    }
+
+    /** Get State of specified target.
+     * @param {string} tareget - ID of target.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    getState(
+        target: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
+        return StateOps.getState(this,target,onCompletion);
+    }
+
+    /** Get vendorThingID of specified target
+     * @param {string} tareget - ID of target.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    getVendorThingID(
+        target: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        return ThingOps.getVendorThingID(this,target,onCompletion);
+    }
+
+    /** Update vendorThingID of specified target
+     * @param {string} tareget - ID of target.
+     * @param {string} newVendorThingID - New vendorThingID of target to be updated.
+     * @param {string} newPassword - New password of target to be updated.
+     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @return {Promise} promise object 
+     */
+    updateVendorThingID(
+        target: string,
+        newVendorThingID: string,
+        newPassword: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        return ThingOps.updateVendorThingID(this,newVendorThingID,newPassword,target,onCompletion);
     }
 }

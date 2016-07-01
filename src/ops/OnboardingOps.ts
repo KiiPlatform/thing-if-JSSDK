@@ -1,8 +1,8 @@
 /// <reference path="../../typings/modules/es6-promise/index.d.ts" />
 import {Promise} from 'es6-promise';
-import request from '../Request';
+import request from './Request';
 import {App} from '../App';
-import {APIAuthor} from '../APIAuthor';
+import APIAuthor from '../APIAuthor';
 
 export function onboardingThing(
     au: APIAuthor, 
@@ -17,7 +17,7 @@ export function onboardingThing(
         contentType = "application/vnd.kii.OnboardingWithThingIDByOwner+json";
     }
     
-    let onboardUrl = `${au.app.getBaseUrl()}/onboardings`;
+    let onboardUrl = `${au.app.getThingIFBaseUrl()}/onboardings`;
 
     return new Promise<Object>((resolve, reject) => {
         request({
@@ -46,7 +46,6 @@ export function onboardEndnode(
     au: APIAuthor, 
     onboardRequest:Object, 
     onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-
     //TODO: implment me
     return new Promise<Object>((resolve, reject)=>{
         resolve({});

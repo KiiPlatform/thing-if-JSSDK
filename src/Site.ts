@@ -1,5 +1,4 @@
-export {Site}
-enum Site {
+export enum Site {
   US,
   JP,
   CN3,

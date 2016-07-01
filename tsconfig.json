@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outDir": "built",
+        "target": "es5"
+    },
+    "files": [
+        "src/App.ts",
+        "src/Site.ts",
+        "src/APIAuthor.ts",
+        "src/RequestOptions.ts",
+        "src/Command.ts",
+        "src/Predicate.ts",
+        "src/ServerCode.ts",
+        "src/ServerCodeResult.ts",
+        "src/Trigger.ts"
+    ]
+}
