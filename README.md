@@ -51,13 +51,13 @@ $ npm test
 ### onboard and send command to a thing
 
 ```js
-var ThingIF = require('../../dist/thing-if-sdk.js');
+var ThingIF = require('./thing-if-sdk.js');
 var app = new ThingIF.KiiApp("app-id", "app-key", ThingIF.Site.JP);
-var options = new ThingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
+var onboardOptions = new ThingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
 var apiAuthor = new ThingIF.APIAuthor("owner-token",app);
 
 // by promise
-apiAuthor.onboardWithVendorThingID(options).then(function(res){
+apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     var thingID = res.thingID;
     var commandOptions = new ThingIF.PostCommandRequest(
         "led-schema",
@@ -74,7 +74,7 @@ apiAuthor.onboardWithVendorThingID(options).then(function(res){
 });
 
 // by callbacks
-apiAuthor.onboardWithVendorThingID(options,
+apiAuthor.onboardWithVendorThingID(onboardOptions,
     function(err, res){
         if (err == null || err == undefined) {
             cosnole.log("onboard failed:" + err);
