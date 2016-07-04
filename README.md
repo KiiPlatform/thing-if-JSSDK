@@ -53,10 +53,10 @@ $ npm test
 ```js
 var ThingIF = require('./thing-if-sdk.js');
 var app = new ThingIF.KiiApp("app-id", "app-key", ThingIF.Site.JP);
-var onboardOptions = new ThingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
 var apiAuthor = new ThingIF.APIAuthor("owner-token",app);
+var onboardOptions = new ThingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
 
-// by promise
+// using promise
 apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     var thingID = res.thingID;
     var commandOptions = new ThingIF.PostCommandRequest(
@@ -73,7 +73,7 @@ apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     console.log(err);
 });
 
-// by callbacks
+// using callbacks
 apiAuthor.onboardWithVendorThingID(onboardOptions,
     function(err, res){
         if (err == null || err == undefined) {
