@@ -55,6 +55,40 @@ $ npm test
 ```
 
 ## Use cases in nodejs
+
+### Integrate with kii-cloud-sdk
+You usally need to get user id and token from kii-cloud-sdk, you can simply integrate it with thing-if-sdk.
+
+```js
+require("jquery-xhr");
+var thingIFSDK = require('lib-path/thing-if-sdk.js');
+var kii = require("kii-cloud-sdk").create();
+
+var appid = "****",
+    appkey = "****",
+    site = kii.KiiSite.JP;
+
+kii.Kii.initializeWithSite(appid, appkey, site);
+
+// an already registered kii user
+var username = "user-name";
+var pass = "pass";
+
+kii.KiiUser.authenticate(username, pass).then(function (authedUser) {
+    var token = authedUser.getAccessToken();
+    var ownerId = authedUser.getID();
+
+    // user kii.Kii as App
+    var apiAuthor = new thingIFSDK.APIAuthor(token, kii.Kii);
+
+    let onboardRequest = new thingIFSDK.OnboardWithVendorThingIDRequest("vendorthing-id", "password", ownerId);
+    return apiAuthor.onboardWithVendorThingID(onboardRequest);
+}).then(function (res) {
+    console.log("onboarded:"+JSON.stringify(res));
+}).catch(function (err) {
+    console.log(err);
+});
+```
 ### onboard and send command to a thing
 
 ```js
