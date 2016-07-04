@@ -4,7 +4,7 @@
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
   "main": "index.js",
   "scripts": {
-    "pretest": "tsc test/*Test.ts --module commonjs",
+    "pretest": "tsc test/*Test.ts --module commonjs --outDir built",
     "test": "mocha"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "yargs": "^4.7.1"
   },
   "dependencies": {
-    "es6-promise": "^3.2.1"
+    "es6-promise": "^3.2.1",
+    "popsicle": "^6.2.1"
   }
 }

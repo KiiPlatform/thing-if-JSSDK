@@ -24,6 +24,10 @@ var config = {
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
+  externals: {
+    "es6-promise": "es6-promise",
+    "popsicle": "popsicle"
+  },
   module: {
     loaders: [
       { test: /\.tsx?$/, loader: 'ts', exclude: /node_modules/ }
