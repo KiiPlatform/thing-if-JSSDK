@@ -8,6 +8,14 @@ Javascript SDK for Kii Thing Interaction Framework.
 $ cd thing-if-sdk
 $ npm install
 ```
+
+### Install typings
+
+```
+$ npm install typings -g
+$ typings install es6-promise
+```
+
 ### Build SDK
 thing-if-sdk is built as UMD(Universal Module Definition) library.
 So your code can load it either with CommonJS style, AMD style or script tag.
@@ -37,7 +45,6 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
 We use Mocha together with Chai for unit-testing.
 
 ```
-$ npm install typings -g
 $ typings install env~mocha --global
 $ typings install dt~chai --global
 ```
