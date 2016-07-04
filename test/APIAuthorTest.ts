@@ -4,7 +4,7 @@ import {expect} from 'chai';
 import * as TestApp from './utils/TestApp';
 
 declare var require: any
-let thingIFSDK = require('../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../dist/thing-if-sdk.js');
 
 describe('onboard', () => {
     describe('#onboardWithVendorThingID', () => {
