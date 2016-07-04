@@ -2,6 +2,8 @@ dependencies:
   post:
     # install typings of dependencies
     - typings install es6-promise
+    - typings install npm:popsicle
+    - typings install dt~node --global 
 
 test:
   pre:
