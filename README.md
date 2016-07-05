@@ -60,28 +60,29 @@ $ npm test
 You usally need to get user id and token from kii-cloud-sdk, you can simply integrate it with thing-if-sdk.
 
 ```js
-require("jquery-xhr");
-var thingIFSDK = require('lib-path/thing-if-sdk.js');
-var kii = require("kii-cloud-sdk").create();
+require("jquery-xhr"); // necessary for kii-cloud-sdk
+var kiicloud = require("kii-cloud-sdk").create();
+
+var thingIF = require('./thing-if-sdk.js');
 
 var appid = "****",
     appkey = "****",
-    site = kii.KiiSite.JP;
+    site = kiicloud.KiiSite.JP;
 
-kii.Kii.initializeWithSite(appid, appkey, site);
+kiicloud.Kii.initializeWithSite(appid, appkey, site);
 
 // an already registered kii user
 var username = "user-name";
 var pass = "pass";
 
-kii.KiiUser.authenticate(username, pass).then(function (authedUser) {
+kiicloud.KiiUser.authenticate(username, pass).then(function (authedUser) {
     var token = authedUser.getAccessToken();
     var ownerId = authedUser.getID();
 
     // user kii.Kii as App
-    var apiAuthor = new thingIFSDK.APIAuthor(token, kii.Kii);
+    var apiAuthor = new thingIF.APIAuthor(token, kiicloud.Kii);
 
-    let onboardRequest = new thingIFSDK.OnboardWithVendorThingIDRequest("vendorthing-id", "password", ownerId);
+    let onboardRequest = new thingIF.OnboardWithVendorThingIDRequest("vendorthing-id", "password", ownerId);
     return apiAuthor.onboardWithVendorThingID(onboardRequest);
 }).then(function (res) {
     console.log("onboarded:"+JSON.stringify(res));
@@ -92,15 +93,15 @@ kii.KiiUser.authenticate(username, pass).then(function (authedUser) {
 ### onboard and send command to a thing
 
 ```js
-var ThingIF = require('./thing-if-sdk.js');
-var app = new ThingIF.KiiApp("app-id", "app-key", ThingIF.Site.JP);
-var apiAuthor = new ThingIF.APIAuthor("owner-token",app);
-var onboardOptions = new ThingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
+var thingIF = require('./thing-if-sdk.js');
+var app = new thingIF.KiiApp("app-id", "app-key", ThingIF.Site.JP);
+var apiAuthor = new thingIF.APIAuthor("owner-token",app);
+var onboardOptions = new thingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
 
 // using promise
 apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     var thingID = res.thingID;
-    var commandOptions = new ThingIF.PostCommandRequest(
+    var commandOptions = new thingIF.PostCommandRequest(
         "led-schema",
         1,
         {turnPower:{power: true}}
@@ -123,7 +124,7 @@ apiAuthor.onboardWithVendorThingID(onboardOptions,
             return;
         }
         var thingID = res.thingID;
-        var commandOptions = new ThingIF.PostCommandRequest(
+        var commandOptions = new thingIF.PostCommandRequest(
             "led-schema",
             1,
             {turnPower:{power: true}}
