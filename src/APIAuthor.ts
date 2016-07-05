@@ -12,6 +12,7 @@ import * as CommandOps from './ops/CommandOps'
 import * as TriggerOps from './ops/TriggerOps'
 import * as StateOps from './ops/StateOps'
 import * as ThingOps from './ops/ThingOps'
+import * as PushOps from './ops/PushOps'
 
 /**
  * This callback type is called `onCompletion` and is displayed as a global symbol.
@@ -33,10 +34,10 @@ export class APIAuthor {
     /** Onboard Thing by vendorThingID
      * @param {Object} onboardRequest request body when request onboarding
      * @param {onCompletion} [onCompletion] callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     onboardWithVendorThingID(
-        onboardRequest: Options.OnboardWithVendorThingIDRequest, 
+        onboardRequest: Options.OnboardWithVendorThingIDRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
         return OnboardingOps.onboardingThing(this, true, onboardRequest, onCompletion);
     }
@@ -44,10 +45,10 @@ export class APIAuthor {
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
      * @param {Object} onboardRequest - Request body when request onboarding
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     onboardWithThingID(
-        onboardRequest: Options.OnboardWithThingIDRequest, 
+        onboardRequest: Options.OnboardWithThingIDRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
         return OnboardingOps.onboardingThing(this, false, onboardRequest, onCompletion);
     }
@@ -55,10 +56,10 @@ export class APIAuthor {
     /** Onboard an Endnode by vendorThingID with an already registered gateway.
      * @param {Object} onboardRequest - Request body when request onboarding
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     onboardEndnodeWithGateway(
-        onboardRequest: Options.OnboardEndnodeWithGatewayRequest, 
+        onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
         return OnboardingOps.onboardEndnode(this, onboardRequest, onCompletion);
     }
@@ -67,10 +68,10 @@ export class APIAuthor {
      * @param {string} tareget - ID of target, where the command to be sent.
      * @param {Object} command - Necessary fields for new command
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     postNewCommand(
-        target: string, 
+        target: string,
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
         return CommandOps.postNewCommand(this, target, command,onCompletion);
@@ -80,23 +81,23 @@ export class APIAuthor {
      * @param {string} tareget - ID of target to be retrieved.
      * @param {string} commandID - Command ID to retrieve.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     getCommand(
-        target: string, 
-        commandID: string, 
+        target: string,
+        commandID: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
         return CommandOps.getCommand(this, target, commandID, onCompletion);
     }
 
     /** Retrieve commands.
-     * @param {string} tareget - ID of target to be retrieved. 
+     * @param {string} tareget - ID of target to be retrieved.
      * @param {Object} listOpitons - Options to retrieve commands.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     listCommands(
-        target: string, 
+        target: string,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Command>>{
         return CommandOps.listCommands(this, target, listOpitons, onCompletion);
@@ -106,10 +107,10 @@ export class APIAuthor {
      * @param {string} tareget - ID of target.
      * @param {Object} requestObject - Necessary fields for new command trigger.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     postCommandTrigger(
-        target: string, 
+        target: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
         return TriggerOps.postTrigger(this,target,requestObject, onCompletion);
@@ -119,10 +120,10 @@ export class APIAuthor {
      * @param {string} tareget - ID of target.
      * @param {Object} requestObject - Necessary fields for new servercode trigger.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     postServerCodeTriggger(
-        target: string, 
+        target: string,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
         return TriggerOps.postTrigger(this,target,requestObject, onCompletion);
@@ -132,10 +133,10 @@ export class APIAuthor {
      * @param {string} tareget - ID of target.
      * @param {string} triggerID - ID of trigger.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     getTrigger(
-        target: string, 
+        target: string,
         triggerID: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
         return TriggerOps.getTrigger(this,target,triggerID, onCompletion);
@@ -146,10 +147,10 @@ export class APIAuthor {
      * @param {string} triggerID - ID of trigger.
      * @param {Object} requestObject - The fields of trigger to be updated.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     patchCommandTrigger(
-        target: string, 
+        target: string,
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
@@ -161,10 +162,10 @@ export class APIAuthor {
      * @param {string} triggerID - ID of trigger.
      * @param {Object} requestObject - The fields of trigger to be updated.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
    patchServerCodeTrigger(
-        target: string, 
+        target: string,
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
@@ -176,10 +177,10 @@ export class APIAuthor {
      * @param {string} triggerID - ID of trigger.
      * @param {boolean} enable - true to enable, otherwise, disable the trigger.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     enableTrigger(
-        target: string, 
+        target: string,
         triggerID: string,
         enable: boolean,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
@@ -190,10 +191,10 @@ export class APIAuthor {
      * @param {string} tareget - ID of target.
      * @param {string} triggerID - ID of trigger.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     deleteTrigger(
-        target: string, 
+        target: string,
         triggerID: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
         return TriggerOps.deleteTrigger(this,target,triggerID,onCompletion);
@@ -202,10 +203,10 @@ export class APIAuthor {
     /** Retrive triggers.
      * @param {string} tareget - ID of target, which trigger belonged to.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     listTriggers(
-        target: string, 
+        target: string,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Trigger>>{
         return TriggerOps.listTriggers(this,target,listOpitons,onCompletion);
@@ -216,7 +217,7 @@ export class APIAuthor {
      * @param {string} triggerID - ID of trigger.
      * @param {Object} listOpitons - Options to retrieve.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     listServerCodeExecutionResults(
         target: string,
@@ -229,7 +230,7 @@ export class APIAuthor {
     /** Get State of specified target.
      * @param {string} tareget - ID of target.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     getState(
         target: string,
@@ -240,7 +241,7 @@ export class APIAuthor {
     /** Get vendorThingID of specified target
      * @param {string} tareget - ID of target.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     getVendorThingID(
         target: string,
@@ -253,7 +254,7 @@ export class APIAuthor {
      * @param {string} newVendorThingID - New vendorThingID of target to be updated.
      * @param {string} newPassword - New password of target to be updated.
      * @param {onCompletion} [onCompletion] - callback function when completed
-     * @return {Promise} promise object 
+     * @return {Promise} promise object
      */
     updateVendorThingID(
         target: string,
@@ -261,5 +262,40 @@ export class APIAuthor {
         newPassword: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
         return ThingOps.updateVendorThingID(this,newVendorThingID,newPassword,target,onCompletion);
+    }
+
+    /** Register the id issued by Firebase Cloud Message to Kii cloud for kii user.
+     * @param {string} installationRegistrationID The ID of registration that identifies the installation externally.
+     * @param {boolean} development Indicates if the installation is for development or production environment.
+     * @param {onCompletion} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    installFCM(
+        installationRegistrationID:string,
+        development: boolean,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        return PushOps.installFCM(this, installationRegistrationID, development, onCompletion);
+    }
+
+    /** Register a MQTT installation to the Kii cloud for kii user.
+     * @param {boolean} development Indicates if the installation is for development or production environment.
+     * @param {onCompletion} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    installMqtt(
+        development: boolean,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        return PushOps.installMqtt(this, development, onCompletion);
+    }
+
+    /** Unregister the push settings by the id(issued by KiiCloud) that is used for installation.
+     * @param {string} installationID The ID of the installation issued by KiiCloud.
+     * @param {onCompletion} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    uninstallPush(
+        installationID: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        return PushOps.uninstall(this, installationID, onCompletion);
     }
 }
