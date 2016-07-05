@@ -27,14 +27,7 @@ export class APIAuthor {
 
     constructor(token:string, app: App) {
         this.token = token;
-        if (!!app.site && !! app.appID && !! app.appKey){
-            this.app = app;
-        }else if(!!app.getAppID() && !!app.getAppKey() && app.getBaseURL()) {
-            this.app = new App(
-                app.getAppID(),
-                app.getAppKey(),
-                app.getBaseURL().substr(0, app.getBaseURL().length-4));
-        }
+        this.app = app;
     }
 
     /** Onboard Thing by vendorThingID

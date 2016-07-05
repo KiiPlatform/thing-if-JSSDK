@@ -79,8 +79,13 @@ kiicloud.KiiUser.authenticate(username, pass).then(function (authedUser) {
     var token = authedUser.getAccessToken();
     var ownerId = authedUser.getID();
 
-    // user kii.Kii as App
-    var apiAuthor = new thingIF.APIAuthor(token, kiicloud.Kii);
+    var apiAuthor = new thingIF.APIAuthor(
+        token,
+        new thingIF.App(
+            kiicloud.Kii.getAppID(),
+            kiicloud.Kii.getAppKey(),
+            kiicloud.Kii.getBaseURL())
+    );
 
     let onboardRequest = new thingIF.OnboardWithVendorThingIDRequest("vendorthing-id", "password", ownerId);
     return apiAuthor.onboardWithVendorThingID(onboardRequest);
@@ -94,7 +99,7 @@ kiicloud.KiiUser.authenticate(username, pass).then(function (authedUser) {
 
 ```js
 var thingIF = require('./thing-if-sdk.js');
-var app = new thingIF.KiiApp("app-id", "app-key", ThingIF.Site.JP);
+var app = new thingIF.App("app-id", "app-key", ThingIF.Site.JP);
 var apiAuthor = new thingIF.APIAuthor("owner-token",app);
 var onboardOptions = new thingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
 
