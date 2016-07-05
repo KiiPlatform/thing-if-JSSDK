@@ -14,6 +14,7 @@ $ npm install
 ```
 $ npm install typings -g
 $ typings install es6-promise
+$ typings install npm:popsicle --save
 ```
 
 ### Build SDK

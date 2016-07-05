@@ -33,6 +33,7 @@
     "yargs": "^4.7.1"
   },
   "dependencies": {
-    "es6-promise": "^3.2.1"
+    "es6-promise": "^3.2.1",
+    "popsicle": "^6.2.1"
   }
 }

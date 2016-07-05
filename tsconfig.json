@@ -17,6 +17,7 @@
         "src/Predicate.ts",
         "src/ServerCode.ts",
         "src/ServerCodeResult.ts",
-        "src/Trigger.ts"
+        "src/Trigger.ts",
+        "typings/globals/node/index.d.ts"
     ]
 }
