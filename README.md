@@ -49,6 +49,13 @@ $ typings install env~mocha --global
 $ typings install dt~chai --global
 ```
 
+### Configure TestApp
+You need to configure `TestApp` as env variable for testing, the format is `[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[admin-token]`
+
+```
+$ export TestApp=[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[admin-token]
+```
+
 ### Run npm test
 ```
 $ npm test
