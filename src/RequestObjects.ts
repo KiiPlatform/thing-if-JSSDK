@@ -1,7 +1,7 @@
 
 import Predicate from './Predicate'
 import ServerCode from './ServerCode'
-import {TypeID} from './TypeID'
+import {TypedID} from './TypedID'
 
 /** OnboardWithVendorThingIDRequest contains necessary fields to request onboarding
  * with vendorThingID with owner
@@ -11,7 +11,7 @@ export class OnboardWithVendorThingIDRequest {
     constructor(
         public vendorThingID: string,
         public thingPassword: string,
-        ownerType: TypeID,
+        ownerType: TypedID,
         public thingType?:string,
         public thingProperties?:Object){
             this.owner = ownerType.toString();
@@ -26,7 +26,7 @@ export class OnboardWithThingIDRequest {
     constructor(
         public thingID: string,
         public thingPassword: string,
-        ownerType: TypeID){
+        ownerType: TypedID){
             this.owner = ownerType.toString();
         }
 }
@@ -40,7 +40,7 @@ export class OnboardEndnodeWithGatewayRequest {
         public gatewayThingID: string,
         public endNodeVendorThingID: string,
         public endNodePassword: string,
-        ownerType: TypeID,
+        ownerType: TypedID,
         public thingType?:string,
         public thingProperties?:Object){
             this.owner = ownerType.toString();
@@ -55,7 +55,7 @@ export class PostCommandRequest {
         public schemaName: string,
         public schemaVersion: number,
         public actions: Object,
-        issuerType: TypeID,
+        issuerType: TypedID,
         public title?: string,
         public description?: string,
         public metaData?: Object){}

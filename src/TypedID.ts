@@ -5,7 +5,7 @@ export enum Types {
     THING
 }
 
-export  class TypeID {
+export class TypedID {
     private type: Types;
     private id: string;
 
