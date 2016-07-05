@@ -1,5 +1,5 @@
 // export all classes need to be publiced as ThingIF library
-export * from "./RequestOptions"
+export * from "./RequestObjects"
 export * from "./Site"
 export * from "./App"
 export * from "./Command"

@@ -12,7 +12,7 @@
         "src/App.ts",
         "src/Site.ts",
         "src/APIAuthor.ts",
-        "src/RequestOptions.ts",
+        "src/RequestObjects.ts",
         "src/Command.ts",
         "src/Predicate.ts",
         "src/ServerCode.ts",

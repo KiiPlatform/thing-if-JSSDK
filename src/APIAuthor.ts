@@ -5,7 +5,7 @@ import {App} from './App';
 import {Command} from './Command';
 import Trigger from './Trigger'
 import ServerCodeResult from './ServerCodeResult'
-import * as Options from './RequestOptions'
+import * as Options from './RequestObjects'
 
 import * as OnboardingOps from './ops/OnboardingOps'
 import * as CommandOps from './ops/CommandOps'
@@ -38,7 +38,7 @@ export class APIAuthor {
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest, 
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return OnboardingOps.onboardingThing(this, true, onboardRequest.getRequestBody(), onCompletion);
+        return OnboardingOps.onboardingThing(this, true, onboardRequest, onCompletion);
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
@@ -49,7 +49,7 @@ export class APIAuthor {
     onboardWithThingID(
         onboardRequest: Options.OnboardWithThingIDRequest, 
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return OnboardingOps.onboardingThing(this, false, onboardRequest.getRequestBody(), onCompletion);
+        return OnboardingOps.onboardingThing(this, false, onboardRequest, onCompletion);
     }
 
     /** Onboard an Endnode by vendorThingID with an already registered gateway.
@@ -60,7 +60,7 @@ export class APIAuthor {
     onboardEndnodeWithGateway(
         onboardRequest: Options.OnboardEndnodeWithGatewayRequest, 
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return OnboardingOps.onboardEndnode(this, onboardRequest.getRequestBody(), onCompletion);
+        return OnboardingOps.onboardEndnode(this, onboardRequest, onCompletion);
     }
 
     /** Post a new command.
@@ -73,7 +73,7 @@ export class APIAuthor {
         target: string, 
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
-        return CommandOps.postNewCommand(this, target, command.getRequestBody(),onCompletion);
+        return CommandOps.postNewCommand(this, target, command,onCompletion);
     }
 
     /** Retrieve command with specified ID.
