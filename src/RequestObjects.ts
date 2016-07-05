@@ -1,6 +1,7 @@
 
 import Predicate from './Predicate'
 import ServerCode from './ServerCode'
+import {TypeID} from './TypeID'
 
 /** OnboardWithVendorThingIDRequest contains necessary fields to request onboarding
  * with vendorThingID with owner
@@ -10,7 +11,7 @@ export class OnboardWithVendorThingIDRequest {
     constructor(
         public vendorThingID: string,
         public thingPassword: string,
-        public owner: string,
+        public owner: TypeID,
         public thingType?:string,
         public thingProperties?:Object){}
 }
@@ -23,7 +24,7 @@ export class OnboardWithThingIDRequest {
     constructor(
         public thingID: string,
         public thingPassword: string,
-        public owner: string){}
+        public owner: TypeID){}
 }
 
 /** OnboardEndnodeWithGatewayRequest contains necessary fields to request onboarding
@@ -35,7 +36,7 @@ export class OnboardEndnodeWithGatewayRequest {
         public gatewayThingID: string,
         public endNodeVendorThingID: string,
         public endNodePassword: string,
-        public ownerID: string,
+        public owner: TypeID,
         public thingType?:string,
         public thingProperties?:Object){}
 }
@@ -47,8 +48,7 @@ export class PostCommandRequest {
         public schemaName: string,
         public schemaVersion: number,
         public actions: Object,
-        public issuer: string,
-        public targetID: string,
+        public issuer: TypeID,
         public title?: string,
         public description?: string,
         public metaData?: Object){}
