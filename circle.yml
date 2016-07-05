@@ -7,9 +7,6 @@ dependencies:
 
 test:
   pre:
-    # set test app info
-    - bash circleci_scripts/config_test_app.sh
-
     # generate typedoc
     - typedoc -out $CIRCLE_ARTIFACTS/typedoc/ --externalPattern 'src/ops/*.ts' --excludeExternals
 
