@@ -6,6 +6,7 @@ import {Command} from './Command';
 import Trigger from './Trigger'
 import ServerCodeResult from './ServerCodeResult'
 import * as Options from './RequestObjects'
+import {TypeID} from './TypeID'
 
 import * as OnboardingOps from './ops/OnboardingOps'
 import * as CommandOps from './ops/CommandOps'
@@ -13,14 +14,6 @@ import * as TriggerOps from './ops/TriggerOps'
 import * as StateOps from './ops/StateOps'
 import * as ThingOps from './ops/ThingOps'
 import * as PushOps from './ops/PushOps'
-
-/**
- * This callback type is called `onCompletion` and is displayed as a global symbol.
- *
- * @callback onCompletion
- * @param {Error} error
- * @param {Object} responseObject
- */
 
 export class APIAuthor {
     public token: string;
@@ -33,7 +26,7 @@ export class APIAuthor {
 
     /** Onboard Thing by vendorThingID
      * @param {Object} onboardRequest request body when request onboarding
-     * @param {onCompletion} [onCompletion] callback function when completed
+     * @param {onCompletion} [function] callback function when completed
      * @return {Promise} promise object
      */
     onboardWithVendorThingID(
@@ -43,8 +36,8 @@ export class APIAuthor {
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
-     * @param {Object} onboardRequest - Request body when request onboarding
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {Object} onboardRequest Necessary fields when request onboarding
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     onboardWithThingID(
@@ -54,8 +47,8 @@ export class APIAuthor {
     }
 
     /** Onboard an Endnode by vendorThingID with an already registered gateway.
-     * @param {Object} onboardRequest - Request body when request onboarding
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {Object} onboardRequest Necessary fields when request onboarding
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     onboardEndnodeWithGateway(
@@ -65,209 +58,209 @@ export class APIAuthor {
     }
 
     /** Post a new command.
-     * @param {string} tareget - ID of target, where the command to be sent.
-     * @param {Object} command - Necessary fields for new command
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {Object} command Necessary fields for new command
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     postNewCommand(
-        target: string,
+        target: TypeID,
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
-        return CommandOps.postNewCommand(this, target, command,onCompletion);
+        return CommandOps.postNewCommand(this, target.toString(), command,onCompletion);
     }
 
     /** Retrieve command with specified ID.
-     * @param {string} tareget - ID of target to be retrieved.
-     * @param {string} commandID - Command ID to retrieve.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {string} commandID Command ID to retrieve.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     getCommand(
-        target: string,
+        target: TypeID,
         commandID: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
-        return CommandOps.getCommand(this, target, commandID, onCompletion);
+        return CommandOps.getCommand(this, target.toString(), commandID, onCompletion);
     }
 
     /** Retrieve commands.
-     * @param {string} tareget - ID of target to be retrieved.
-     * @param {Object} listOpitons - Options to retrieve commands.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {Object} listOpitons Options to retrieve commands.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     listCommands(
-        target: string,
+        target: TypeID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Command>>{
-        return CommandOps.listCommands(this, target, listOpitons, onCompletion);
+        return CommandOps.listCommands(this, target.toString(), listOpitons, onCompletion);
     }
 
     /** Post a new command trigger.
-     * @param {string} tareget - ID of target.
-     * @param {Object} requestObject - Necessary fields for new command trigger.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {Object} requestObject Necessary fields for new command trigger.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     postCommandTrigger(
-        target: string,
+        target: TypeID,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
-        return TriggerOps.postTrigger(this,target,requestObject, onCompletion);
+        return TriggerOps.postTrigger(this, target.toString(), requestObject, onCompletion);
     }
 
     /** Post a new servercode trigger.
-     * @param {string} tareget - ID of target.
-     * @param {Object} requestObject - Necessary fields for new servercode trigger.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {Object} requestObject Necessary fields for new servercode trigger.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     postServerCodeTriggger(
-        target: string,
+        target: TypeID,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
-        return TriggerOps.postTrigger(this,target,requestObject, onCompletion);
+        return TriggerOps.postTrigger(this, target.toString(), requestObject, onCompletion);
     }
 
     /** Retrieve trigger.
-     * @param {string} tareget - ID of target.
-     * @param {string} triggerID - ID of trigger.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {string} triggerID ID of trigger.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     getTrigger(
-        target: string,
+        target: TypeID,
         triggerID: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
-        return TriggerOps.getTrigger(this,target,triggerID, onCompletion);
+        return TriggerOps.getTrigger(this, target.toString(), triggerID, onCompletion);
     }
 
     /** Update a command trigger.
-     * @param {string} tareget - ID of target.
-     * @param {string} triggerID - ID of trigger.
-     * @param {Object} requestObject - The fields of trigger to be updated.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {string} triggerID ID of trigger.
+     * @param {Object} requestObject The fields of trigger to be updated.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     patchCommandTrigger(
-        target: string,
+        target: TypeID,
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
-        return TriggerOps.patchTrigger(this,target,triggerID,requestObject,onCompletion);
+        return TriggerOps.patchTrigger(this, target.toString(), triggerID, requestObject, onCompletion);
     }
 
     /** Update a servercode trigger.
-     * @param {string} tareget - ID of target.
-     * @param {string} triggerID - ID of trigger.
-     * @param {Object} requestObject - The fields of trigger to be updated.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {string} triggerID ID of trigger.
+     * @param {Object} requestObject The fields of trigger to be updated.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
    patchServerCodeTrigger(
-        target: string,
+        target: TypeID,
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
-        return TriggerOps.patchTrigger(this,target,triggerID,requestObject,onCompletion);
+        return TriggerOps.patchTrigger(this, target.toString(), triggerID, requestObject, onCompletion);
     }
 
     /** Enable/Disable a specified trigger.
-     * @param {string} tareget - ID of target.
-     * @param {string} triggerID - ID of trigger.
-     * @param {boolean} enable - true to enable, otherwise, disable the trigger.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {string} triggerID ID of trigger.
+     * @param {boolean} enable True to enable, otherwise, disable the trigger.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     enableTrigger(
-        target: string,
+        target: TypeID,
         triggerID: string,
         enable: boolean,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
-        return TriggerOps.enableTrigger(this,target,triggerID,enable,onCompletion);
+        return TriggerOps.enableTrigger(this, target.toString(), triggerID, enable, onCompletion);
     }
 
     /** Delete a specified trigger.
-     * @param {string} tareget - ID of target.
-     * @param {string} triggerID - ID of trigger.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {string} triggerID ID of trigger.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     deleteTrigger(
-        target: string,
+        target: TypeID,
         triggerID: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
-        return TriggerOps.deleteTrigger(this,target,triggerID,onCompletion);
+        return TriggerOps.deleteTrigger(this, target.toString(), triggerID, onCompletion);
     }
 
     /** Retrive triggers.
-     * @param {string} tareget - ID of target, which trigger belonged to.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     listTriggers(
-        target: string,
+        target: TypeID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Trigger>>{
-        return TriggerOps.listTriggers(this,target,listOpitons,onCompletion);
+        return TriggerOps.listTriggers(this, target.toString(), listOpitons, onCompletion);
     }
 
     /** Retrieve execution results of server code trigger.
-     * @param {string} tareget - ID of target.
-     * @param {string} triggerID - ID of trigger.
-     * @param {Object} listOpitons - Options to retrieve.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {string} triggerID ID of trigger.
+     * @param {Object} listOpitons Options to retrieve.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     listServerCodeExecutionResults(
-        target: string,
+        target: TypeID,
         triggerID: string,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Array<ServerCodeResult>>{
-        return TriggerOps.listServerCodeResults(this,target,triggerID,listOpitons,onCompletion);
+        return TriggerOps.listServerCodeResults(this, target.toString(), triggerID, listOpitons, onCompletion);
     }
 
     /** Get State of specified target.
-     * @param {string} tareget - ID of target.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {TypeID} tareget TypeID of target, only Types.THING is supported now.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     getState(
-        target: string,
+        target: TypeID,
         onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return StateOps.getState(this,target,onCompletion);
+        return StateOps.getState(this, target.toString(), onCompletion);
     }
 
     /** Get vendorThingID of specified target
-     * @param {string} tareget - ID of target.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {string} thingID ID of thing.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     getVendorThingID(
-        target: string,
+        thingID: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
-        return ThingOps.getVendorThingID(this,target,onCompletion);
+        return ThingOps.getVendorThingID(this, thingID, onCompletion);
     }
 
     /** Update vendorThingID of specified target
-     * @param {string} tareget - ID of target.
-     * @param {string} newVendorThingID - New vendorThingID of target to be updated.
-     * @param {string} newPassword - New password of target to be updated.
-     * @param {onCompletion} [onCompletion] - callback function when completed
+     * @param {string} thingID ID of thing.
+     * @param {string} newVendorThingID New vendorThingID of target to be updated.
+     * @param {string} newPassword New password of target to be updated.
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
     updateVendorThingID(
-        target: string,
+        thingID: string,
         newVendorThingID: string,
         newPassword: string,
         onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
-        return ThingOps.updateVendorThingID(this,newVendorThingID,newPassword,target,onCompletion);
+        return ThingOps.updateVendorThingID(this, newVendorThingID, newPassword, thingID, onCompletion);
     }
 
     /** Register the id issued by Firebase Cloud Message to Kii cloud for kii user.
      * @param {string} installationRegistrationID The ID of registration that identifies the installation externally.
      * @param {boolean} development Indicates if the installation is for development or production environment.
-     * @param {onCompletion} [onCompletion] Callback function when completed.
+     * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
      */
     installFCM(
@@ -279,7 +272,7 @@ export class APIAuthor {
 
     /** Register a MQTT installation to the Kii cloud for kii user.
      * @param {boolean} development Indicates if the installation is for development or production environment.
-     * @param {onCompletion} [onCompletion] Callback function when completed.
+     * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
      */
     installMqtt(
@@ -290,7 +283,7 @@ export class APIAuthor {
 
     /** Unregister the push settings by the id(issued by KiiCloud) that is used for installation.
      * @param {string} installationID The ID of the installation issued by KiiCloud.
-     * @param {onCompletion} [onCompletion] Callback function when completed
+     * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object.
      */
     uninstallPush(

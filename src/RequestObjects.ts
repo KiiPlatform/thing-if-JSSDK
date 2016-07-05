@@ -2,45 +2,41 @@
 import Predicate from './Predicate'
 import ServerCode from './ServerCode'
 
-/** OnboardWithVendorThingIDRequest contains necessary fields to request onboarding 
+/** OnboardWithVendorThingIDRequest contains necessary fields to request onboarding
  * with vendorThingID with owner
  */
 export class OnboardWithVendorThingIDRequest {
 
     constructor(
-        public vendorThingID: string, 
-        public thingPassword: string, 
-        public owner: string, 
-        public thingType?:string, 
-        public thingProperties?:Object){
-            this.owner = "user:"+this.owner;
-        }
+        public vendorThingID: string,
+        public thingPassword: string,
+        public owner: string,
+        public thingType?:string,
+        public thingProperties?:Object){}
 }
 
-/** OnboardWithThingIDRequest contains necessary fields to request onboarding 
+/** OnboardWithThingIDRequest contains necessary fields to request onboarding
  * with thingID with owner
  */
 export class OnboardWithThingIDRequest {
 
     constructor(
-        public thingID: string, 
-        public thingPassword: string, 
-        public owner: string){
-            this.owner = "user:"+this.owner;
-        }
+        public thingID: string,
+        public thingPassword: string,
+        public owner: string){}
 }
 
-/** OnboardEndnodeWithGatewayRequest contains necessary fields to request onboarding 
+/** OnboardEndnodeWithGatewayRequest contains necessary fields to request onboarding
  * endnode with gateway
  */
 export class OnboardEndnodeWithGatewayRequest {
 
     constructor(
-        public gatewayThingID: string, 
+        public gatewayThingID: string,
         public endNodeVendorThingID: string,
-        public endNodePassword: string, 
+        public endNodePassword: string,
         public ownerID: string,
-        public thingType?:string, 
+        public thingType?:string,
         public thingProperties?:Object){}
 }
 
@@ -48,7 +44,7 @@ export class OnboardEndnodeWithGatewayRequest {
  */
 export class PostCommandRequest {
     constructor(
-        public schemaName: string, 
+        public schemaName: string,
         public schemaVersion: number,
         public actions: Object,
         public issuer: string,

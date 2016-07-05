@@ -18,6 +18,7 @@
         "src/ServerCode.ts",
         "src/ServerCodeResult.ts",
         "src/Trigger.ts",
+        "src/TypeID.ts",
         "typings/globals/node/index.d.ts"
     ]
 }
