@@ -1,4 +1,5 @@
 import {Site} from './Site'
+/** Kii App */
 export class App {
 
   /** Instantiate Kii App with App Location.
@@ -21,19 +22,7 @@ export class App {
    * @return {string} base url of kii cloud api
    */
   getKiiCloudBaseUrl(): string{
-     return `${this.getRootPath()}/api/apps/${this.appID}`;   
-  }
-
-  getAppID(): string{
-    return this.appID;
-  }
-
-  getAppKey(): string{
-    return this.appKey;
-  }
-
-  getBaseURL(): string{
-    return this.getKiiCloudBaseUrl();
+     return `${this.getRootPath()}/api/apps/${this.appID}`;
   }
 
   private getRootPath(): string{
