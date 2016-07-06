@@ -15,6 +15,9 @@ import * as StateOps from './ops/StateOps'
 import * as ThingOps from './ops/ThingOps'
 import * as PushOps from './ops/PushOps'
 
+/**
+ * Wrapper of Thing-IF APIs
+ */
 export class APIAuthor {
     public token: string;
     public app: App;
@@ -66,7 +69,7 @@ export class APIAuthor {
     postNewCommand(
         target: TypedID,
         command: Options.PostCommandRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
+        onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
         return CommandOps.postNewCommand(this, target.toString(), command,onCompletion);
     }
 
@@ -79,7 +82,7 @@ export class APIAuthor {
     getCommand(
         target: TypedID,
         commandID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Command>{
+        onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
         return CommandOps.getCommand(this, target.toString(), commandID, onCompletion);
     }
 
@@ -92,7 +95,7 @@ export class APIAuthor {
     listCommands(
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Command>>{
+        onCompletion?: (err: Error, commands:Array<Command>)=> void): Promise<Array<Command>>{
         return CommandOps.listCommands(this, target.toString(), listOpitons, onCompletion);
     }
 
@@ -105,7 +108,7 @@ export class APIAuthor {
     postCommandTrigger(
         target: TypedID,
         requestObject: Options.CommandTriggerRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return TriggerOps.postTrigger(this, target.toString(), requestObject, onCompletion);
     }
 
@@ -118,7 +121,7 @@ export class APIAuthor {
     postServerCodeTriggger(
         target: TypedID,
         requestObject: Options.ServerCodeTriggerRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return TriggerOps.postTrigger(this, target.toString(), requestObject, onCompletion);
     }
 
@@ -131,7 +134,7 @@ export class APIAuthor {
     getTrigger(
         target: TypedID,
         triggerID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return TriggerOps.getTrigger(this, target.toString(), triggerID, onCompletion);
     }
 
@@ -146,7 +149,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return TriggerOps.patchTrigger(this, target.toString(), triggerID, requestObject, onCompletion);
     }
 
@@ -161,7 +164,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return TriggerOps.patchTrigger(this, target.toString(), triggerID, requestObject, onCompletion);
     }
 
@@ -176,7 +179,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         enable: boolean,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return TriggerOps.enableTrigger(this, target.toString(), triggerID, enable, onCompletion);
     }
 
@@ -189,7 +192,7 @@ export class APIAuthor {
     deleteTrigger(
         target: TypedID,
         triggerID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return TriggerOps.deleteTrigger(this, target.toString(), triggerID, onCompletion);
     }
 
@@ -201,7 +204,7 @@ export class APIAuthor {
     listTriggers(
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Array<Trigger>>{
+        onCompletion?: (err: Error, triggers:Array<Trigger>)=> void): Promise<Array<Trigger>>{
         return TriggerOps.listTriggers(this, target.toString(), listOpitons, onCompletion);
     }
 
@@ -216,7 +219,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         listOpitons?: Options.ListQueryOptions,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Array<ServerCodeResult>>{
+        onCompletion?: (err: Error, results:Array<ServerCodeResult>)=> void): Promise<Array<ServerCodeResult>>{
         return TriggerOps.listServerCodeResults(this, target.toString(), triggerID, listOpitons, onCompletion);
     }
 
@@ -227,7 +230,7 @@ export class APIAuthor {
      */
     getState(
         target: TypedID,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
+        onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
         return StateOps.getState(this, target.toString(), onCompletion);
     }
 
@@ -238,7 +241,7 @@ export class APIAuthor {
      */
     getVendorThingID(
         thingID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        onCompletion?: (err: Error, vendorThingID:string)=> void): Promise<string>{
         return ThingOps.getVendorThingID(this, thingID, onCompletion);
     }
 
@@ -253,7 +256,7 @@ export class APIAuthor {
         thingID: string,
         newVendorThingID: string,
         newPassword: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        onCompletion?: (err: Error)=> void): Promise<void>{
         return ThingOps.updateVendorThingID(this, newVendorThingID, newPassword, thingID, onCompletion);
     }
 
@@ -266,7 +269,7 @@ export class APIAuthor {
     installFCM(
         installationRegistrationID:string,
         development: boolean,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
         return PushOps.installFCM(this, installationRegistrationID, development, onCompletion);
     }
 
@@ -277,7 +280,7 @@ export class APIAuthor {
      */
     installMqtt(
         development: boolean,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
         return PushOps.installMqtt(this, development, onCompletion);
     }
 
