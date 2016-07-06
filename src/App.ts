@@ -1,5 +1,5 @@
 import {Site} from './Site'
-/** Kii App */
+/** Represents Kii Cloud Application */
 export class App {
 
   /** Instantiate Kii App with App Location.

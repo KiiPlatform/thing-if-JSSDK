@@ -5,18 +5,26 @@ export enum Types {
     THING
 }
 
+/** Represents entity type and its ID. */
 export class TypedID {
-    private type: Types;
-    private id: string;
+    private _type: Types;
+    private _id: string;
 
+    /**
+     * @param {Types} type Type of entity.
+     * @param {id} id ID of the specified entity. If it is a kii user, then must be id of the user.
+     */
     constructor(type: Types, id: string){
-        this.type = type;
-        this.id = id;
+        this._type = type;
+        this._id = id;
     }
 
+    /** Get string by contacting type and id.
+     * @return {string} A string contacted by type and id of entity.
+    */
     toString(): string{
         let typeString: string;
-        switch (this.type) {
+        switch (this._type) {
             case Types.GROUP:
                 typeString = "group";
                 break;
@@ -29,6 +37,6 @@ export class TypedID {
             default:
                 break;
         }
-        return `${typeString}:${this.id}`;
+        return `${typeString}:${this._id}`;
     }
 }

@@ -1,3 +1,4 @@
+/** Represent Command */
 export class Command {
     constructor(
         public commandID: string,
