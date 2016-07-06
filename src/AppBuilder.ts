@@ -1,7 +1,7 @@
 import {Site} from './Site'
 import {App} from './App'
 
-/** Factory of [App]{@link App} */
+/** Factory methods to create [App]{@link App} instance. */
 export namespace AppBuilder{
 
     /** Create App instace by Site
