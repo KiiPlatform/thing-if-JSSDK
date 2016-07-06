@@ -1,10 +1,7 @@
 dependencies:
   post:
     # install typings of dependencies
-    - typings install es6-promise
-    - typings install npm:popsicle
-    - typings install dt~node --global
-
+    - typings install
 test:
   pre:
     # generate typedoc
@@ -17,7 +14,3 @@ test:
    # build sdk
     - gulp
     - cp ./dist/* $CIRCLE_ARTIFACTS/
-
-    # install typings for tests
-    - typings install env~mocha --global
-    - typings install dt~chai --global

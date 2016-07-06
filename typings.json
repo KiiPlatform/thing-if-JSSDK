@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
+    "popsicle": "npm:popsicle"
+  },
+  "globalDevDependencies": {
+    "chai": "registry:dt/chai#3.4.0+20160601211834",
+    "mocha": "registry:env/mocha#2.2.5+20160321223601"
+  }
+}
