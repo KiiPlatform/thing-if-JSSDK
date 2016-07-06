@@ -6,5 +6,8 @@
   "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
     "mocha": "registry:env/mocha#2.2.5+20160321223601"
+  },
+  "globalDependencies": {
+    "node": "registry:dt/node#6.0.0+20160621231320"
   }
 }
