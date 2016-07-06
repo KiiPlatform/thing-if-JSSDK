@@ -3,12 +3,12 @@ dependencies:
     # install typings of dependencies
     - typings install es6-promise
     - typings install npm:popsicle
-    - typings install dt~node --global 
+    - typings install dt~node --global
 
 test:
   pre:
     # generate typedoc
-    - typedoc -out $CIRCLE_ARTIFACTS/typedoc/ --externalPattern 'src/ops/*.ts' --excludeExternals
+    - gulp doc; cp -fr ./doc $CIRCLE_ARTIFACTS/
 
     # uglify library
     - gulp --u

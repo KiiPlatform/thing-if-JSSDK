@@ -14,6 +14,8 @@ $ npm install
 ```
 $ npm install typings -g
 $ typings install es6-promise
+$ typings install npm:popsicle
+$ typings install dt~node --global
 ```
 
 ### Build SDK
