@@ -19,12 +19,28 @@ import * as PushOps from './ops/PushOps'
  * Wrapper of Thing-IF APIs
  */
 export class APIAuthor {
-    public token: string;
-    public app: App;
+    private _token: string;
+    private _app: App;
 
+    /**
+     * @param {string} token A token can access Thing-IF APIs, which can be admin token or token of
+     *  a registered kii user.
+     * @param {App} app App instance of existing Kii App. You must create a app in
+     * [Kii developer portal]{@link https://developer.kii.com}
+    */
     constructor(token:string, app: App) {
-        this.token = token;
-        this.app = app;
+        this._token = token;
+        this._app = app;
+    }
+
+    /** Access token of APIAuthor. */
+    get token(): string {
+        return this._token;
+    }
+
+    /** App instance about Kii App. */
+    get app(): App {
+        return this._app;
     }
 
     /** Onboard Thing by vendorThingID
