@@ -3,7 +3,7 @@
 import {Promise} from 'es6-promise';
 import * as popsicle from 'popsicle';
 import {RequestOptions} from '~popsicle/dist/request';
-
+import {Response} from './Response'
 
 /**
  * Perform an asynchronous HTTP request.
@@ -18,14 +18,15 @@ import {RequestOptions} from '~popsicle/dist/request';
  * @param {onCompletion} [onCompletion] callback function when completed
  * @return {Promise} promise object 
  */
-export default function (options: Object, onCompletion?: (err: Error, res: Object)=>void): Promise<Object>{
+export default function (options: Object, onCompletion?: (err: Error, res: Response)=>void): Promise<Response>{
     return new Promise<Object>((resolve, reject) => {
         popsicle.request(<RequestOptions>options)
         .then(function (res) {
-            if (isSucceeded(res.status)) {
-                resolve(res);
+            if (res.statusType() == 2) {
+                var response: Response = new Response(res.status, res.body, res.headers);
+                resolve(response);
                 if (!!onCompletion){
-                    onCompletion(null, res);
+                    onCompletion(null, response);
                 }
             } else {
                 var err: Error = new HttpRequestError(res.status, res.body);
@@ -40,14 +41,7 @@ export default function (options: Object, onCompletion?: (err: Error, res: Objec
                 onCompletion(err, null);
             }
         });
-        //2. parse response
     })
-}
-function isSucceeded(status: number): boolean {
-    if (status >= 200 && status < 300) {
-        return true;
-    }
-    return false;
 }
 declare class BaseError implements Error {
     public name: string;
