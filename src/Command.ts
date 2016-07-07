@@ -19,8 +19,8 @@ export class Command {
 }
 
 export enum CommandState {
-    SENDING,
-    DELIVERED,
-    INCOMPLETE,
-    DONE
+    Sending,
+    Delivered,
+    Incomplete,
+    Done
 }
