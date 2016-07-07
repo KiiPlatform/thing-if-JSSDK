@@ -7,6 +7,7 @@ import Trigger from './Trigger'
 import ServerCodeResult from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID} from './TypedID'
+import {OnboardingResult} from './OnboardingResult'
 
 import * as OnboardingOps from './ops/OnboardingOps'
 import * as CommandOps from './ops/CommandOps'
@@ -49,7 +50,7 @@ export class APIAuthor {
      */
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
+        onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
         return OnboardingOps.onboardingThing(this, true, onboardRequest, onCompletion);
     }
 
@@ -60,7 +61,7 @@ export class APIAuthor {
      */
     onboardWithThingID(
         onboardRequest: Options.OnboardWithThingIDRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
+        onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
         return OnboardingOps.onboardingThing(this, false, onboardRequest, onCompletion);
     }
 
@@ -71,7 +72,7 @@ export class APIAuthor {
      */
     onboardEndnodeWithGateway(
         onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
+        onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
         return OnboardingOps.onboardEndnode(this, onboardRequest, onCompletion);
     }
 
