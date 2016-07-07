@@ -1,8 +1,8 @@
 
 export enum Types {
-    GROUP,
-    USER,
-    THING
+    Group,
+    User,
+    Thing
 }
 
 /** Represents entity type and its ID. */
@@ -19,19 +19,26 @@ export class TypedID {
         this._id = id;
     }
 
+    get type(): Types {
+        return this._type;
+    }
+
+    get id(): string {
+        return this._id;
+    }
     /** Get string by contacting type and id.
      * @return {string} A string contacted by type and id of entity.
     */
     toString(): string{
         let typeString: string;
         switch (this._type) {
-            case Types.GROUP:
+            case Types.Group:
                 typeString = "group";
                 break;
-            case Types.USER:
+            case Types.User:
                 typeString = "user";
                 break;
-            case Types.THING:
+            case Types.Thing:
                 typeString = "thing";
                 break;
             default:
