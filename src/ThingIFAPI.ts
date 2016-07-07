@@ -12,8 +12,6 @@ import {APIAuthor} from './APIAuthor'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export default class ThingIFAPI {
-    private _token: string;
-    private _app: App;
     private _target: TypedID;
     private _au: APIAuthor;
 
@@ -25,20 +23,18 @@ export default class ThingIFAPI {
      * @param {TypedID} [target] TypedID for a specified target.
     */
     constructor(token:string, app: App, target?: TypedID) {
-        this._token = token;
-        this._app = app;
         this._target = target;
         this._au = new APIAuthor(token, app);
     }
 
-    /** Access token of APIAuthor. */
+    /** Access token. */
     get token(): string {
-        return this._token;
+        return this._au.token;
     }
 
     /** App instance about Kii App. */
     get app(): App {
-        return this._app;
+        return this._au.app;
     }
 
     /** TypeID of target. */
@@ -54,15 +50,7 @@ export default class ThingIFAPI {
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<Object>{
-        return new Promise<Object>((resolve, reject) =>{
-            this._au.onboardWithVendorThingID(onboardRequest, onCompletion)
-            .then((result)=>{
-                // this._target = new TypedID(Types.Thing, <string>result["thingID"]);
-                resolve(result);
-             }).catch((err)=>{
-                 reject(err);
-             })
-        })
+        return this._au.onboardWithVendorThingID(onboardRequest, onCompletion);
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
