@@ -13,9 +13,7 @@ $ npm install
 
 ```
 $ npm install typings -g
-$ typings install es6-promise
-$ typings install npm:popsicle
-$ typings install dt~node --global
+$ typings install
 ```
 
 ### Build SDK
@@ -42,14 +40,6 @@ $ gulp --u
 If succeeded, uglified library file named `thing-if-sdk.min.js` is available under `./dist/` folder.
 
 ## Test
-
-### Install typyings for test framework
-We use Mocha together with Chai for unit-testing.
-
-```
-$ typings install env~mocha --global
-$ typings install dt~chai --global
-```
 
 ### Configure TestApp
 You need to configure `TestApp` as env variable for testing, the format is `[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[admin-token]`
@@ -158,5 +148,3 @@ apiAuthor.onboardWithVendorThingID(onboardOptions,
     }
 );
 ```
-##TODO
-- Declaration File for SDK
