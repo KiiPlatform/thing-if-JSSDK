@@ -22,7 +22,6 @@
         "src/TypedID.ts",
         "src/AppBuilder.ts",
         "src/ThingIFAPI.ts",
-        "src/ThingIF.ts",
         "typings/globals/node/index.d.ts"
     ]
 }
