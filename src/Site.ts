@@ -1,25 +1,15 @@
-export {Site}
-enum Site {
+/**
+* This enum represents KiiCloud server location.
+*/
+export enum Site {
+  /** Use cloud in US. */
   US,
+  /** Use cloud in Japan. */
   JP,
+  /** Use cloud in cn3 site of China. */
   CN3,
+  /** Use cloud in Singapore. */
   SG,
+  /** Use cloud in EU. */
   EU
-}
-
-namespace Site {
-  export function getBaseUrl(site: Site): string{
-    switch (site) {
-      case Site.US:
-        return "https://api.kii.com";
-      case Site.JP:
-        return "https://api-jp.kii.com";
-      case Site.CN3:
-        return "https://api-cn3.kii.com";
-      case Site.SG:
-        return "https://api-sg.kii.com";
-      case Site.EU:
-          return "https://api-eu.kii.com"
-    }
-  }
 }

@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outDir": "built",
+        "target": "es5",
+        "declaration": true
+    },
+    "files": [
+        "src/App.ts",
+        "src/Site.ts",
+        "src/APIAuthor.ts",
+        "src/RequestObjects.ts",
+        "src/Command.ts",
+        "src/Predicate.ts",
+        "src/ServerCode.ts",
+        "src/ServerCodeResult.ts",
+        "src/Trigger.ts",
+        "src/TypedID.ts",
+        "src/AppBuilder.ts",
+        "src/ThingIFAPI.ts",
+        "typings/globals/node/index.d.ts"
+    ]
+}
