@@ -16,7 +16,7 @@ if (yargs.argv.u) {
 
 var config = {
   devtool: 'source-map',
-  entry: ['./src/ThingIF.ts'],
+  entry: ['./src/ThingIFSDK.ts'],
   output: {
     path: path.join(__dirname, '/dist'),
     filename: outputFile,

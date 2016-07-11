@@ -19,10 +19,10 @@ export function updateVendorThingID(
     target: string,
     newVendorThingID: string,
     newPassword: string,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    onCompletion?: (err: Error)=> void): Promise<void> {
     //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
+    return new Promise<void>((resolve, reject)=>{
+        resolve();
     })
 }
 
