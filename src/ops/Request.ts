@@ -43,13 +43,19 @@ export default function (options: Object, onCompletion?: (err: Error, res: Respo
         });
     })
 }
-declare class BaseError implements Error {
+export class ErrorBase {
     public name: string;
     public message: string;
-    constructor(message?: string);
+    constructor() {
+        Error.apply(this, arguments);
+    }
 }
-class HttpRequestError extends BaseError {
+ErrorBase.prototype = new Error();
+export class HttpRequestError extends ErrorBase {
+    public status: number;
     constructor (status: number, message: string) {
-        super();    
+        super();
+        this.message = message;
+        this.status = status;
     }
 }

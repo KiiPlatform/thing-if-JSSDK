@@ -19,3 +19,4 @@ test:
     # install typings for tests
     - typings install env~mocha --global
     - typings install dt~chai --global
+    - typings install mocha-sinon --global
