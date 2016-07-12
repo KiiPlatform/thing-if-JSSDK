@@ -1,10 +1,10 @@
-/// <reference path="../typings/globals/mocha/index.d.ts" />
-/// <reference path="../typings/globals/chai/index.d.ts" />
+/// <reference path="../../typings/globals/mocha/index.d.ts" />
+/// <reference path="../../typings/globals/chai/index.d.ts" />
 import {expect} from 'chai';
 import * as TestApp from './utils/TestApp';
 
 declare var require: any
-let thingIFSDK = require('../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if-sdk.js');
 
 describe('onboard', () => {
     describe('#onboardWithVendorThingID', () => {
