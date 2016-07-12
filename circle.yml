@@ -1,12 +1,11 @@
 dependencies:
   post:
     # install typings of dependencies
-    - typings install es6-promise
-
+    - typings install
 test:
   pre:
     # generate typedoc
-    - typedoc -out $CIRCLE_ARTIFACTS/typedoc/ --externalPattern 'src/ops/*.ts' --excludeExternals
+    - gulp doc; cp -fr ./doc $CIRCLE_ARTIFACTS/
 
     # uglify library
     - gulp --u
@@ -15,7 +14,3 @@ test:
    # build sdk
     - gulp
     - cp ./dist/* $CIRCLE_ARTIFACTS/
-
-    # install typings for tests
-    - typings install env~mocha --global
-    - typings install dt~chai --global

@@ -13,8 +13,7 @@ $ npm install
 
 ```
 $ npm install typings -g
-$ typings install es6-promise
-$ typings install npm:popsicle --save
+$ typings install
 ```
 
 ### Build SDK
@@ -42,12 +41,11 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
 
 ## Test
 
-### Install typyings for test framework
-We use Mocha together with Chai for unit-testing.
+### Configure TestApp
+You need to configure `TestApp` as env variable for testing, the format is `[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[admin-token]`
 
 ```
-$ typings install env~mocha --global
-$ typings install dt~chai --global
+$ export TestApp=[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[admin-token]
 ```
 
 ### Run npm test
@@ -56,18 +54,58 @@ $ npm test
 ```
 
 ## Use cases in nodejs
+
+### Integrate with kii-cloud-sdk
+You usally need to get user id and token from kii-cloud-sdk, you can simply integrate it with thing-if-sdk.
+
+```js
+require("jquery-xhr"); // necessary for kii-cloud-sdk
+var kiicloud = require("kii-cloud-sdk").create();
+
+var thingIF = require('./thing-if-sdk.js');
+
+var appid = "****",
+    appkey = "****",
+    site = kiicloud.KiiSite.JP;
+
+kiicloud.Kii.initializeWithSite(appid, appkey, site);
+
+// an already registered kii user
+var username = "user-name";
+var pass = "pass";
+
+kiicloud.KiiUser.authenticate(username, pass).then(function (authedUser) {
+    var token = authedUser.getAccessToken();
+    var ownerId = authedUser.getID();
+
+    var apiAuthor = new thingIF.APIAuthor(
+        token,
+        new thingIF.App(
+            kiicloud.Kii.getAppID(),
+            kiicloud.Kii.getAppKey(),
+            kiicloud.Kii.getBaseURL())
+    );
+
+    let onboardRequest = new thingIF.OnboardWithVendorThingIDRequest("vendorthing-id", "password", ownerId);
+    return apiAuthor.onboardWithVendorThingID(onboardRequest);
+}).then(function (res) {
+    console.log("onboarded:"+JSON.stringify(res));
+}).catch(function (err) {
+    console.log(err);
+});
+```
 ### onboard and send command to a thing
 
 ```js
-var ThingIF = require('./thing-if-sdk.js');
-var app = new ThingIF.KiiApp("app-id", "app-key", ThingIF.Site.JP);
-var apiAuthor = new ThingIF.APIAuthor("owner-token",app);
-var onboardOptions = new ThingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
+var thingIF = require('./thing-if-sdk.js');
+var app = new thingIF.App("app-id", "app-key", ThingIF.Site.JP);
+var apiAuthor = new thingIF.APIAuthor("owner-token",app);
+var onboardOptions = new thingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
 
 // using promise
 apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     var thingID = res.thingID;
-    var commandOptions = new ThingIF.PostCommandRequest(
+    var commandOptions = new thingIF.PostCommandRequest(
         "led-schema",
         1,
         {turnPower:{power: true}}
@@ -90,7 +128,7 @@ apiAuthor.onboardWithVendorThingID(onboardOptions,
             return;
         }
         var thingID = res.thingID;
-        var commandOptions = new ThingIF.PostCommandRequest(
+        var commandOptions = new thingIF.PostCommandRequest(
             "led-schema",
             1,
             {turnPower:{power: true}}
@@ -110,5 +148,3 @@ apiAuthor.onboardWithVendorThingID(onboardOptions,
     }
 );
 ```
-##TODO
-- Declaration File for SDK

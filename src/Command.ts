@@ -1,3 +1,4 @@
+/** Represent Command */
 export class Command {
     constructor(
         public commandID: string,
@@ -18,8 +19,8 @@ export class Command {
 }
 
 export enum CommandState {
-    SENDING,
-    DELIVERED,
-    INCOMPLETE,
-    DONE
+    Sending,
+    Delivered,
+    Incomplete,
+    Done
 }

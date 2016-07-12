@@ -1,7 +1,7 @@
 /// <reference path="../typings/globals/mocha/index.d.ts" />
 /// <reference path="../typings/globals/chai/index.d.ts" />
 declare var require: any
-var thingIFSDK = require('../dist/thing-if-sdk.js');
+var thingIFSDK = require('../../dist/thing-if-sdk.js');
 
 import {expect} from 'chai';
 var Site = thingIFSDK.Site;
