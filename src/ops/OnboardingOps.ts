@@ -3,6 +3,7 @@ import {Promise} from 'es6-promise';
 import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
+import * as utils from './OpsUtils';
 
 export function onboardWithThingID(
     au: APIAuthor, 
@@ -22,15 +23,15 @@ function onboard(
     contentType: string,
     onboardRequest: Object, 
     onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    
     let onboardUrl = `${au.app.getThingIFBaseUrl()}/onboardings`;
 
     return new Promise<Object>((resolve, reject) => {
+        var headers: any = utils.newHttpHeader(au);
+        headers['Content-type'] = contentType;
         request({
             method: "POST",
-            headers:{
-                'Content-type': contentType,
-                'Authorization': `Bearer ${au.token}`
-            },
+            headers: headers,
             url: onboardUrl,
             body: onboardRequest,
         }).then((res:Object)=>{
