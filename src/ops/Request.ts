@@ -4,6 +4,7 @@ import {Promise} from 'es6-promise';
 import * as popsicle from 'popsicle';
 import {RequestOptions} from '~popsicle/dist/request';
 import {Response} from './Response'
+import {HttpRequestError} from '../ThingIFError'
 
 /**
  * Perform an asynchronous HTTP request.
@@ -16,10 +17,10 @@ import {Response} from './Response'
  *      <li>headers:An object of http header key/value pairs to send along with requests.</li>
  *    </ul>
  * @param {onCompletion} [onCompletion] callback function when completed
- * @return {Promise} promise object 
+ * @return {Promise} promise object
  */
 export default function (options: Object, onCompletion?: (err: Error, res: Response)=>void): Promise<Response>{
-    return new Promise<Object>((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
         popsicle.request(<RequestOptions>options)
         .then(function (res) {
             if (res.statusType() == 2) {
@@ -43,19 +44,4 @@ export default function (options: Object, onCompletion?: (err: Error, res: Respo
         });
     })
 }
-export class ErrorBase {
-    public name: string;
-    public message: string;
-    constructor() {
-        Error.apply(this, arguments);
-    }
-}
-ErrorBase.prototype = new Error();
-export class HttpRequestError extends ErrorBase {
-    public status: number;
-    constructor (status: number, message: string) {
-        super();
-        this.message = message;
-        this.status = status;
-    }
-}
+

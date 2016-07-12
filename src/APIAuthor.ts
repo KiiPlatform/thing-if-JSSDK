@@ -8,6 +8,7 @@ import ServerCodeResult from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
+import MqttInstallationResult from './MqttInstallationResult'
 
 import * as OnboardingOps from './ops/OnboardingOps'
 import * as CommandOps from './ops/CommandOps'
@@ -276,7 +277,9 @@ export class APIAuthor {
         return ThingOps.updateVendorThingID(this, newVendorThingID, newPassword, thingID, onCompletion);
     }
 
-    /** Register the id issued by Firebase Cloud Message to Kii cloud for kii user.
+    /** Install Firebase Cloud Message(FCM) notification to receive notification from IoT Cloud.
+     * IoT Cloud will send notification when the Target replies to the Command. Application can
+     * receive the notification and check the result of Command fired by Application or registered Trigger.
      * @param {string} installationRegistrationID The ID of registration that identifies the installation externally.
      * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
@@ -289,14 +292,15 @@ export class APIAuthor {
         return PushOps.installFCM(this, installationRegistrationID, development, onCompletion);
     }
 
-    /** Register a MQTT installation to the Kii cloud for kii user.
-     * @param {boolean} development Indicates if the installation is for development or production environment.
+    /** Install MQTT notification to receive notification from IoT Cloud.
+     * IoT Cloud will send notification when the Target replies to the Command. Application can
+     * receive the notification and check the result of Command fired by Application or registered Trigger.     * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
      */
     installMqtt(
         development: boolean,
-        onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
+        onCompletion?: (err: Error, result:MqttInstallationResult)=> void): Promise<MqttInstallationResult>{
         return PushOps.installMqtt(this, development, onCompletion);
     }
 
@@ -307,7 +311,7 @@ export class APIAuthor {
      */
     uninstallPush(
         installationID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        onCompletion?: (err: Error)=> void): Promise<void>{
         return PushOps.uninstall(this, installationID, onCompletion);
     }
 }

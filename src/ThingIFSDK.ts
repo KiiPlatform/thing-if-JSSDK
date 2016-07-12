@@ -1,4 +1,4 @@
-// export all classes need to be publiced as ThingIF library
+// export all classes need to be publiced as Thing-IF SDK library
 export * from "./RequestObjects"
 export * from "./Site"
 export * from "./App"
@@ -10,3 +10,6 @@ export * from "./Trigger"
 export * from "./APIAuthor"
 export * from "./TypedID"
 export * from "./AppBuilder"
+export * from "./ThingIFAPI"
+export * from "./ThingIFError"
+export * from "./MqttInstallationResult"
