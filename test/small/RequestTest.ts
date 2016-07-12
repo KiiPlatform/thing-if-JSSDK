@@ -1,9 +1,9 @@
-/// <reference path="../typings/globals/mocha/index.d.ts" />
-/// <reference path="../typings/globals/chai/index.d.ts" />
-/// <reference path="../typings/modules/nock/index.d.ts" />
+/// <reference path="../../typings/globals/mocha/index.d.ts" />
+/// <reference path="../../typings/globals/chai/index.d.ts" />
+/// <reference path="../../typings/modules/nock/index.d.ts" />
 import {expect} from 'chai';
-import {Response} from '../src/ops/Response'
-import {default as request} from '../src/ops/Request'
+import {Response} from '../../src/ops/Response'
+import {default as request} from '../../src/ops/Request'
 import * as nock from 'nock'
 let scope : nock.Scope;
 
