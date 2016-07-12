@@ -4,19 +4,24 @@ import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 
-export function onboardingThing(
+export function onboardWithThingID(
     au: APIAuthor, 
-    byVendorThingID: Boolean, 
+    onboardRequest: Object, 
+    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    return onboard(au, "application/vnd.kii.OnboardingWithThingIDByOwner+json", onboardRequest, onCompletion);
+}
+export function onboardWithVendorThingID(
+    au: APIAuthor, 
     onboardRequest:Object, 
     onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    return onboard(au, "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json", onboardRequest, onCompletion);
+}
 
-    let contentType: string;
-    if (byVendorThingID){
-        contentType = "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json";
-    }else{
-        contentType = "application/vnd.kii.OnboardingWithThingIDByOwner+json";
-    }
-    
+function onboard(
+    au: APIAuthor,
+    contentType: string,
+    onboardRequest: Object, 
+    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
     let onboardUrl = `${au.app.getThingIFBaseUrl()}/onboardings`;
 
     return new Promise<Object>((resolve, reject) => {
@@ -51,3 +56,4 @@ export function onboardEndnode(
         resolve({});
     })
 }
+
