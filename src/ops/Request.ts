@@ -1,34 +1,61 @@
 /// <reference path="../../typings/modules/es6-promise/index.d.ts" />
 /// <reference path="../../typings/modules/popsicle/index.d.ts" />
 import {Promise} from 'es6-promise';
-import {request as Popsicle} from 'popsicle'
+import * as popsicle from 'popsicle';
+import {RequestOptions} from '~popsicle/dist/request';
+import {Response} from './Response'
 
-export default function (options: Object, onCompletion?: (err: Error, res: Object)=>void): Promise<Object>{
-
-//TODO: verify options
-return new Promise<Object>((resolve: (res:Object)=>void, reject: (err:Error)=>void) => {
-    Popsicle({
-        method: (<any>options)["method"],
-        headers:(<any>options)["headers"],
-        url: (<any>options)["url"],
-        body: (<any>options)["body"],
-    }).exec((err, res)=>{
-        if (!!err) {
-            reject(err);
-            return;
-        }
-        if(res.status < 200 || res.status >= 300) {
-            let err = new Error();
-            if (!!res.body['errorCode']){
-                err.name = res.body['errorCode'];
+/**
+ * Perform an asynchronous HTTP request.
+ *
+ * @param {Object} options
+ *    <ul>
+ *      <li>method:The HTTP method to use for the request (e.g. "POST", "GET", "PUT").</li>
+ *      <li>url:A string containing the URL to which the request is sent.</li>
+ *      <li>body:Data to be sent to the server.</li>
+ *      <li>headers:An object of http header key/value pairs to send along with requests.</li>
+ *    </ul>
+ * @param {onCompletion} [onCompletion] callback function when completed
+ * @return {Promise} promise object 
+ */
+export default function (options: Object, onCompletion?: (err: Error, res: Response)=>void): Promise<Response>{
+    return new Promise<Object>((resolve, reject) => {
+        popsicle.request(<RequestOptions>options)
+        .then(function (res) {
+            if (res.statusType() == 2) {
+                var response: Response = new Response(res.status, res.body, res.headers);
+                resolve(response);
+                if (!!onCompletion){
+                    onCompletion(null, response);
+                }
+            } else {
+                var err: Error = new HttpRequestError(res.status, res.body);
+                reject(err);
+                if (!!onCompletion){
+                    onCompletion(err, null);
+                }
             }
-            if (!!res.body['message']){
-                err.message = res.body['message'];
-            }
+        }).catch(function (err) {
             reject(err);
-            return
-        }
-        resolve(res.body);
-    });
-    });
+            if (!!onCompletion){
+                onCompletion(err, null);
+            }
+        });
+    })
+}
+export class ErrorBase {
+    public name: string;
+    public message: string;
+    constructor() {
+        Error.apply(this, arguments);
+    }
+}
+ErrorBase.prototype = new Error();
+export class HttpRequestError extends ErrorBase {
+    public status: number;
+    constructor (status: number, message: string) {
+        super();
+        this.message = message;
+        this.status = status;
+    }
 }

@@ -4,7 +4,7 @@
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
   "main": "index.js",
   "scripts": {
-    "pretest": "tsc test/*Test.ts --module commonjs --outDir built",
+    "pretest": "tsc test/*Test.ts ./typings/globals/node/index.d.ts --module commonjs --outDir built",
     "test": "mocha 'built/test/*.js'"
   },
   "repository": {
@@ -26,6 +26,7 @@
     "gulp-typedoc": "^2.0.0",
     "gulp-typescript": "^2.13.6",
     "mocha": "^2.5.3",
+    "nock": "^8.0.0",
     "ts-loader": "^0.8.2",
     "typedoc": "^0.4.4",
     "typescript": "^1.8.10",

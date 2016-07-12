@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "nock": "registry:npm/nock#0.7.0+20160211003958",
     "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
     "popsicle": "npm:popsicle"
   },
