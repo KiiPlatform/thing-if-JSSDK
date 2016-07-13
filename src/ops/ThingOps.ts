@@ -3,26 +3,31 @@ import {Promise} from 'es6-promise';
 import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
+import BaseOp from './BaseOp'
+export default class ThingOps extends BaseOp {
+    constructor(
+        public au: APIAuthor,
+        public target: string
+    ){
+        super(au);
+    }
 
-export function getVendorThingID(
-    au: APIAuthor,
-    target: string,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
-}
+    getVendorThingID(
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 
-export function updateVendorThingID(
-    au: APIAuthor,
-    target: string,
-    newVendorThingID: string,
-    newPassword: string,
-    onCompletion?: (err: Error)=> void): Promise<void> {
-    //TODO: implment me
-    return new Promise<void>((resolve, reject)=>{
-        resolve();
-    })
+    updateVendorThingID(
+        newVendorThingID: string,
+        newPassword: string,
+        onCompletion?: (err: Error)=> void): Promise<void> {
+        //TODO: implment me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
 }
 
