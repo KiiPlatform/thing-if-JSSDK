@@ -8,13 +8,14 @@ import ServerCodeResult from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
+import MqttInstallationResult from './MqttInstallationResult'
 
 import * as OnboardingOps from './ops/OnboardingOps'
 import CommandOps from './ops/CommandOps'
 import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
-import * as PushOps from './ops/PushOps'
+import PushOps from './ops/PushOps'
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -276,7 +277,9 @@ export class APIAuthor {
         return (new ThingOps(this, thingID)).updateVendorThingID(newVendorThingID, newPassword, onCompletion);
     }
 
-    /** Register the id issued by Firebase Cloud Message to Kii cloud for kii user.
+    /** Install Firebase Cloud Message(FCM) notification to receive notification from IoT Cloud.
+     * IoT Cloud will send notification when the Target replies to the Command. Application can
+     * receive the notification and check the result of Command fired by Application or registered Trigger.
      * @param {string} installationRegistrationID The ID of registration that identifies the installation externally.
      * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
@@ -286,18 +289,19 @@ export class APIAuthor {
         installationRegistrationID:string,
         development: boolean,
         onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
-        return PushOps.installFCM(this, installationRegistrationID, development, onCompletion);
+        return (new PushOps(this)).installFCM(installationRegistrationID, development, onCompletion);
     }
 
-    /** Register a MQTT installation to the Kii cloud for kii user.
-     * @param {boolean} development Indicates if the installation is for development or production environment.
+    /** Install MQTT notification to receive notification from IoT Cloud.
+     * IoT Cloud will send notification when the Target replies to the Command. Application can
+     * receive the notification and check the result of Command fired by Application or registered Trigger.     * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
      */
     installMqtt(
         development: boolean,
-        onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
-        return PushOps.installMqtt(this, development, onCompletion);
+        onCompletion?: (err: Error, result:MqttInstallationResult)=> void): Promise<MqttInstallationResult>{
+        return (new PushOps(this)).installMqtt(development, onCompletion);
     }
 
     /** Unregister the push settings by the id(issued by KiiCloud) that is used for installation.
@@ -307,7 +311,7 @@ export class APIAuthor {
      */
     uninstallPush(
         installationID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
-        return PushOps.uninstall(this, installationID, onCompletion);
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        return (new PushOps(this)).uninstall(installationID, onCompletion);
     }
 }

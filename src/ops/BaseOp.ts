@@ -1,5 +1,5 @@
 import {APIAuthor} from '../APIAuthor'
-import {getSDKVersion} from '../ThingIFSDK'
+import {getSDKVersion} from '../ThingIFSDKInfo'
 export default class BaseOp {
     private headers: Object;
     constructor(
@@ -11,6 +11,7 @@ export default class BaseOp {
         if (!!this.au.token) {
             headers["Authorization"] = `Bearer ${this.au.token}`;
         }
+        this.headers = headers;
     }
 
     addHeaders(headers: Object): Object{
