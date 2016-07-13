@@ -3,83 +3,78 @@ import {Promise} from 'es6-promise';
 import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
+import BaseOp from './BaseOp'
+export default class TriggerOps extends BaseOp {
+    constructor(
+        public au: APIAuthor,
+        public target: string
+    ){
+        super(au);
+    }
 
-export function postTrigger(
-    au: APIAuthor,
-    target: string,
-    requestObject: Object,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
-}
+    postTrigger(
+        requestObject: Object,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 
-export function getTrigger(
-    au: APIAuthor,
-    target: string,
-    triggerID: string,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
-}
+    getTrigger(
+        triggerID: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 
-export function patchTrigger(
-    au: APIAuthor,
-    target: string,
-    triggerID: string,
-    requestObject: Object,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
-}
+    patchTrigger(
+        triggerID: string,
+        requestObject: Object,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 
-export function enableTrigger(
-    au: APIAuthor,
-    target: string,
-    triggerID: string,
-    enable: boolean,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
-}
+    enableTrigger(
+        triggerID: string,
+        enable: boolean,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 
-export function deleteTrigger(
-    au: APIAuthor,
-    target: string,
-    triggerID: string,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
-}
+    deleteTrigger(
+        triggerID: string,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 
-export function listTriggers(
-    au: APIAuthor,
-    target: string,
-    listOptions?: Object,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
-}
+    listTriggers(
+        listOptions?: Object,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 
-export function listServerCodeResults(
-    au: APIAuthor,
-    target: string,
-    triggerID: string,
-    listOptions?: Object,
-    onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
-    //TODO: implment me
-    return new Promise<Object>((resolve, reject)=>{
-        resolve({});
-    })
+    listServerCodeResults(
+        triggerID: string,
+        listOptions?: Object,
+        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        //TODO: implment me
+        return new Promise<Object>((resolve, reject)=>{
+            resolve({});
+        })
+    }
 }
