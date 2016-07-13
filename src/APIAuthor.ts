@@ -10,7 +10,7 @@ import {TypedID} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
 import MqttInstallationResult from './MqttInstallationResult'
 
-import * as OnboardingOps from './ops/OnboardingOps'
+import OnboardingOps from './ops/OnboardingOps'
 import CommandOps from './ops/CommandOps'
 import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
@@ -52,7 +52,7 @@ export class APIAuthor {
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-        return OnboardingOps.onboardingThing(this, true, onboardRequest, onCompletion);
+        return (new OnboardingOps(this)).onboardWithVendorThingID(onboardRequest, onCompletion);
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
@@ -63,7 +63,7 @@ export class APIAuthor {
     onboardWithThingID(
         onboardRequest: Options.OnboardWithThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-        return OnboardingOps.onboardingThing(this, false, onboardRequest, onCompletion);
+        return (new OnboardingOps(this)).onboardWithThingID(onboardRequest, onCompletion);
     }
 
     /** Onboard an Endnode by vendorThingID with an already registered gateway.
@@ -74,7 +74,7 @@ export class APIAuthor {
     onboardEndnodeWithGateway(
         onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-        return OnboardingOps.onboardEndnode(this, onboardRequest, onCompletion);
+        return (new OnboardingOps(this)).onboardEndnode(onboardRequest, onCompletion);
     }
 
     /** Post a new command.

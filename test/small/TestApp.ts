@@ -1,5 +1,5 @@
 import {App} from '../../src/App'
-export default class TestBase {
+export default class TestApp {
     public appID = "abcde";
     public appKey = "1234567abcdedg";
     public site = "https://test.com";

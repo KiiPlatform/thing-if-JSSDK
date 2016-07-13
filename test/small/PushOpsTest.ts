@@ -1,7 +1,7 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 /// <reference path="../../typings/modules/nock/index.d.ts" />
-import TestBase from './TestBase'
+import TestApp from './TestApp'
 import {expect} from 'chai';
 import {Response} from '../../src/ops/Response'
 import PushOps from '../../src/ops/PushOps'
@@ -11,7 +11,7 @@ import MqttInstallationResult from '../../src/MqttInstallationResult'
 
 import * as nock from 'nock'
 let scope : nock.Scope;
-let testApp = new TestBase();
+let testApp = new TestApp();
 let au = new APIAuthor("dummy-token", testApp.app);
 let pushOp = new PushOps(au);
 

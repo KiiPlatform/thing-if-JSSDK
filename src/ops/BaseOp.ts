@@ -14,16 +14,19 @@ export default class BaseOp {
         this.headers = headers;
     }
 
-    addHeaders(headers: Object): Object{
+    addHeaders(headers: Object): any{
         for(let key in headers) {
-			if (headers.hasOwnProperty(key)){
-				(<any>this.headers)[key] = (<any>headers)[key];
-			}
-		}
+            if (headers.hasOwnProperty(key)){
+                (<any>this.headers)[key] = (<any>headers)[key];
+            }
+        }
+        return this.headers;
+    }
+    addHeader(key: string, value: string) {
+        (<any>this.headers)[key] = value;
         return this.headers;
     }
     getHeaders(): Object {
-
         return this.headers;
     }
 }
