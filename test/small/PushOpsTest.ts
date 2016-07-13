@@ -4,7 +4,7 @@
 import TestBase from './TestBase'
 import {expect} from 'chai';
 import {Response} from '../../src/ops/Response'
-import * as PushOps from '../../src/ops/PushOps'
+import PushOps from '../../src/ops/PushOps'
 import {default as request} from '../../src/ops/Request'
 import {APIAuthor} from '../../src/APIAuthor'
 import MqttInstallationResult from '../../src/MqttInstallationResult'
@@ -13,6 +13,7 @@ import * as nock from 'nock'
 let scope : nock.Scope;
 let testApp = new TestBase();
 let au = new APIAuthor("dummy-token", testApp.app);
+let pushOp:PushOps ;
 
 describe('Test installFCM', function () {
     let path = `/api/apps/${testApp.appID}/installations`;
@@ -24,6 +25,7 @@ describe('Test installFCM', function () {
 
     beforeEach(function() {
         nock.cleanAll();
+        pushOp = new PushOps(au);
     });
 
     it("handle success response", function (done) {
@@ -39,7 +41,7 @@ describe('Test installFCM', function () {
                 {"Content-Type": "application/vnd.kii.InstallationCreationResponse+json"}
             );
 
-        PushOps.installFCM(au, expectedInstallationID, true).then((installID)=>{
+        pushOp.installFCM(expectedInstallationID, true).then((installID)=>{
             expect(installID).to.equal(expectedInstallationID);
             done();
         }).catch((err)=>{
@@ -67,7 +69,7 @@ describe('Test installFCM', function () {
                 {"Content-Type": "application/vnd.kii.ValidationException+json"}
             );
 
-        PushOps.installFCM(au, expectedInstallationID, true).then((installID)=>{
+        pushOp.installFCM(expectedInstallationID, true).then((installID)=>{
             done("should fail");
         }).catch((err)=>{
             expect(err).not.be.null;
@@ -98,7 +100,7 @@ describe('Test installFCM', function () {
                 {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
             );
 
-        PushOps.installFCM(au, expectedInstallationID, true).then((installID)=>{
+        pushOp.installFCM(expectedInstallationID, true).then((installID)=>{
             done("should fail");
         }).catch((err)=>{
             expect(err).not.be.null;
@@ -136,7 +138,7 @@ describe('Test installMQTT', function () {
                 {"Content-Type": "application/vnd.kii.InstallationCreationResponse+json"}
             );
 
-        PushOps.installMqtt(au, true).then((result)=>{
+        pushOp.installMqtt(true).then((result)=>{
             expect(result.installationID).to.equal(expectedInstallationID);
             expect(result.installationRegistrationID).to.equal(expectedInstallationRegistrationID);
             done();
@@ -163,7 +165,7 @@ describe('Test installMQTT', function () {
                 {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
             );
 
-        PushOps.installMqtt(au, true).then((result)=>{
+        pushOp.installMqtt(true).then((result)=>{
             done("should fail");
         }).catch((err)=>{
             expect(err).not.be.null;
@@ -192,7 +194,7 @@ describe('Test uninstall', function () {
             .delete(path)
             .reply(204);
 
-        PushOps.uninstall(au, installationID).then(()=>{
+        pushOp.uninstall(installationID).then(()=>{
             done();
         }).catch((err)=>{
             done(err);
@@ -214,7 +216,7 @@ describe('Test uninstall', function () {
                 {"Content-Type": "application/vnd.kii.InstallationNotFoundException+json"}
             );
 
-        PushOps.uninstall(au, installationID).then((result)=>{
+        pushOp.uninstall(installationID).then((result)=>{
             done("should fail");
         }).catch((err)=>{
             expect(err).not.be.null;
