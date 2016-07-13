@@ -10,3 +10,7 @@ export * from "./Trigger"
 export * from "./APIAuthor"
 export * from "./TypedID"
 export * from "./AppBuilder"
+
+export function getSDKVersion(): string {
+    return "0.1";
+}
