@@ -4,26 +4,24 @@
 
 import {expect} from 'chai';
 import * as nock from 'nock'
+import TestApp from './TestApp'
 import {APIAuthor} from '../../src/APIAuthor';
-import {App} from '../../src/App';
-import {Site} from '../../src/Site';
 import {TypedID} from '../../src/TypedID';
 import {Types} from '../../src/TypedID';
 import * as RequestObjects from '../../src/RequestObjects';
 import OnboardingOps from '../../src/ops/OnboardingOps'
 import {OnboardingResult} from '../../src/OnboardingResult';
+import {ThingIFError, HttpRequestError} from '../../src/ThingIFError';
 let scope : nock.Scope;
+let testApp = new TestApp();
+let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
+let owner = new TypedID(Types.User, "userid-01234");
+let au = new APIAuthor(ownerToken, testApp.app);
+let onboardingOps = new OnboardingOps(au);
 
 describe('OnboardingOps', function () {
 
-    let hostname = "http://api-jp.test.com";
-    let appID = "abcd1234";
-    let appKey = "ABCD1234efgh5678IJKLM";
-    let path = `/thing-if/apps/${appID}/onboardings`;
-    let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
-    let owner = new TypedID(Types.User, "userid-01234");
-    var au: APIAuthor;
-    let app = new App(appID, appKey, hostname);
+    let path = `/thing-if/apps/${testApp.appID}/onboardings`;
     let responseBody = {
         accessToken: "p5Q9jtFdqRYTNgseurHLhQ0aehCYxAOJ2qzOO4TSKbw",
         thingID: "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
@@ -43,7 +41,6 @@ describe('OnboardingOps', function () {
 
     beforeEach(function() {
         nock.cleanAll();
-        au = new APIAuthor(ownerToken, app);
     });
     describe('#onboardWithThingID() with callback', function () {
 
@@ -55,7 +52,7 @@ describe('OnboardingOps', function () {
 
         it("should send a request to the thing-if server", function (done) {
             scope = nock(
-                hostname,
+                testApp.site,
                 <any>{
                     reqheaders: reqHeaders
                 }).post(path, {
@@ -65,7 +62,7 @@ describe('OnboardingOps', function () {
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
             var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
-            (new OnboardingOps(au)).onboardWithThingID(request, (err:Error, res:OnboardingResult)=>{
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, res:OnboardingResult)=>{
                 expect(err).not.be.null;
                 done();
             });
