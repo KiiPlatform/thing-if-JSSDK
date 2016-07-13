@@ -13,7 +13,7 @@ import * as nock from 'nock'
 let scope : nock.Scope;
 let testApp = new TestBase();
 let au = new APIAuthor("dummy-token", testApp.app);
-let pushOp:PushOps ;
+let pushOp = new PushOps(au);
 
 describe('Test installFCM', function () {
     let path = `/api/apps/${testApp.appID}/installations`;
@@ -25,7 +25,6 @@ describe('Test installFCM', function () {
 
     beforeEach(function() {
         nock.cleanAll();
-        pushOp = new PushOps(au);
     });
 
     it("handle success response", function (done) {
