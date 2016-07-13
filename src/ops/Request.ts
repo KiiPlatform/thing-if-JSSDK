@@ -20,7 +20,7 @@ import {HttpRequestError} from '../ThingIFError'
  * @return {Promise} promise object
  */
 export default function (options: Object, onCompletion?: (err: Error, res: Response)=>void): Promise<Response>{
-    return new Promise<Object>((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
         popsicle.request(<RequestOptions>options)
         .then(function (res) {
             if (res.statusType() == 2) {

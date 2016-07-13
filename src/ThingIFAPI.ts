@@ -9,6 +9,7 @@ import * as Options from './RequestObjects'
 import {TypedID} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
 import {APIAuthor} from './APIAuthor'
+import MqttInstallationResult from './MqttInstallationResult'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export default class ThingIFAPI {
@@ -310,7 +311,7 @@ export default class ThingIFAPI {
      */
     installMqtt(
         development: boolean,
-        onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
+        onCompletion?: (err: Error, result:MqttInstallationResult)=> void): Promise<MqttInstallationResult>{
         return this._au.installMqtt(development, onCompletion);
     }
 
@@ -321,7 +322,7 @@ export default class ThingIFAPI {
      */
     uninstallPush(
         installationID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<string>{
+        onCompletion?: (err: Error)=> void): Promise<void>{
         return this._au.uninstallPush(installationID, onCompletion);
     }
 }

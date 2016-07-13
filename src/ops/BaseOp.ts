@@ -1,31 +1,32 @@
 import {APIAuthor} from '../APIAuthor'
-import {getSDKVersion} from '../ThingIFSDK'
+import {getSDKVersion} from '../ThingIFSDKInfo'
 export default class BaseOp {
-    private headers: any;
+    private headers: Object;
     constructor(
         public au: APIAuthor
     ){
-        this.headers = {
+        let headers: any = {
             "X-Kii-SDK": getSDKVersion()
         }
         if (!!this.au.token) {
-            this.headers["Authorization"] = `Bearer ${this.au.token}`;
+            headers["Authorization"] = `Bearer ${this.au.token}`;
         }
+        this.headers = headers;
     }
 
     addHeaders(headers: Object): any{
         for(let key in headers) {
             if (headers.hasOwnProperty(key)){
-                this.headers[key] = (<any>headers)[key];
+                (<any>this.headers)[key] = (<any>headers)[key];
             }
         }
         return this.headers;
     }
     addHeader(key: string, value: string) {
-        this.headers[key] = value;
+        (<any>this.headers)[key] = value;
         return this.headers;
     }
-    getHeaders(): any {
+    getHeaders(): Object {
         return this.headers;
     }
 }

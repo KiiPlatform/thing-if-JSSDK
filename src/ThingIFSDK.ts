@@ -1,4 +1,4 @@
-// export all classes need to be publiced as ThingIF library
+// export all classes need to be publiced as Thing-IF SDK library
 export * from "./RequestObjects"
 export * from "./Site"
 export * from "./App"
@@ -11,7 +11,3 @@ export * from "./APIAuthor"
 export * from "./TypedID"
 export * from "./AppBuilder"
 export * from "./ThingIFError"
-
-export function getSDKVersion(): string {
-    return "0.1";
-}

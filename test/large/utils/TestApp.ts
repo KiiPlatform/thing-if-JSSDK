@@ -17,6 +17,7 @@ describe('TestApp Configuration', () => {
 
 export const APPID = envApp[0];
 export const APPKEY = envApp[1];
-export const SITE = Site[envApp[2]];
+export const SITE = envApp[2];
 export const OWNERID = "34cc40051321-6169-4e11-017b-02367441";
 export const TOKEN = envApp[3];
+export const BASEURL = Site[SITE];
