@@ -175,3 +175,54 @@ describe('Test installMQTT', function () {
         });
     });
 });
+
+describe('Test uninstall', function () {
+    let installationID = "d7i6hg8ng22kzgebj4nfsu887";
+    let path = `/api/apps/${testApp.appID}/installations/${installationID}`;
+    let reqHeaders = {
+        "Authorrization": `Bearer ${au.token}`
+    };
+
+    beforeEach(function() {
+        nock.cleanAll();
+    });
+
+    it("handle success response", function (done) {
+        scope = nock(testApp.site, <any>reqHeaders)
+            .delete(path)
+            .reply(204);
+
+        PushOps.uninstall(au, installationID).then(()=>{
+            done();
+        }).catch((err)=>{
+            done(err);
+        })
+    });
+
+    it("handle 404 error response", function (done) {
+        let errResponse = {
+            "errorCode": "INSTALLATION_NOT_FOUND",
+            "message": `Installation ${installationID} was not found`,
+            "appID": testApp.appID,
+            "installationID": installationID
+        };
+        scope = nock(testApp.site, <any>reqHeaders)
+            .delete(path)
+            .reply(
+                404,
+                errResponse,
+                {"Content-Type": "application/vnd.kii.InstallationNotFoundException+json"}
+            );
+
+        PushOps.uninstall(au, installationID).then((result)=>{
+            done("should fail");
+        }).catch((err)=>{
+            expect(err).not.be.null;
+            expect((<any>err)["status"]).to.equal(404);
+            expect(err.message).deep.equal(errResponse);
+            done();
+        }).catch((err: Error)=>{
+            done(err);
+        });
+    });
+});
