@@ -44,4 +44,3 @@ export default function (options: Object, onCompletion?: (err: Error, res: Respo
         });
     })
 }
-

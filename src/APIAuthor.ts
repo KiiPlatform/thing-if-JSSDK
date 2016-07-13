@@ -11,11 +11,11 @@ import {OnboardingResult} from './OnboardingResult'
 import MqttInstallationResult from './MqttInstallationResult'
 
 import * as OnboardingOps from './ops/OnboardingOps'
-import * as CommandOps from './ops/CommandOps'
-import * as TriggerOps from './ops/TriggerOps'
-import * as StateOps from './ops/StateOps'
-import * as ThingOps from './ops/ThingOps'
-import * as PushOps from './ops/PushOps'
+import CommandOps from './ops/CommandOps'
+import TriggerOps from './ops/TriggerOps'
+import StateOps from './ops/StateOps'
+import ThingOps from './ops/ThingOps'
+import PushOps from './ops/PushOps'
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -87,7 +87,7 @@ export class APIAuthor {
         target: TypedID,
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        return CommandOps.postNewCommand(this, target.toString(), command,onCompletion);
+        return (new CommandOps(this, target.toString())).postNewCommand(command,onCompletion);
     }
 
     /** Retrieve command with specified ID.
@@ -100,7 +100,7 @@ export class APIAuthor {
         target: TypedID,
         commandID: string,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        return CommandOps.getCommand(this, target.toString(), commandID, onCompletion);
+        return (new CommandOps(this, target.toString())).getCommand(commandID, onCompletion);
     }
 
     /** Retrieve commands.
@@ -113,7 +113,7 @@ export class APIAuthor {
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, commands:Array<Command>)=> void): Promise<Array<Command>>{
-        return CommandOps.listCommands(this, target.toString(), listOpitons, onCompletion);
+        return (new CommandOps(this, target.toString())).listCommands(listOpitons, onCompletion);
     }
 
     /** Post a new command trigger.
@@ -126,7 +126,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return TriggerOps.postTrigger(this, target.toString(), requestObject, onCompletion);
+        return (new TriggerOps(this,target.toString())).postTrigger(requestObject, onCompletion);
     }
 
     /** Post a new servercode trigger.
@@ -139,7 +139,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return TriggerOps.postTrigger(this, target.toString(), requestObject, onCompletion);
+        return (new TriggerOps(this,target.toString())).postTrigger(requestObject, onCompletion);
     }
 
     /** Retrieve trigger.
@@ -152,7 +152,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return TriggerOps.getTrigger(this, target.toString(), triggerID, onCompletion);
+        return (new TriggerOps(this,target.toString())).getTrigger(triggerID, onCompletion);
     }
 
     /** Update a command trigger.
@@ -167,7 +167,7 @@ export class APIAuthor {
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return TriggerOps.patchTrigger(this, target.toString(), triggerID, requestObject, onCompletion);
+        return (new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject, onCompletion);
     }
 
     /** Update a servercode trigger.
@@ -182,7 +182,7 @@ export class APIAuthor {
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return TriggerOps.patchTrigger(this, target.toString(), triggerID, requestObject, onCompletion);
+        return (new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject, onCompletion);
     }
 
     /** Enable/Disable a specified trigger.
@@ -197,7 +197,7 @@ export class APIAuthor {
         triggerID: string,
         enable: boolean,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return TriggerOps.enableTrigger(this, target.toString(), triggerID, enable, onCompletion);
+        return (new TriggerOps(this,target.toString())).enableTrigger(triggerID, enable, onCompletion);
     }
 
     /** Delete a specified trigger.
@@ -210,7 +210,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return TriggerOps.deleteTrigger(this, target.toString(), triggerID, onCompletion);
+        return (new TriggerOps(this,target.toString())).deleteTrigger(triggerID, onCompletion);
     }
 
     /** Retrive triggers.
@@ -222,7 +222,7 @@ export class APIAuthor {
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, triggers:Array<Trigger>)=> void): Promise<Array<Trigger>>{
-        return TriggerOps.listTriggers(this, target.toString(), listOpitons, onCompletion);
+        return (new TriggerOps(this,target.toString())).listTriggers(listOpitons, onCompletion);
     }
 
     /** Retrieve execution results of server code trigger.
@@ -237,7 +237,7 @@ export class APIAuthor {
         triggerID: string,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, results:Array<ServerCodeResult>)=> void): Promise<Array<ServerCodeResult>>{
-        return TriggerOps.listServerCodeResults(this, target.toString(), triggerID, listOpitons, onCompletion);
+        return (new TriggerOps(this,target.toString())).listServerCodeResults(triggerID, listOpitons, onCompletion);
     }
 
     /** Get State of specified target.
@@ -248,7 +248,7 @@ export class APIAuthor {
     getState(
         target: TypedID,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        return StateOps.getState(this, target.toString(), onCompletion);
+        return (new StateOps(this, target.toString())).getState(onCompletion);
     }
 
     /** Get vendorThingID of specified target
@@ -259,7 +259,7 @@ export class APIAuthor {
     getVendorThingID(
         thingID: string,
         onCompletion?: (err: Error, vendorThingID:string)=> void): Promise<string>{
-        return ThingOps.getVendorThingID(this, thingID, onCompletion);
+        return (new ThingOps(this, thingID)).getVendorThingID(onCompletion);
     }
 
     /** Update vendorThingID of specified target
@@ -274,7 +274,7 @@ export class APIAuthor {
         newVendorThingID: string,
         newPassword: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        return ThingOps.updateVendorThingID(this, newVendorThingID, newPassword, thingID, onCompletion);
+        return (new ThingOps(this, thingID)).updateVendorThingID(newVendorThingID, newPassword, onCompletion);
     }
 
     /** Install Firebase Cloud Message(FCM) notification to receive notification from IoT Cloud.
@@ -289,7 +289,7 @@ export class APIAuthor {
         installationRegistrationID:string,
         development: boolean,
         onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
-        return PushOps.installFCM(this, installationRegistrationID, development, onCompletion);
+        return (new PushOps(this)).installFCM(installationRegistrationID, development, onCompletion);
     }
 
     /** Install MQTT notification to receive notification from IoT Cloud.
@@ -301,7 +301,7 @@ export class APIAuthor {
     installMqtt(
         development: boolean,
         onCompletion?: (err: Error, result:MqttInstallationResult)=> void): Promise<MqttInstallationResult>{
-        return PushOps.installMqtt(this, development, onCompletion);
+        return (new PushOps(this)).installMqtt(development, onCompletion);
     }
 
     /** Unregister the push settings by the id(issued by KiiCloud) that is used for installation.
@@ -312,6 +312,6 @@ export class APIAuthor {
     uninstallPush(
         installationID: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        return PushOps.uninstall(this, installationID, onCompletion);
+        return (new PushOps(this)).uninstall(installationID, onCompletion);
     }
 }
