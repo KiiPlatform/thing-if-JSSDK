@@ -5,7 +5,6 @@ import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import {OnboardingResult} from '../OnboardingResult'
 import {ThingIFError, HttpRequestError} from '../ThingIFError'
-import * as utils from './OpsUtils';
 
 import BaseOp from './BaseOp'
 export default class OnboardingOps extends BaseOp {
