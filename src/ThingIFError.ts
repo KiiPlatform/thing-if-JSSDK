@@ -1,6 +1,6 @@
 
 export const Errors = {
-    HttpError: "HttpError"
+    HttpError: "HttpRequestError"
 }
 
 export class ThingIFError {
@@ -12,7 +12,7 @@ export class ThingIFError {
 }
 ThingIFError.prototype = new Error();
 
-export class ThingIFHttpRequestError extends ThingIFError {
+export class HttpRequestError extends ThingIFError {
     public status: number;
     constructor (status: number, message: string) {
         super();
