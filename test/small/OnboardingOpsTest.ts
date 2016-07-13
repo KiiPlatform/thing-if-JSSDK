@@ -10,7 +10,7 @@ import {Site} from '../../src/Site';
 import {TypedID} from '../../src/TypedID';
 import {Types} from '../../src/TypedID';
 import * as RequestObjects from '../../src/RequestObjects';
-import * as OnboardingOps from '../../src/ops/OnboardingOps'
+import OnboardingOps from '../../src/ops/OnboardingOps'
 import {OnboardingResult} from '../../src/OnboardingResult';
 let scope : nock.Scope;
 
@@ -48,8 +48,7 @@ describe('OnboardingOps', function () {
     describe('#onboardWithThingID() with callback', function () {
 
         let reqHeaders = {
-            "X-Kii-AppID": appID,
-            "X-Kii-AppKey": appKey,
+            "X-Kii-SDK": "0.1",
             "Authorization":"Bearer " + ownerToken,
             "Content-Type": "application/vnd.kii.OnboardingWithThingIDByOwner+json"
         }
@@ -66,15 +65,14 @@ describe('OnboardingOps', function () {
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
             var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
-            OnboardingOps.onboardWithThingID(au, request, (err:Error, res:OnboardingResult)=>{
-                // expect(err).not.be.null;
-                console.log("XXXXXXXXXXXXXX");
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:Error, res:OnboardingResult)=>{
+                expect(err).not.be.null;
                 done();
             });
         });
 
-        it("should handle error when thingID is null", function (done) {
-        });
+        // it("should handle error when thingID is null", function (done) {
+        // });
         // it("should handle error when thingID is empty string", function (done) {
         // });
         // it("should handle error when password is null", function (done) {
