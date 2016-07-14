@@ -37,8 +37,8 @@ export default class CommandOps extends BaseOp {
 
     installFCM(
         installationRegistrationID: string,
-        development: boolean,
-        onCompletion?: (err:Error, res:string)=>void): Promise<string> {
+        development: boolean
+        ): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             let requestBody = {
                 installationRegistrationID: installationRegistrationID,
@@ -49,21 +49,13 @@ export default class CommandOps extends BaseOp {
                 let body = res.body
                 let installationID = (<any>body).installationID;
                 resolve(installationID);
-                if (!!onCompletion) {
-                    onCompletion(null, installationID);
-                }
             }).catch((err)=>{
                 reject(err);
-                if(!!onCompletion) {
-                    onCompletion(err, null);
-                }
             })
         });
     }
 
-    installMqtt(
-        development: boolean,
-        onCompletion?: (err:Error, res:MqttInstallationResult)=>void): Promise<MqttInstallationResult> {
+    installMqtt(development: boolean): Promise<MqttInstallationResult> {
 
         return new Promise<MqttInstallationResult>((resolve, reject) => {
             let requestBody = {
@@ -77,30 +69,19 @@ export default class CommandOps extends BaseOp {
                 if(!!installationID && !! installationRegistrationID) {
                     let result = new MqttInstallationResult(installationID, installationRegistrationID);
                     resolve(result);
-                    if (!!onCompletion) {
-                        onCompletion(null, result);
-                    }
                 }else{
                     let err = new Error();
                     err.name = "InvalidResponse"
                     err.message = "No installationID or installationRegistrationID in response: "+ JSON.stringify(res);
                     reject(err);
-                    if (!!onCompletion) {
-                        onCompletion(err, null);
-                    }
                 }
             }).catch((err)=>{
                 reject(err);
-                if(!!onCompletion) {
-                    onCompletion(err, null);
-                }
             })
         });
     }
 
-    uninstall(
-        installationID: string,
-        onCompletion?: (err:Error)=>void): Promise<void> {
+    uninstall(installationID: string): Promise<void> {
 
         let url = `${this.au.app.getKiiCloudBaseUrl()}/installations/${installationID}`;
         return new Promise<void>((resolve, reject) => {
@@ -110,14 +91,8 @@ export default class CommandOps extends BaseOp {
                 url: url,
             }).then((res:Object)=>{
                 resolve();
-                if (!!onCompletion){
-                    onCompletion(null);
-                }
             }).catch((err:Error)=>{
                 reject(err);
-                if(!!onCompletion){
-                    onCompletion(err);
-                }
             })
         });
     }

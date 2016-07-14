@@ -1,7 +1,7 @@
 /// <reference path="../../typings/modules/es6-promise/index.d.ts" />
 import {Promise as P} from 'es6-promise';
 
-export default function kiiPromise(
+export function promise(
     orgPromise: P<any>,
     onCompletion?: (err: Error, res: any)=>void): P<any> {
     if (!!onCompletion) {
@@ -13,6 +13,27 @@ export default function kiiPromise(
                 },
                 (err)=>{
                     onCompletion(err, null);
+                    reject(err);
+                }
+            )
+        });
+    }else{
+        return orgPromise;
+    }
+}
+
+export function voidPromise(
+    orgPromise: P<void>,
+    onCompletion?: (err: Error)=>void): P<void> {
+    if (!!onCompletion) {
+        return new P<void>((resolve, reject)=>{
+            orgPromise.then(
+                (res)=>{
+                    onCompletion(null);
+                    resolve();
+                },
+                (err)=>{
+                    onCompletion(err);
                     reject(err);
                 }
             )
