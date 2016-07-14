@@ -62,9 +62,16 @@ describe('OnboardingOps', function () {
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
             var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
-            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, res:OnboardingResult)=>{
-                expect(err).not.be.null;
-                done();
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.null;
+                    expect(result.thingID).to.equals(responseBody.thingID);
+                    expect(result.accessToken).to.equals(responseBody.accessToken);
+                    expect(result.mqttEndPoint).to.deep.equal(responseBody.mqttEndpoint);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
             });
         });
 
