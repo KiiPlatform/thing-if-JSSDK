@@ -11,7 +11,7 @@ import {Types} from '../../src/TypedID';
 import * as RequestObjects from '../../src/RequestObjects';
 import OnboardingOps from '../../src/ops/OnboardingOps'
 import {OnboardingResult} from '../../src/OnboardingResult';
-import {ThingIFError, HttpRequestError} from '../../src/ThingIFError';
+import {ThingIFError, HttpRequestError, Errors} from '../../src/ThingIFError';
 let scope : nock.Scope;
 let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
@@ -38,23 +38,27 @@ describe('OnboardingOps', function () {
             ttl: 2147483647
         }
     }
+    let reqHeaders4ThingID = {
+        "X-Kii-SDK": "0.1",
+        "Authorization":"Bearer " + ownerToken,
+        "Content-Type": "application/vnd.kii.OnboardingWithThingIDByOwner+json"
+    }
+    let reqHeaders4VendorThingID = {
+        "X-Kii-SDK": "0.1",
+        "Authorization":"Bearer " + ownerToken,
+        "Content-Type": "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json"
+    }
 
     beforeEach(function() {
         nock.cleanAll();
     });
     describe('#onboardWithThingID() with callback', function () {
 
-        let reqHeaders = {
-            "X-Kii-SDK": "0.1",
-            "Authorization":"Bearer " + ownerToken,
-            "Content-Type": "application/vnd.kii.OnboardingWithThingIDByOwner+json"
-        }
-
         it("should send a request to the thing-if server", function (done) {
             scope = nock(
                 testApp.site,
                 <any>{
-                    reqheaders: reqHeaders
+                    reqheaders: reqHeaders4ThingID
                 }).post(path, {
                     thingID: "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
                     thingPassword: "password",
@@ -74,18 +78,72 @@ describe('OnboardingOps', function () {
                 }
             });
         });
-
-        // it("should handle error when thingID is null", function (done) {
-        // });
-        // it("should handle error when thingID is empty string", function (done) {
-        // });
-        // it("should handle error when password is null", function (done) {
-        // });
-        // it("should handle error when password is empty string", function (done) {
-        // });
+        it("should handle error when thingID is null", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest(null, "password", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("thingID is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when thingID is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("", "password", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("thingID is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when password is null", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", null, owner);
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("thingPassword is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when password is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("thingPassword is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when owner is null", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", null);
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("owner is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
         // it("should handle error when server returned 403 error", function (done) {
-        // });
-        // it("should handle error when owner is null", function (done) {
         // });
         // it("should handle error when server returned 404 error", function (done) {
         // });

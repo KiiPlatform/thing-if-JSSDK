@@ -14,7 +14,9 @@ export class OnboardWithVendorThingIDRequest {
         ownerType: TypedID,
         public thingType?:string,
         public thingProperties?:Object){
-            this.owner = ownerType.toString();
+            if (!!ownerType) {
+                this.owner = ownerType.toString();
+            }
         }
 }
 
@@ -27,7 +29,9 @@ export class OnboardWithThingIDRequest {
         public thingID: string,
         public thingPassword: string,
         ownerType: TypedID){
-            this.owner = ownerType.toString();
+            if (!!ownerType) {
+                this.owner = ownerType.toString();
+            }
         }
 }
 
