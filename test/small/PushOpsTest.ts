@@ -73,7 +73,7 @@ describe('Test installFCM', function () {
         }).catch((err)=>{
             expect(err).not.be.null;
             expect((<any>err)["status"]).to.equal(400);
-            expect(err.message).deep.equal(errResponse);
+            expect(err.message).deep.equal(errResponse.message);
             done();
         }).catch((err: Error)=>{
             done(err);
@@ -104,7 +104,7 @@ describe('Test installFCM', function () {
         }).catch((err)=>{
             expect(err).not.be.null;
             expect((<any>err)["status"]).to.equal(403);
-            expect(err.message).deep.equal(errResponse);
+            expect(err.message).deep.equal(errResponse.message);
             done();
         }).catch((err: Error)=>{
             done(err);
@@ -169,7 +169,7 @@ describe('Test installMQTT', function () {
         }).catch((err)=>{
             expect(err).not.be.null;
             expect((<any>err)["status"]).to.equal(403);
-            expect(err.message).deep.equal(errResponse);
+            expect(err.message).deep.equal(errResponse.message);
             done();
         }).catch((err: Error)=>{
             done(err);
@@ -220,7 +220,7 @@ describe('Test uninstall', function () {
         }).catch((err)=>{
             expect(err).not.be.null;
             expect((<any>err)["status"]).to.equal(404);
-            expect(err.message).deep.equal(errResponse);
+            expect(err.message).deep.equal(errResponse.message);
             done();
         }).catch((err: Error)=>{
             done(err);
