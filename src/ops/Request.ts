@@ -30,7 +30,7 @@ export default function (options: Object, onCompletion?: (err: Error, res: Respo
                     onCompletion(null, response);
                 }
             } else {
-                var err: Error = new HttpRequestError(res.status, res.body);
+                var err: Error = new HttpRequestError(res.status, res.body.message, res.body);
                 reject(err);
                 if (!!onCompletion){
                     onCompletion(err, null);

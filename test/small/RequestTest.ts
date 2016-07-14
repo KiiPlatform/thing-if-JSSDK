@@ -3,6 +3,7 @@
 /// <reference path="../../typings/modules/nock/index.d.ts" />
 import {expect} from 'chai';
 import {Response} from '../../src/ops/Response'
+import {ThingIFError, HttpRequestError} from '../../src/ThingIFError' 
 import {default as request} from '../../src/ops/Request'
 import * as nock from 'nock'
 let scope : nock.Scope;
@@ -53,13 +54,14 @@ describe('Get Request', function () {
         };
         scope = nock(hostname).
             get(path).
-            reply(400, errResponse);
+            reply(400, errResponse, {"Content-Type": "application/json"});
         request(requestOptions).then((res:Response) => {
             done("should fail");
-        }).catch((err:Error)=>{
+        }).catch((err:ThingIFError)=>{
             expect(err).not.be.null;
             expect((<any>err)["status"]).to.equal(400);
-            expect(err.message).to.equal(JSON.stringify(errResponse));
+            console.log(JSON.stringify(err));
+            expect((<HttpRequestError>err).message).to.equal(errResponse.message);
             done();
         }).catch((err: Error)=>{
             done(err);
