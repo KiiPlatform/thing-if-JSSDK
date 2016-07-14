@@ -2,7 +2,7 @@
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 /// <reference path="../../typings/modules/es6-promise/index.d.ts" />
 import {Promise as P} from 'es6-promise';
-import {promise, voidPromise} from '../../src/internal/KiiPromise'
+import {promise, voidPromise} from '../../src/internal/PromiseWrapper'
 import {expect} from 'chai';
 declare var require: any
 declare var process: any
@@ -38,7 +38,7 @@ class TestClass {
     }
 }
 
-describe("Test KiiPromise.promise:", function () {
+describe("Test PromiseWrapper.promise:", function () {
 
     it("callbacks and promise, succeeded", function (done) {
         let testObject = new TestClass();
@@ -83,7 +83,7 @@ describe("Test KiiPromise.promise:", function () {
         const testObject = new TestClass();
 
         const d = domain.create();
-        d.on('error', (er) => {
+        d.on('error', () => {
             done();
         });
         d.run(() => {
@@ -138,7 +138,7 @@ describe("Test KiiPromise.promise:", function () {
     })
 })
 
-describe("Test KiiPromise.voiPromise:", function () {
+describe("Test PromiseWrapper.voiPromise:", function () {
 
     it("callbacks and promise, succeeded", function (done) {
         let testObject = new TestClass();

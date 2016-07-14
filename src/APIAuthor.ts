@@ -16,7 +16,7 @@ import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
-import * as KiiPromise from './internal/KiiPromise'
+import * as PromiseWrapper from './internal/PromiseWrapper'
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -290,8 +290,7 @@ export class APIAuthor {
         installationRegistrationID:string,
         development: boolean,
         onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
-        let orgPromise = (new PushOps(this)).installFCM(installationRegistrationID, development);
-        return KiiPromise.promise(orgPromise, onCompletion);
+        return PromiseWrapper.promise((new PushOps(this)).installFCM(installationRegistrationID, development), onCompletion);
     }
 
     /** Install MQTT notification to receive notification from IoT Cloud.
@@ -303,8 +302,7 @@ export class APIAuthor {
     installMqtt(
         development: boolean,
         onCompletion?: (err: Error, result:MqttInstallationResult)=> void): Promise<MqttInstallationResult>{
-        let orgPromise = (new PushOps(this)).installMqtt(development);
-        return KiiPromise.promise(orgPromise, onCompletion);
+        return PromiseWrapper.promise((new PushOps(this)).installMqtt(development), onCompletion);
     }
 
     /** Unregister the push settings by the id(issued by KiiCloud) that is used for installation.
@@ -315,7 +313,6 @@ export class APIAuthor {
     uninstallPush(
         installationID: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        let orgPromise = (new PushOps(this)).uninstall(installationID);
-        return KiiPromise.voidPromise(orgPromise, onCompletion);
+        return PromiseWrapper.voidPromise((new PushOps(this)).uninstall(installationID), onCompletion);
     }
 }
