@@ -60,7 +60,6 @@ describe('Get Request', function () {
         }).catch((err:ThingIFError)=>{
             expect(err).not.be.null;
             expect((<any>err)["status"]).to.equal(400);
-            console.log(JSON.stringify(err));
             expect((<HttpRequestError>err).message).to.equal(errResponse.message);
             done();
         }).catch((err: Error)=>{
