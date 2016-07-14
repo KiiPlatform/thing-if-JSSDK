@@ -4,6 +4,7 @@ import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import {OnboardingResult} from '../OnboardingResult'
+import {MqttEndpoint} from '../OnboardingResult'
 import {ThingIFError, HttpRequestError} from '../ThingIFError'
 
 import BaseOp from './BaseOp'
@@ -13,17 +14,17 @@ export default class OnboardingOps extends BaseOp {
     }
     onboardWithThingID(
         onboardRequest: Object, 
-        onCompletion?: (err: ThingIFError, res:OnboardingResult)=> void): Promise<OnboardingResult> {
+        onCompletion?: (err: ThingIFError, result:OnboardingResult)=> void): Promise<OnboardingResult> {
         return this.onboard("application/vnd.kii.OnboardingWithThingIDByOwner+json", onboardRequest, onCompletion);
     }
     onboardWithVendorThingID(
         onboardRequest:Object, 
-        onCompletion?: (err: ThingIFError, res:OnboardingResult)=> void): Promise<OnboardingResult> {
+        onCompletion?: (err: ThingIFError, result:OnboardingResult)=> void): Promise<OnboardingResult> {
         return this.onboard("application/vnd.kii.OnboardingWithVendorThingIDByOwner+json", onboardRequest, onCompletion);
     }
     onboardEndnode(
         onboardRequest:Object, 
-        onCompletion?: (err: ThingIFError, res:Object)=> void): Promise<Object> {
+        onCompletion?: (err: ThingIFError, result:Object)=> void): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
@@ -32,9 +33,10 @@ export default class OnboardingOps extends BaseOp {
     private onboard(
         contentType: string,
         onboardRequest: Object, 
-        onCompletion?: (err: ThingIFError, res:OnboardingResult)=> void): Promise<OnboardingResult> {
+        onCompletion?: (err: ThingIFError, result:OnboardingResult)=> void): Promise<OnboardingResult> {
         
         let onboardUrl = `${this.au.app.getThingIFBaseUrl()}/onboardings`;
+        var callbackCalled = false;
         return new Promise<OnboardingResult>((resolve, reject) => {
             var headers: Object = this.addHeader("Content-Type", contentType);
             request({
@@ -45,12 +47,18 @@ export default class OnboardingOps extends BaseOp {
             }).then((res:Object)=>{
                 resolve(<OnboardingResult>res);
                 if (!!onCompletion){
-                    onCompletion(null, <OnboardingResult>res);
+                    callbackCalled = true;
+                    var result = new OnboardingResult((<any>res).body.thingID, (<any>res).body.accessToken, <MqttEndpoint>(<any>res).body.mqttEndpoint);
+                    onCompletion(null, result);
                 }
             }).catch((err:Error)=>{
                 reject(err);
-                if(!!onCompletion){
-                    onCompletion(err, null);
+                if (callbackCalled) {
+                    throw err;
+                } else {
+                    if(!!onCompletion){
+                        onCompletion(err, null);
+                    }
                 }
             })
         });
