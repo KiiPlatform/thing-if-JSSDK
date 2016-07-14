@@ -80,7 +80,6 @@ export class APIHelper {
             })
         });
     }
-
     deleteKiiUser(user: KiiUser): Promise<void> {
         return new Promise<void>((resolve, reject) =>{
            request.del(<any>{
@@ -99,8 +98,32 @@ export class APIHelper {
            })
         });
     }
-
-    // getAdminToken(clientID: string, clientSecret: string): Promise<>
+    getAdminToken(clientID: string, clientSecret: string): Promise<string> {
+        let reqHeader = {
+            "X-Kii-AppID": this.app.appID,
+            "X-Kii-AppKey": this.app.appKey,
+            "Content-Type": "application/json"
+        };
+        return new Promise<string>((resolve, reject) =>{
+            request.post(<any>{
+                url: `${this.kiiCloudBaseUrl}/oauth2/token`,
+                headers: reqHeader,
+                body:{
+                    grant_type: "client_credentials",
+                    client_id: clientID,
+                    client_secret: clientSecret
+                }
+            }).then((res)=>{
+                if(res.status == 200){
+                    resolve(res.body.access_token);
+                }else {
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+    }
 }
 
 export const apiHelper = new APIHelper(TestApp.testApp, TestApp.TOKEN);
