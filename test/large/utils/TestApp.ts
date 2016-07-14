@@ -1,11 +1,10 @@
-// / <reference path="../../../typings/globals/node/index.d.ts" />
 /// <reference path="../../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../../typings/globals/chai/index.d.ts" />
 import {expect} from 'chai';
-
 import {Site} from '../../../src/Site'
 import {App} from '../../../src/App'
-let process = require("process");
+declare var process: any
+
 let envApp = (process.env.TestApp || "").split(":");
 
 describe('TestApp Configuration', () => {
