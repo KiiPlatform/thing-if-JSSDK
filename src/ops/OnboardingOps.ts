@@ -4,7 +4,7 @@ import request from './Request';
 import {Response} from './Response'
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
-import {OnboardWithThingIDRequest} from '../RequestObjects'
+import {OnboardWithThingIDRequest, OnboardWithVendorThingIDRequest} from '../RequestObjects'
 import {OnboardingResult} from '../OnboardingResult'
 import {MqttEndpoint} from '../OnboardingResult'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
@@ -38,8 +38,26 @@ export default class OnboardingOps extends BaseOp {
         return this.onboard("application/vnd.kii.OnboardingWithThingIDByOwner+json", onboardRequest, onCompletion);
     }
     onboardWithVendorThingID(
-        onboardRequest:Object, 
+        onboardRequest:OnboardWithVendorThingIDRequest, 
         onCompletion?: (err: ThingIFError, result:OnboardingResult)=> void): Promise<OnboardingResult> {
+        if (!onboardRequest.vendorThingID) {
+            if(!!onCompletion){
+                onCompletion(new ThingIFError(Errors.ArgumentError, "vendorThingID is null or empty"), null);
+                return;
+            }
+        }
+        if (!onboardRequest.thingPassword) {
+            if(!!onCompletion){
+                onCompletion(new ThingIFError(Errors.ArgumentError, "thingPassword is null or empty"), null);
+                return;
+            }
+        }
+        if (!onboardRequest.owner) {
+            if(!!onCompletion){
+                onCompletion(new ThingIFError(Errors.ArgumentError, "owner is null or empty"), null);
+                return;
+            }
+        }
         return this.onboard("application/vnd.kii.OnboardingWithVendorThingIDByOwner+json", onboardRequest, onCompletion);
     }
     onboardEndnode(
