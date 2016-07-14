@@ -143,13 +143,378 @@ describe('OnboardingOps', function () {
                 }
             });
         });
-        // it("should handle error when server returned 403 error", function (done) {
-        // });
-        // it("should handle error when server returned 404 error", function (done) {
-        // });
-        // it("should handle error when server returned 405 error", function (done) {
-        // });
+        it("should handle error when server returned 403 error", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TOKEN",
+                "message": "The provided token is not valid",
+                "appID": testApp.appID,
+                "accessToken": au.token
+            };
+            scope = nock(testApp.site,
+                <any>{
+                    reqheaders: reqHeaders4ThingID
+                }).post(path, {
+                    thingID: "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
+                    thingPassword: "password",
+                    owner: owner.toString()
+                })
+                .reply(
+                    403,
+                    errResponse,
+                    {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
+                );
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.HttpError);
+                    expect(err.message).to.equals(errResponse.message);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
     });
-    // describe('#onboardWithVendorThingID()', function () {
-    // });
+    describe('#onboardWithVendorThingID()', function () {
+        it("should send a request to the thing-if server", function (done) {
+            scope = nock(
+                testApp.site,
+                <any>{
+                    reqheaders: reqHeaders4VendorThingID
+                }).post(path, {
+                    vendorThingID: "01234-56789-abcdefg-hijklm",
+                    thingPassword: "password",
+                    owner: owner.toString()
+                })
+                .reply(200, responseBody, {"Content-Type": "application/json"});
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.null;
+                    expect(result.thingID).to.equals(responseBody.thingID);
+                    expect(result.accessToken).to.equals(responseBody.accessToken);
+                    expect(result.mqttEndPoint).to.deep.equal(responseBody.mqttEndpoint);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when vendorThingID is null", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest(null, "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("vendorThingID is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when vendorThingID is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("", "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("vendorThingID is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when password is null", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", null, owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("thingPassword is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when password is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("thingPassword is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when owner is null", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", null);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.ArgumentError);
+                    expect(err.message).to.equals("owner is null or empty");
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+        it("should handle error when server returned 403 error", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TOKEN",
+                "message": "The provided token is not valid",
+                "appID": testApp.appID,
+                "accessToken": au.token
+            };
+            scope = nock(testApp.site,
+                <any>{
+                    reqheaders: reqHeaders4VendorThingID
+                }).post(path, {
+                    vendorThingID: "01234-56789-abcdefg-hijklm",
+                    thingPassword: "password",
+                    owner: owner.toString()
+                })
+                .reply(
+                    403,
+                    errResponse,
+                    {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
+                );
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request, (err:ThingIFError, result:OnboardingResult)=>{
+                try {
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(Errors.HttpError);
+                    expect(err.message).to.equals(errResponse.message);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            });
+        });
+    });
+    describe('#onboardWithThingID() with promise', function () {
+
+        it("should send a request to the thing-if server", function (done) {
+            scope = nock(
+                testApp.site,
+                <any>{
+                    reqheaders: reqHeaders4ThingID
+                }).post(path, {
+                    thingID: "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
+                    thingPassword: "password",
+                    owner: owner.toString()
+                })
+                .reply(200, responseBody, {"Content-Type": "application/json"});
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                expect(result.thingID).to.equals(responseBody.thingID);
+                expect(result.accessToken).to.equals(responseBody.accessToken);
+                expect(result.mqttEndPoint).to.deep.equal(responseBody.mqttEndpoint);
+                done();
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
+        });
+        it("should handle error when thingID is null", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest(null, "password", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("thingID is null or empty");
+                done();
+            });
+        });
+        it("should handle error when thingID is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("", "password", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("thingID is null or empty");
+                done();
+            });
+        });
+        it("should handle error when password is null", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", null, owner);
+            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("thingPassword is null or empty");
+                done();
+            });
+        });
+        it("should handle error when password is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("thingPassword is null or empty");
+                done();
+            });
+        });
+        it("should handle error when owner is null", function (done) {
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", null);
+            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("owner is null or empty");
+                done();
+            });
+        });
+        it("should handle error when server returned 403 error", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TOKEN",
+                "message": "The provided token is not valid",
+                "appID": testApp.appID,
+                "accessToken": au.token
+            };
+            scope = nock(testApp.site,
+                <any>{
+                    reqheaders: reqHeaders4ThingID
+                }).post(path, {
+                    thingID: "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
+                    thingPassword: "password",
+                    owner: owner.toString()
+                })
+                .reply(
+                    403,
+                    errResponse,
+                    {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
+                );
+            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
+            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.HttpError);
+                expect(err.message).to.equals(errResponse.message);
+                done();
+            });
+        });
+    });
+    describe('#onboardWithVendorThingID() with promise', function () {
+
+        it("should send a request to the thing-if server", function (done) {
+            scope = nock(
+                testApp.site,
+                <any>{
+                    reqheaders: reqHeaders4VendorThingID
+                }).post(path, {
+                    vendorThingID: "01234-56789-abcdefg-hijklm",
+                    thingPassword: "password",
+                    owner: owner.toString()
+                })
+                .reply(200, responseBody, {"Content-Type": "application/json"});
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                expect(result.thingID).to.equals(responseBody.thingID);
+                expect(result.accessToken).to.equals(responseBody.accessToken);
+                expect(result.mqttEndPoint).to.deep.equal(responseBody.mqttEndpoint);
+                done();
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
+        });
+        it("should handle error when vendorThingID is null", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest(null, "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("vendorThingID is null or empty");
+                done();
+            });
+        });
+        it("should handle error when vendorThingID is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("", "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("vendorThingID is null or empty");
+                done();
+            });
+        });
+        it("should handle error when password is null", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", null, owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("thingPassword is null or empty");
+                done();
+            });
+        });
+        it("should handle error when password is empty string", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("thingPassword is null or empty");
+                done();
+            });
+        });
+        it("should handle error when owner is null", function (done) {
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", null);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.ArgumentError);
+                expect(err.message).to.equals("owner is null or empty");
+                done();
+            });
+        });
+        it("should handle error when server returned 403 error", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TOKEN",
+                "message": "The provided token is not valid",
+                "appID": testApp.appID,
+                "accessToken": au.token
+            };
+            scope = nock(testApp.site,
+                <any>{
+                    reqheaders: reqHeaders4VendorThingID
+                }).post(path, {
+                    vendorThingID: "01234-56789-abcdefg-hijklm",
+                    thingPassword: "password",
+                    owner: owner.toString()
+                })
+                .reply(
+                    403,
+                    errResponse,
+                    {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
+                );
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", owner);
+            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                done("should fail");
+            }).catch((err:ThingIFError)=>{
+                expect(err).be.not.null;
+                expect(err.name).to.equals(Errors.HttpError);
+                expect(err.message).to.equals(errResponse.message);
+                done();
+            });
+        });
+    });
 });
