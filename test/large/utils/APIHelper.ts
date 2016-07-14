@@ -99,6 +99,8 @@ export class APIHelper {
            })
         });
     }
+
+    // getAdminToken(clientID: string, clientSecret: string): Promise<>
 }
 
 export const apiHelper = new APIHelper(TestApp.testApp, TestApp.TOKEN);
