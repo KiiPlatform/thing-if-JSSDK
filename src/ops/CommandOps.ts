@@ -12,9 +12,7 @@ export default class CommandOps extends BaseOp {
         super(au);
     }
 
-    postNewCommand(
-        requestObject: Object,
-        onCompletion?: (err:Error, res:Object)=>void): Promise<Object> {
+    postNewCommand(requestObject: Object): Promise<Object> {
         //TODO: implement me
         this.addHeaders({});// add necessary headers
         return new Promise<Object>((resolve, reject)=>{
@@ -22,9 +20,7 @@ export default class CommandOps extends BaseOp {
         });
     }
 
-    listCommands(
-        listOptions?: Object,
-        onCompletion?: (err:Error, res:Object)=>void): Promise<Object> {
+    listCommands(listOptions?: Object): Promise<Object> {
         //TODO: implement me
         this.addHeaders({});// add necessary headers
         return new Promise<Object>((resolve, reject)=>{
@@ -32,10 +28,7 @@ export default class CommandOps extends BaseOp {
         });
     }
 
-
-    getCommand(
-        commandID: string,
-        onCompletion?: (err:Error, res:Object)=>void): Promise<Object> {
+    getCommand(commandID: string): Promise<Object> {
         //TODO: implement me
         this.addHeaders({});// add necessary headers
         return new Promise<Object>((resolve, reject)=>{

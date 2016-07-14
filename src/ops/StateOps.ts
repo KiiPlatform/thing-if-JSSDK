@@ -12,7 +12,7 @@ export default class StateOps extends BaseOp {
         super(au);
     }
 
-    getState(onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    getState(): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});

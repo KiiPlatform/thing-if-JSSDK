@@ -12,8 +12,7 @@ export default class ThingOps extends BaseOp {
         super(au);
     }
 
-    getVendorThingID(
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    getVendorThingID(): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
@@ -22,8 +21,7 @@ export default class ThingOps extends BaseOp {
 
     updateVendorThingID(
         newVendorThingID: string,
-        newPassword: string,
-        onCompletion?: (err: Error)=> void): Promise<void> {
+        newPassword: string): Promise<void> {
         //TODO: implment me
         return new Promise<void>((resolve, reject)=>{
             resolve();
