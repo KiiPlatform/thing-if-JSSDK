@@ -14,9 +14,7 @@ export default class OnboardingOps extends BaseOp {
     constructor(public au: APIAuthor){
         super(au);
     }
-    onboardWithThingID(
-        onboardRequest: OnboardWithThingIDRequest,
-        onCompletion?: (err: ThingIFError, result:OnboardingResult)=> void): Promise<OnboardingResult> {
+    onboardWithThingID(onboardRequest: OnboardWithThingIDRequest): Promise<OnboardingResult> {
 
         return new Promise<OnboardingResult>((resolve, reject)=>{
             if (!onboardRequest.thingID) {
@@ -38,9 +36,7 @@ export default class OnboardingOps extends BaseOp {
             })
         });
     }
-    onboardWithVendorThingID(
-        onboardRequest:OnboardWithVendorThingIDRequest,
-        onCompletion?: (err: ThingIFError, result:OnboardingResult)=> void): Promise<OnboardingResult> {
+    onboardWithVendorThingID(onboardRequest:OnboardWithVendorThingIDRequest): Promise<OnboardingResult> {
 
         return new Promise<OnboardingResult>((resolve, reject)=>{
             if (!onboardRequest.vendorThingID) {
@@ -62,9 +58,7 @@ export default class OnboardingOps extends BaseOp {
             })
         });
     }
-    onboardEndnode(
-        onboardRequest:Object,
-        onCompletion?: (err: ThingIFError, result:Object)=> void): Promise<Object> {
+    onboardEndnode(onboardRequest:Object): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
