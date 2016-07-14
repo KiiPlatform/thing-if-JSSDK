@@ -2,7 +2,7 @@
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 /// <reference path="../../typings/modules/es6-promise/index.d.ts" />
 import {Promise as P} from 'es6-promise';
-import kiiPromise from '../../src/internal/KiiPromise'
+import {promise, voidPromise} from '../../src/internal/KiiPromise'
 import {expect} from 'chai';
 declare var require: any
 declare var process: any
@@ -13,14 +13,14 @@ class TestClass {
         let orgPromise = new P<string>((resolve, reject)=>{
             resolve("succeeded");
         });
-        return kiiPromise(orgPromise, onCompletion);
+        return promise(orgPromise, onCompletion);
     }
 
     callbackFailed(onCompletion?: (err:Error, res: string)=>void): P<string>{
         let orgPromise = new P<string>((resolve, reject)=>{
             reject(new Error("failed"));
         });
-        return kiiPromise(orgPromise, onCompletion);
+        return promise(orgPromise, onCompletion);
     }
 }
 
