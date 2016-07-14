@@ -53,7 +53,7 @@ export class APIAuthor {
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-        return (new OnboardingOps(this)).onboardWithVendorThingID(onboardRequest, onCompletion);
+        return PromiseWrapper.promise((new OnboardingOps(this)).onboardWithVendorThingID(onboardRequest), onCompletion);
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
@@ -64,7 +64,7 @@ export class APIAuthor {
     onboardWithThingID(
         onboardRequest: Options.OnboardWithThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-        return (new OnboardingOps(this)).onboardWithThingID(onboardRequest, onCompletion);
+        return PromiseWrapper.promise((new OnboardingOps(this)).onboardWithThingID(onboardRequest), onCompletion);
     }
 
     /** Onboard an Endnode by vendorThingID with an already registered gateway.
