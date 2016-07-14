@@ -1,6 +1,7 @@
 /// <reference path="../../typings/modules/es6-promise/index.d.ts" />
 import {Promise} from 'es6-promise';
 import request from './Request';
+import {Response} from './Response'
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import {OnboardingResult} from '../OnboardingResult'
@@ -39,28 +40,26 @@ export default class OnboardingOps extends BaseOp {
         var callbackCalled = false;
         return new Promise<OnboardingResult>((resolve, reject) => {
             var headers: Object = this.addHeader("Content-Type", contentType);
-            request({
+            var req = {
                 method: "POST",
                 headers: headers,
                 url: onboardUrl,
                 body: onboardRequest,
-            }).then((res:Object)=>{
-                resolve(<OnboardingResult>res);
-                if (!!onCompletion){
-                    callbackCalled = true;
-                    var result = new OnboardingResult((<any>res).body.thingID, (<any>res).body.accessToken, <MqttEndpoint>(<any>res).body.mqttEndpoint);
-                    onCompletion(null, result);
-                }
-            }).catch((err:Error)=>{
-                reject(err);
-                if (callbackCalled) {
-                    throw err;
-                } else {
+            };
+            request(req, (err: Error, res: Response)=>{
+                if (err) {
+                    reject(err);
                     if(!!onCompletion){
                         onCompletion(err, null);
                     }
+                } else {
+                    var result = new OnboardingResult((<any>res).body.thingID, (<any>res).body.accessToken, <MqttEndpoint>(<any>res).body.mqttEndpoint);
+                    resolve(result);
+                    if (!!onCompletion){
+                        onCompletion(null, result);
+                    }
                 }
-            })
+            });
         });
     }
 }
