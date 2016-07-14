@@ -12,18 +12,14 @@ export default class TriggerOps extends BaseOp {
         super(au);
     }
 
-    postTrigger(
-        requestObject: Object,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    postTrigger(requestObject: Object): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
         })
     }
 
-    getTrigger(
-        triggerID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    getTrigger(triggerID: string): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
@@ -32,8 +28,7 @@ export default class TriggerOps extends BaseOp {
 
     patchTrigger(
         triggerID: string,
-        requestObject: Object,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        requestObject: Object): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
@@ -42,26 +37,21 @@ export default class TriggerOps extends BaseOp {
 
     enableTrigger(
         triggerID: string,
-        enable: boolean,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        enable: boolean): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
         })
     }
 
-    deleteTrigger(
-        triggerID: string,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    deleteTrigger(triggerID: string): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
         })
     }
 
-    listTriggers(
-        listOptions?: Object,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+    listTriggers(listOptions?: Object): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});
@@ -70,8 +60,7 @@ export default class TriggerOps extends BaseOp {
 
     listServerCodeResults(
         triggerID: string,
-        listOptions?: Object,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object> {
+        listOptions?: Object): Promise<Object> {
         //TODO: implment me
         return new Promise<Object>((resolve, reject)=>{
             resolve({});

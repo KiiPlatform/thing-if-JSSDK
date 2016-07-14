@@ -19,28 +19,19 @@ import {HttpRequestError} from '../ThingIFError'
  * @param {onCompletion} [onCompletion] callback function when completed
  * @return {Promise} promise object
  */
-export default function (options: Object, onCompletion?: (err: Error, res: Response)=>void): Promise<Response>{
+export default function (options: Object): Promise<Response>{
     return new Promise<Response>((resolve, reject) => {
         popsicle.request(<RequestOptions>options)
         .then(function (res) {
             if (res.statusType() == 2) {
                 var response: Response = new Response(res.status, res.body, res.headers);
                 resolve(response);
-                if (!!onCompletion){
-                    onCompletion(null, response);
-                }
             } else {
                 var err: Error = new HttpRequestError(res.status, res.body.message, res.body);
                 reject(err);
-                if (!!onCompletion){
-                    onCompletion(err, null);
-                }
             }
         }).catch(function (err) {
             reject(err);
-            if (!!onCompletion){
-                onCompletion(err, null);
-            }
         });
     })
 }

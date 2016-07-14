@@ -75,7 +75,7 @@ export class APIAuthor {
     onboardEndnodeWithGateway(
         onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-        return (new OnboardingOps(this)).onboardEndnode(onboardRequest, onCompletion);
+        return PromiseWrapper.promise((new OnboardingOps(this)).onboardEndnode(onboardRequest), onCompletion);
     }
 
     /** Post a new command.
@@ -88,7 +88,7 @@ export class APIAuthor {
         target: TypedID,
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        return (new CommandOps(this, target.toString())).postNewCommand(command,onCompletion);
+        return PromiseWrapper.promise((new CommandOps(this, target.toString())).postNewCommand(command),onCompletion);
     }
 
     /** Retrieve command with specified ID.
@@ -101,7 +101,7 @@ export class APIAuthor {
         target: TypedID,
         commandID: string,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        return (new CommandOps(this, target.toString())).getCommand(commandID, onCompletion);
+        return PromiseWrapper.promise((new CommandOps(this, target.toString())).getCommand(commandID), onCompletion);
     }
 
     /** Retrieve commands.
@@ -114,7 +114,7 @@ export class APIAuthor {
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, commands:Array<Command>)=> void): Promise<Array<Command>>{
-        return (new CommandOps(this, target.toString())).listCommands(listOpitons, onCompletion);
+        return PromiseWrapper.promise((new CommandOps(this, target.toString())).listCommands(listOpitons), onCompletion);
     }
 
     /** Post a new command trigger.
@@ -127,7 +127,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return (new TriggerOps(this,target.toString())).postTrigger(requestObject, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postTrigger(requestObject), onCompletion);
     }
 
     /** Post a new servercode trigger.
@@ -140,7 +140,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return (new TriggerOps(this,target.toString())).postTrigger(requestObject, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postTrigger(requestObject), onCompletion);
     }
 
     /** Retrieve trigger.
@@ -153,7 +153,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return (new TriggerOps(this,target.toString())).getTrigger(triggerID, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).getTrigger(triggerID), onCompletion);
     }
 
     /** Update a command trigger.
@@ -168,7 +168,7 @@ export class APIAuthor {
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return (new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject), onCompletion);
     }
 
     /** Update a servercode trigger.
@@ -183,7 +183,7 @@ export class APIAuthor {
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return (new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject), onCompletion);
     }
 
     /** Enable/Disable a specified trigger.
@@ -198,7 +198,7 @@ export class APIAuthor {
         triggerID: string,
         enable: boolean,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return (new TriggerOps(this,target.toString())).enableTrigger(triggerID, enable, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).enableTrigger(triggerID, enable), onCompletion);
     }
 
     /** Delete a specified trigger.
@@ -211,7 +211,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return (new TriggerOps(this,target.toString())).deleteTrigger(triggerID, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).deleteTrigger(triggerID), onCompletion);
     }
 
     /** Retrive triggers.
@@ -223,7 +223,7 @@ export class APIAuthor {
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, triggers:Array<Trigger>)=> void): Promise<Array<Trigger>>{
-        return (new TriggerOps(this,target.toString())).listTriggers(listOpitons, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).listTriggers(listOpitons), onCompletion);
     }
 
     /** Retrieve execution results of server code trigger.
@@ -238,7 +238,7 @@ export class APIAuthor {
         triggerID: string,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, results:Array<ServerCodeResult>)=> void): Promise<Array<ServerCodeResult>>{
-        return (new TriggerOps(this,target.toString())).listServerCodeResults(triggerID, listOpitons, onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).listServerCodeResults(triggerID, listOpitons), onCompletion);
     }
 
     /** Get State of specified target.
@@ -249,7 +249,7 @@ export class APIAuthor {
     getState(
         target: TypedID,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        return (new StateOps(this, target.toString())).getState(onCompletion);
+        return PromiseWrapper.promise((new StateOps(this, target.toString())).getState(), onCompletion);
     }
 
     /** Get vendorThingID of specified target
@@ -260,7 +260,7 @@ export class APIAuthor {
     getVendorThingID(
         thingID: string,
         onCompletion?: (err: Error, vendorThingID:string)=> void): Promise<string>{
-        return (new ThingOps(this, thingID)).getVendorThingID(onCompletion);
+        return PromiseWrapper.promise((new ThingOps(this, thingID)).getVendorThingID(),onCompletion);
     }
 
     /** Update vendorThingID of specified target
@@ -275,7 +275,7 @@ export class APIAuthor {
         newVendorThingID: string,
         newPassword: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        return (new ThingOps(this, thingID)).updateVendorThingID(newVendorThingID, newPassword, onCompletion);
+        return PromiseWrapper.voidPromise((new ThingOps(this, thingID)).updateVendorThingID(newVendorThingID, newPassword), onCompletion);
     }
 
     /** Install Firebase Cloud Message(FCM) notification to receive notification from IoT Cloud.
