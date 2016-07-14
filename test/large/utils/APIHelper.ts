@@ -5,6 +5,7 @@ import {Promise} from 'es6-promise';
 import * as request from 'popsicle';
 import {App} from '../../../src/App'
 import {RequestOptions} from '~popsicle/dist/request';
+import * as TestApp from './TestApp'
 
 function newError(res:Object): Error{
     let status = (<any>res).status;
@@ -31,14 +32,11 @@ export class KiiUser {
 export class APIHelper {
     private kiiCloudBaseUrl: string;
     constructor(
-        public app: App
+        public app: App,
+        public adminToken: string
     ){
         this.kiiCloudBaseUrl = `${this.app.site}/api/apps/${this.app.appID}`
     };
-
-    // getAdminToken(): Promise<string> {
-
-    // }
 
     createKiiUser():Promise<KiiUser> {
         let loginName = `testuser_${(new Date()).getTime()}`;
@@ -71,8 +69,8 @@ export class APIHelper {
                 }
             }).then((res)=>{
                 if(res.status == 200){
-                    let userID = (<any>res).id;
-                    let token = (<any>res).access_token;
+                    let userID = (<any>res.body)["id"];
+                    let token = (<any>res.body)["access_token"];
                     resolve(new KiiUser(userID, loginName, token));
                 }else {
                     reject(newError(res));
@@ -82,4 +80,25 @@ export class APIHelper {
             })
         });
     }
+
+    deleteKiiUser(user: KiiUser): Promise<void> {
+        return new Promise<void>((resolve, reject) =>{
+           request.del(<any>{
+               url: `${this.kiiCloudBaseUrl}/users/${user.userID}`,
+               headers: {
+                   "Authorization": `Bearer ${this.adminToken}`
+               }
+           }).then((res)=>{
+               if(res.status == 204) {
+                   resolve();
+               }else{
+                   reject(newError(res));
+               }
+           }).catch((err)=>{
+               reject(err);
+           })
+        });
+    }
 }
+
+export const apiHelper = new APIHelper(TestApp.testApp, TestApp.TOKEN);
