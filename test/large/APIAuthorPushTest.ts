@@ -7,7 +7,7 @@ import {testApp} from './utils/TestApp';
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
 
-describe("Large Tests for Push Ops", function () {
+describe("Large Tests for Push Ops:", function () {
 
     let user: KiiUser;
     let au: any;
@@ -30,7 +30,7 @@ describe("Large Tests for Push Ops", function () {
         })
     })
 
-    describe('Test installFCM', function () {
+    describe('installFCM:', function () {
         let installationRegistrationID = `${new Date()}`
 
         it("handle success response", function (done) {
@@ -78,7 +78,7 @@ describe("Large Tests for Push Ops", function () {
         });
     });
 
-    describe('Test installMQTT', function () {
+    describe('installMQTT:', function () {
 
         it("handle success response", function (done) {
             let callbacksCalled = false;
@@ -121,6 +121,27 @@ describe("Large Tests for Push Ops", function () {
                 expect(callbacksCalled).to.true;
                 expect(err).not.null;
                 expect((<any>err)["status"]).to.equal(403);
+                done();
+            }).catch((err: Error)=>{
+                done(err);
+            });
+        });
+    });
+
+    describe('uninstallPush:', function () {
+
+        it("uninstall with non-existing installationID", function (done) {
+            let callbacksCalled = false;
+            au.uninstallPush(`not-existing-id-${(new Date()).getTime()}`, (err)=>{
+                expect(err).not.null;
+                expect((<any>err)["status"]).to.equal(404);
+                callbacksCalled = true;
+            }).then(()=>{
+                done("should fail");
+            }).catch((err)=>{
+                expect(callbacksCalled).to.be.true;
+                expect(err).not.null;
+                expect((<any>err)["status"]).to.equal(404);
                 done();
             }).catch((err: Error)=>{
                 done(err);
