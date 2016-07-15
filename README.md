@@ -42,10 +42,10 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
 ## Test
 
 ### Configure TestApp
-You need to configure `TestApp` as env variable for testing, the format is `[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[admin-token]`
+You need to configure `TestApp` as env variable for testing, the format is `[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[client-id]:[client-secret]`
 
 ```
-$ export TestApp=[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[admin-token]
+$ export TestApp=[app-id]:[app-key]:[JP|CN3|US|EU|SG]:[client-id]:[client-secret]
 ```
 
 ### Run npm test

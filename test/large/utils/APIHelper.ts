@@ -32,8 +32,7 @@ export class KiiUser {
 export class APIHelper {
     private kiiCloudBaseUrl: string;
     constructor(
-        public app: App,
-        public adminToken: string
+        public app: App
     ){
         this.kiiCloudBaseUrl = `${this.app.site}/api/apps/${this.app.appID}`
     };
@@ -82,20 +81,23 @@ export class APIHelper {
     }
     deleteKiiUser(user: KiiUser): Promise<void> {
         return new Promise<void>((resolve, reject) =>{
-           request.del(<any>{
-               url: `${this.kiiCloudBaseUrl}/users/${user.userID}`,
-               headers: {
-                   "Authorization": `Bearer ${this.adminToken}`
-               }
-           }).then((res)=>{
-               if(res.status == 204) {
-                   resolve();
-               }else{
-                   reject(newError(res));
-               }
-           }).catch((err)=>{
-               reject(err);
-           })
+            this.getAdminToken(TestApp.CLIENT_ID, TestApp.CLIENT_SECRET)
+            .then((adminToken:string)=>{
+                return request.del(<any>{
+                    url: `${this.kiiCloudBaseUrl}/users/${user.userID}`,
+                    headers: {
+                        "Authorization": `Bearer ${adminToken}`
+                    }
+                });
+            }).then((res)=>{
+                if(res.status == 204) {
+                    resolve();
+                }else{
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            })
         });
     }
     getAdminToken(clientID: string, clientSecret: string): Promise<string> {
@@ -106,7 +108,7 @@ export class APIHelper {
         };
         return new Promise<string>((resolve, reject) =>{
             request.post(<any>{
-                url: `${this.kiiCloudBaseUrl}/oauth2/token`,
+                url: `${this.app.site}/api/apps/${this.app.appID}/oauth2/token`,
                 headers: reqHeader,
                 body:{
                     grant_type: "client_credentials",
@@ -126,4 +128,4 @@ export class APIHelper {
     }
 }
 
-export const apiHelper = new APIHelper(TestApp.testApp, TestApp.TOKEN);
+export const apiHelper = new APIHelper(TestApp.testApp);
