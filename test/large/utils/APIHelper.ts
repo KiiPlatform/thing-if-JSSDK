@@ -81,7 +81,7 @@ export class APIHelper {
     }
     deleteKiiUser(user: KiiUser): Promise<void> {
         return new Promise<void>((resolve, reject) =>{
-            this.getAdminToken(TestApp.CLIENT_ID, TestApp.CLIENT_SECRET)
+            this.getAdminToken()
             .then((adminToken:string)=>{
                 return request.del(<any>{
                     url: `${this.kiiCloudBaseUrl}/users/${user.userID}`,
@@ -100,7 +100,7 @@ export class APIHelper {
             })
         });
     }
-    getAdminToken(clientID: string, clientSecret: string): Promise<string> {
+    getAdminToken(): Promise<string> {
         let reqHeader = {
             "X-Kii-AppID": this.app.appID,
             "X-Kii-AppKey": this.app.appKey,
@@ -112,8 +112,8 @@ export class APIHelper {
                 headers: reqHeader,
                 body:{
                     grant_type: "client_credentials",
-                    client_id: clientID,
-                    client_secret: clientSecret
+                    client_id: TestApp.CLIENT_ID,
+                    client_secret: TestApp.CLIENT_SECRET
                 }
             }).then((res)=>{
                 if(res.status == 200){
