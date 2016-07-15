@@ -28,6 +28,14 @@ export class KiiUser {
         public token: string
     ){}
 }
+export class KiiThing {
+    constructor(
+        public thingID: string,
+        public vendorThingID: string,
+        public password: string,
+        public token: string
+    ){}
+}
 
 export class APIHelper {
     private kiiCloudBaseUrl: string;
@@ -36,7 +44,31 @@ export class APIHelper {
     ){
         this.kiiCloudBaseUrl = `${this.app.site}/api/apps/${this.app.appID}`
     };
-
+    createKiiThing():Promise<KiiThing> {
+        let vendorThingID = `testthing_${(new Date()).getTime()}`;
+        let password = 'test12345';
+        let reqHeader = {
+            "X-Kii-AppID": this.app.appID,
+            "X-Kii-AppKey": this.app.appKey,
+            "Content-Type": "application/vnd.kii.ThingRegistrationAndAuthorizationRequest+json"
+        };
+        return new Promise<KiiThing>((resolve, reject)=>{
+            request.post(<any>{
+                url: `${this.kiiCloudBaseUrl}/things`,
+                headers: reqHeader,
+                body:{
+                    _vendorThingID: vendorThingID,
+                    _password: password
+                }
+            }).then((res:any)=>{
+                if(res.status == 201) {
+                    resolve(new KiiThing(res.body._thingID, res.body._vendorThingID, password, res.body._accessToken));
+                } else {
+                    reject(newError(res));
+                }
+            });
+        });
+    }
     createKiiUser():Promise<KiiUser> {
         let loginName = `testuser_${(new Date()).getTime()}`;
         let password = 'test12345';
