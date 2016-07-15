@@ -60,7 +60,7 @@ describe("Large Tests for Push Ops:", function () {
 
         it("handle 400 error response", function (done) {
             let callbacksCalled = false;
-            au.installFCM("", true, (err, installID)=>{
+            au.installFCM(34, true, (err, installID)=>{
                 callbacksCalled = true;
                 expect(err).not.null;
                 expect((<any>err)["status"]).to.equal(400);
