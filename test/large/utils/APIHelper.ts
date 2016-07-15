@@ -108,7 +108,7 @@ export class APIHelper {
         };
         return new Promise<string>((resolve, reject) =>{
             request.post(<any>{
-                url: `${this.app.site}/api/apps/${this.app.appID}/oauth2/token`,
+                url: `${this.kiiCloudBaseUrl}/oauth2/token`,
                 headers: reqHeader,
                 body:{
                     grant_type: "client_credentials",
