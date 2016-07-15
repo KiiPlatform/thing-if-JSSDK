@@ -1,6 +1,8 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 /// <reference path="../../typings/modules/nock/index.d.ts" />
+/// <reference path="../../typings/modules/es6-promise/index.d.ts" />
+import {Promise as P} from 'es6-promise'
 import TestApp from './TestApp'
 import {expect} from 'chai';
 import {Response} from '../../src/ops/Response'
@@ -8,6 +10,8 @@ import PushOps from '../../src/ops/PushOps'
 import {default as request} from '../../src/ops/Request'
 import {APIAuthor} from '../../src/APIAuthor'
 import MqttInstallationResult from '../../src/MqttInstallationResult'
+import {Errors} from '../../src/ThingIFError'
+import {promiseWhile} from './utils/PromiseUtil'
 
 import * as nock from 'nock'
 let scope : nock.Scope;
@@ -227,3 +231,85 @@ describe('Test uninstall', function () {
         });
     });
 });
+
+describe("Test ArgumentError", function() {
+    it("APIAuthor#installFCM", function(done) {
+        class TestCase {
+            constructor(
+                public installationRegistrationID: string,
+                public development: boolean,
+                public succeeded: boolean,
+                public errorName?: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, null, false, Errors.ArgumentError),
+            new TestCase(null, true, false, Errors.ArgumentError),
+            new TestCase("someID", null, false, Errors.ArgumentError),
+            new TestCase("", true, false, Errors.ArgumentError)
+        ]
+
+        let i=0, loop = tests.length;
+        promiseWhile(()=>{
+            return i < loop;
+        },()=>{
+            return new P<void>((resolve, reject)=>{
+                var testCase = tests[i];
+                au.installFCM(testCase.installationRegistrationID, testCase.development).then(()=>{
+                    reject("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(testCase.errorName);
+                    i++;
+                    resolve();
+                })
+            })
+        }).then(()=>{
+            done();
+        }).catch((err)=>{
+            done(err);
+        })
+    })
+
+    it("APIAuthor#installMqtt", function(done) {
+        au.installMqtt(null).then(()=>{
+            done("should fail");
+        }).catch((err)=>{
+            expect(err.name).to.be.equal(Errors.ArgumentError);
+            done();
+        })
+    })
+
+    it("APIAuthor#uninstallPush", function(done) {
+        class TestCase {
+            constructor(
+                public installationID: string,
+                public succeeded: boolean,
+                public errorName?: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, false, Errors.ArgumentError),
+            new TestCase("", false, Errors.ArgumentError)
+        ]
+
+        let i=0, loop = tests.length;
+        promiseWhile(()=>{
+            return i < loop;
+        },()=>{
+            return new P<void>((resolve, reject)=>{
+                var testCase = tests[i];
+                au.uninstallPush(testCase.installationID).then(()=>{
+                    reject("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(testCase.errorName);
+                    i++;
+                    resolve();
+                })
+            })
+        }).then(()=>{
+            done();
+        }).catch((err)=>{
+            done(err);
+        })
+    })
+})
