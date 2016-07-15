@@ -20,7 +20,7 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
-export default class ThingIFAPI {
+export class ThingIFAPI {
     private _target: TypedID;
     private _au: APIAuthor;
 
@@ -59,16 +59,16 @@ export default class ThingIFAPI {
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-            
+
         let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
-            this._au.onboardWithVendorThingID(onboardRequest, onCompletion).then((result:OnboardingResult)=>{
+            (new OnboardingOps(this._au)).onboardWithVendorThingID(onboardRequest).then((result:OnboardingResult)=>{
                 this._target = new TypedID(Types.Thing, result.thingID);
                 resolve(result);
             }).catch((err:Error)=>{
                 reject(err);
             });
         });
-        return PromiseWrapper.promise((new OnboardingOps(this._au)).onboardWithVendorThingID(onboardRequest), onCompletion);
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
@@ -81,14 +81,14 @@ export default class ThingIFAPI {
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
 
         let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
-            this._au.onboardWithThingID(onboardRequest, onCompletion).then((result:OnboardingResult)=>{
+            (new OnboardingOps(this._au)).onboardWithThingID(onboardRequest).then((result:OnboardingResult)=>{
                 this._target = new TypedID(Types.Thing, result.thingID);
                 resolve(result);
             }).catch((err:Error)=>{
                 reject(err);
             });
         });
-        return PromiseWrapper.promise((new OnboardingOps(this._au)).onboardWithThingID(onboardRequest), onCompletion);
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Onboard an Endnode by vendorThingID with an already registered gateway.
