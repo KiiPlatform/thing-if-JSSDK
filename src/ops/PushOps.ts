@@ -7,6 +7,7 @@ import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import MqttInstallationResult from '../MqttInstallationResult'
 import {Response} from './Response'
 import BaseOp from './BaseOp'
+import * as KiiUtil from '../internal/KiiUtilities'
 
 export default class CommandOps extends BaseOp {
     constructor(
@@ -43,9 +44,15 @@ export default class CommandOps extends BaseOp {
             if (!installationRegistrationID){
                 reject(new ThingIFError(Errors.ArgumentError, "installationRegistrationID is null or empty"));
                 return;
+            }else if (!KiiUtil.isString(installationRegistrationID)){
+                reject(new ThingIFError(Errors.ArgumentError, "installationRegistrationID is not a string"));
+                return;
             }
             if (!development){
                 reject(new ThingIFError(Errors.ArgumentError, "development is null"));
+                return;
+            }else if (!KiiUtil.isBoolean(development)){
+                reject(new ThingIFError(Errors.ArgumentError, "development is not boolean"));
                 return;
             }
             let requestBody = {
@@ -67,6 +74,9 @@ export default class CommandOps extends BaseOp {
         return new Promise<MqttInstallationResult>((resolve, reject) => {
             if (!development){
                 reject(new ThingIFError(Errors.ArgumentError, "development is null"));
+                return;
+            }else if(!KiiUtil.isBoolean(development)){
+                reject(new ThingIFError(Errors.ArgumentError, "development is not boolean"));
                 return;
             }
 
@@ -91,6 +101,9 @@ export default class CommandOps extends BaseOp {
         return new Promise<void>((resolve, reject) => {
             if (!installationID){
                 reject(new ThingIFError(Errors.ArgumentError, "installationID is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(installationID)){
+                reject(new ThingIFError(Errors.ArgumentError, "installationID is not string"));
                 return;
             }
             request({
