@@ -233,7 +233,13 @@ describe('Test uninstall', function () {
 });
 
 describe("Test ArgumentError", function() {
-    it("APIAuthor#installFCM", function(done) {
+    it("APIAuthor#installFCM when paramerter with the following cases:\
+     \n installationRegistrationID  development \
+     \n null                        null\
+     \n null                        boolean\
+     \n not empty string            null\
+     \n empty string                boolean", function(done) {
+
         class TestCase {
             constructor(
                 public installationRegistrationID: string,
@@ -270,7 +276,7 @@ describe("Test ArgumentError", function() {
         })
     })
 
-    it("APIAuthor#installMqtt", function(done) {
+    it("APIAuthor#installMqtt, when development is null", function(done) {
         au.installMqtt(null).then(()=>{
             done("should fail");
         }).catch((err)=>{
@@ -279,7 +285,7 @@ describe("Test ArgumentError", function() {
         })
     })
 
-    it("APIAuthor#uninstallPush", function(done) {
+    it("APIAuthor#uninstallPush, if installationID is null or empty string", function(done) {
         class TestCase {
             constructor(
                 public installationID: string,
