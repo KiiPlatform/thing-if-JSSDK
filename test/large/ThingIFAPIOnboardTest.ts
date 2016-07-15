@@ -7,22 +7,22 @@ import {testApp} from './utils/TestApp';
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
 
-describe("Large Tests for APIAuthor#Onboarding:", function () {
+describe("Large Tests for ThingIFAPI#Onboarding:", function () {
 
     let user: KiiUser;
-    let au: any;
+    let api: any;
 
-    before(function(done) {
+    beforeEach(function(done) {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
-            au = new thingIFSDK.APIAuthor(newUser.token, testApp);
+            api = new thingIFSDK.ThingIFAPI(newUser.token, testApp);
             done();
         }).catch((err)=>{
             done(err);
         })
     });
 
-    after(function(done) {
+    afterEach(function(done) {
         apiHelper.deleteKiiUser(user).then(()=>{
             done();
         }).catch((err)=>{
@@ -37,8 +37,10 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
                 var password = "password";
                 var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
                 var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
-                au.onboardWithVendorThingID(request).then((result:any)=>{
+                api.onboardWithVendorThingID(request).then((result:any)=>{
                     expect(result.thingID).to.be.not.null;
+                    expect(api.target.id).to.equal(result.thingID)
+                    expect(api.target.type).to.equal(thingIFSDK.Types.Thing)
                     expect(result.accessToken).to.be.not.null;
                     expect(result.mqttEndPoint.installationID).to.be.not.null;
                     expect(result.mqttEndPoint.username).to.be.not.null;
@@ -62,10 +64,12 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
                 var password = "password";
                 var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
                 var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
-                au.onboardWithVendorThingID(request, (err:Error, result:any)=>{
+                api.onboardWithVendorThingID(request, (err:Error, result:any)=>{
                     try {
                         expect(err).to.be.null;
                         expect(result.thingID).to.be.not.null;
+                        expect(api.target.id).to.equal(result.thingID)
+                        expect(api.target.type).to.equal(thingIFSDK.Types.Thing)
                         expect(result.accessToken).to.be.not.null;
                         expect(result.mqttEndPoint.installationID).to.be.not.null;
                         expect(result.mqttEndPoint.username).to.be.not.null;
@@ -91,9 +95,11 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
                 apiHelper.createKiiThing().then((thing:KiiThing)=>{
                     var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
                     var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
-                    return au.onboardWithThingID(request);
+                    return api.onboardWithThingID(request);
                 }).then((result:any)=>{
                     expect(result.thingID).to.be.not.null;
+                    expect(api.target.id).to.equal(result.thingID)
+                    expect(api.target.type).to.equal(thingIFSDK.Types.Thing)
                     expect(result.accessToken).to.be.not.null;
                     expect(result.mqttEndPoint.installationID).to.be.not.null;
                     expect(result.mqttEndPoint.username).to.be.not.null;
@@ -116,10 +122,12 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
                 apiHelper.createKiiThing().then((thing:KiiThing)=>{
                     var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
                     var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
-                    return au.onboardWithThingID(request, (err:Error, result:any)=>{
+                    return api.onboardWithThingID(request, (err:Error, result:any)=>{
                         try {
                             expect(err).to.be.null;
                             expect(result.thingID).to.be.not.null;
+                            expect(api.target.id).to.equal(result.thingID)
+                            expect(api.target.type).to.equal(thingIFSDK.Types.Thing)
                             expect(result.accessToken).to.be.not.null;
                             expect(result.mqttEndPoint.installationID).to.be.not.null;
                             expect(result.mqttEndPoint.username).to.be.not.null;

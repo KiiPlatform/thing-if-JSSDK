@@ -6,13 +6,21 @@ import {Command} from './Command';
 import Trigger from './Trigger'
 import ServerCodeResult from './ServerCodeResult'
 import * as Options from './RequestObjects'
-import {TypedID} from './TypedID'
+import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
 import {APIAuthor} from './APIAuthor'
 import MqttInstallationResult from './MqttInstallationResult'
+import * as PromiseWrapper from './internal/PromiseWrapper'
+
+import OnboardingOps from './ops/OnboardingOps'
+import CommandOps from './ops/CommandOps'
+import TriggerOps from './ops/TriggerOps'
+import StateOps from './ops/StateOps'
+import ThingOps from './ops/ThingOps'
+import PushOps from './ops/PushOps'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
-export default class ThingIFAPI {
+export class ThingIFAPI {
     private _target: TypedID;
     private _au: APIAuthor;
 
@@ -50,8 +58,17 @@ export default class ThingIFAPI {
      */
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
-        onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<Object>{
-        return this._au.onboardWithVendorThingID(onboardRequest, onCompletion);
+        onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
+
+        let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
+            (new OnboardingOps(this._au)).onboardWithVendorThingID(onboardRequest).then((result:OnboardingResult)=>{
+                this._target = new TypedID(Types.Thing, result.thingID);
+                resolve(result);
+            }).catch((err:Error)=>{
+                reject(err);
+            });
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Onboard Thing by thingID for the things already registered on Kii Cloud.
@@ -61,8 +78,17 @@ export default class ThingIFAPI {
      */
     onboardWithThingID(
         onboardRequest: Options.OnboardWithThingIDRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return this._au.onboardWithThingID(onboardRequest, onCompletion);
+        onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
+
+        let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
+            (new OnboardingOps(this._au)).onboardWithThingID(onboardRequest).then((result:OnboardingResult)=>{
+                this._target = new TypedID(Types.Thing, result.thingID);
+                resolve(result);
+            }).catch((err:Error)=>{
+                reject(err);
+            });
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Onboard an Endnode by vendorThingID with an already registered gateway.
