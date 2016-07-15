@@ -32,6 +32,7 @@ export class KiiThing {
     constructor(
         public thingID: string,
         public vendorThingID: string,
+        public password: string,
         public token: string
     ){}
 }
@@ -61,7 +62,7 @@ export class APIHelper {
                 }
             }).then((res:any)=>{
                 if(res.status == 201) {
-                    resolve(new KiiThing(res._thingID, res._vendorThingID, res._accessToken));
+                    resolve(new KiiThing(res.body._thingID, res.body._vendorThingID, password, res.body._accessToken));
                 } else {
                     reject(newError(res));
                 }
