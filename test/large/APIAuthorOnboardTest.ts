@@ -12,7 +12,7 @@ describe("Large Tests for Onboarding:", function () {
     let user: KiiUser;
     let au: any;
 
-    beforeEach(function(done) {
+    before(function(done) {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
             au = new thingIFSDK.APIAuthor(newUser.token, testApp);
@@ -22,7 +22,7 @@ describe("Large Tests for Onboarding:", function () {
         })
     });
 
-    afterEach(function(done) {
+    after(function(done) {
         apiHelper.deleteKiiUser(user).then(()=>{
             done();
         }).catch((err)=>{
