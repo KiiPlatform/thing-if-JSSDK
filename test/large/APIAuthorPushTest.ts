@@ -12,7 +12,7 @@ describe("Large Tests for Push Ops:", function () {
     let user: KiiUser;
     let au: any;
 
-    beforeEach(function(done) {
+    before(function(done) {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
             au = new thingIFSDK.APIAuthor(newUser.token, testApp);
@@ -22,7 +22,7 @@ describe("Large Tests for Push Ops:", function () {
         })
     });
 
-    afterEach(function(done) {
+    after(function(done) {
         apiHelper.deleteKiiUser(user).then(()=>{
             done();
         }).catch((err)=>{
@@ -109,8 +109,9 @@ describe("Large Tests for Push Ops:", function () {
 
         it("handle 403 error response", function (done) {
             let callbacksCalled = false;
-            au._token = "invalidToken";
-            au.installMqtt(true, (err, result)=>{
+            let invalidAu = new thingIFSDK.APIAuthor(au.token, au.app);
+            invalidAu._token = "invalidToken";
+            invalidAu.installMqtt(true, (err, result)=>{
                 callbacksCalled = true;
                 expect(err).not.null;
                 expect((<any>err)["status"]).to.equal(403);
