@@ -31,52 +31,112 @@ describe("Large Tests for Onboarding:", function () {
     });
 
     describe('onboardWithVendorThingID:', function () {
-        it("handle success response", function (done) {
-            var vendorThingID = "vendor-" + new Date().getTime();
-            var password = "password";
-            var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-            var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
-            au.onboardWithVendorThingID(request).then((result:any)=>{
-                expect(result.thingID).to.be.not.null;
-                expect(result.accessToken).to.be.not.null;
-                expect(result.mqttEndPoint.installationID).to.be.not.null;
-                expect(result.mqttEndPoint.username).to.be.not.null;
-                expect(result.mqttEndPoint.password).to.be.not.null;
-                expect(result.mqttEndPoint.mqttTopic).to.be.not.null;
-                expect(result.mqttEndPoint.host).to.be.not.null;
-                expect(result.mqttEndPoint.portTCP).to.be.not.null;
-                expect(result.mqttEndPoint.portSSL).to.be.not.null;
-                expect(result.mqttEndPoint.portWS).to.be.not.null;
-                expect(result.mqttEndPoint.portWSS).to.be.not.null;
-                expect(result.mqttEndPoint.ttl).to.be.not.null;
-                done();
-            }).catch((err:Error)=>{
-                done(err);
+        describe('with promise:', function () {
+            it("handle success response", function (done) {
+                var vendorThingID = "vendor-" + new Date().getTime();
+                var password = "password";
+                var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
+                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                au.onboardWithVendorThingID(request).then((result:any)=>{
+                    expect(result.thingID).to.be.not.null;
+                    expect(result.accessToken).to.be.not.null;
+                    expect(result.mqttEndPoint.installationID).to.be.not.null;
+                    expect(result.mqttEndPoint.username).to.be.not.null;
+                    expect(result.mqttEndPoint.password).to.be.not.null;
+                    expect(result.mqttEndPoint.mqttTopic).to.be.not.null;
+                    expect(result.mqttEndPoint.host).to.be.not.null;
+                    expect(result.mqttEndPoint.portTCP).to.be.not.null;
+                    expect(result.mqttEndPoint.portSSL).to.be.not.null;
+                    expect(result.mqttEndPoint.portWS).to.be.not.null;
+                    expect(result.mqttEndPoint.portWSS).to.be.not.null;
+                    expect(result.mqttEndPoint.ttl).to.be.not.null;
+                    done();
+                }).catch((err:Error)=>{
+                    done(err);
+                });
+            });
+        });
+        describe('with callback:', function () {
+            it("handle success response", function (done) {
+                var vendorThingID = "vendor-" + new Date().getTime();
+                var password = "password";
+                var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
+                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                au.onboardWithVendorThingID(request, (err:Error, result:any)=>{
+                    try {
+                        expect(err).to.be.null;
+                        expect(result.thingID).to.be.not.null;
+                        expect(result.accessToken).to.be.not.null;
+                        expect(result.mqttEndPoint.installationID).to.be.not.null;
+                        expect(result.mqttEndPoint.username).to.be.not.null;
+                        expect(result.mqttEndPoint.password).to.be.not.null;
+                        expect(result.mqttEndPoint.mqttTopic).to.be.not.null;
+                        expect(result.mqttEndPoint.host).to.be.not.null;
+                        expect(result.mqttEndPoint.portTCP).to.be.not.null;
+                        expect(result.mqttEndPoint.portSSL).to.be.not.null;
+                        expect(result.mqttEndPoint.portWS).to.be.not.null;
+                        expect(result.mqttEndPoint.portWSS).to.be.not.null;
+                        expect(result.mqttEndPoint.ttl).to.be.not.null;
+                        done();
+                    } catch (err) {
+                        done(err);
+                    }
+                });
             });
         });
     });
     describe('onboardWithThingID:', function () {
-        it("handle success response", function (done) {
-            apiHelper.createKiiThing().then((thing:KiiThing)=>{
-                var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
-                return au.onboardWithThingID(request);
-            }).then((result:any)=>{
-                expect(result.thingID).to.be.not.null;
-                expect(result.accessToken).to.be.not.null;
-                expect(result.mqttEndPoint.installationID).to.be.not.null;
-                expect(result.mqttEndPoint.username).to.be.not.null;
-                expect(result.mqttEndPoint.password).to.be.not.null;
-                expect(result.mqttEndPoint.mqttTopic).to.be.not.null;
-                expect(result.mqttEndPoint.host).to.be.not.null;
-                expect(result.mqttEndPoint.portTCP).to.be.not.null;
-                expect(result.mqttEndPoint.portSSL).to.be.not.null;
-                expect(result.mqttEndPoint.portWS).to.be.not.null;
-                expect(result.mqttEndPoint.portWSS).to.be.not.null;
-                expect(result.mqttEndPoint.ttl).to.be.not.null;
-                done();
-            }).catch((err:Error)=>{
-                done(err);
+        describe('with promise:', function () {
+            it("handle success response", function (done) {
+                apiHelper.createKiiThing().then((thing:KiiThing)=>{
+                    var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
+                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
+                    return au.onboardWithThingID(request);
+                }).then((result:any)=>{
+                    expect(result.thingID).to.be.not.null;
+                    expect(result.accessToken).to.be.not.null;
+                    expect(result.mqttEndPoint.installationID).to.be.not.null;
+                    expect(result.mqttEndPoint.username).to.be.not.null;
+                    expect(result.mqttEndPoint.password).to.be.not.null;
+                    expect(result.mqttEndPoint.mqttTopic).to.be.not.null;
+                    expect(result.mqttEndPoint.host).to.be.not.null;
+                    expect(result.mqttEndPoint.portTCP).to.be.not.null;
+                    expect(result.mqttEndPoint.portSSL).to.be.not.null;
+                    expect(result.mqttEndPoint.portWS).to.be.not.null;
+                    expect(result.mqttEndPoint.portWSS).to.be.not.null;
+                    expect(result.mqttEndPoint.ttl).to.be.not.null;
+                    done();
+                }).catch((err:Error)=>{
+                    done(err);
+                });
+            });
+        });
+        describe('with callback:', function () {
+            it("handle success response", function (done) {
+                apiHelper.createKiiThing().then((thing:KiiThing)=>{
+                    var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
+                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
+                    return au.onboardWithThingID(request, (err:Error, result:any)=>{
+                        try {
+                            expect(err).to.be.null;
+                            expect(result.thingID).to.be.not.null;
+                            expect(result.accessToken).to.be.not.null;
+                            expect(result.mqttEndPoint.installationID).to.be.not.null;
+                            expect(result.mqttEndPoint.username).to.be.not.null;
+                            expect(result.mqttEndPoint.password).to.be.not.null;
+                            expect(result.mqttEndPoint.mqttTopic).to.be.not.null;
+                            expect(result.mqttEndPoint.host).to.be.not.null;
+                            expect(result.mqttEndPoint.portTCP).to.be.not.null;
+                            expect(result.mqttEndPoint.portSSL).to.be.not.null;
+                            expect(result.mqttEndPoint.portWS).to.be.not.null;
+                            expect(result.mqttEndPoint.portWSS).to.be.not.null;
+                            expect(result.mqttEndPoint.ttl).to.be.not.null;
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
+                    });
+                });
             });
         });
     });
