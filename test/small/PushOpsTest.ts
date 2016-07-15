@@ -11,7 +11,6 @@ import {default as request} from '../../src/ops/Request'
 import {APIAuthor} from '../../src/APIAuthor'
 import MqttInstallationResult from '../../src/MqttInstallationResult'
 import {Errors} from '../../src/ThingIFError'
-import {promiseWhile} from './utils/PromiseUtil'
 
 import * as nock from 'nock'
 let scope : nock.Scope;
@@ -233,89 +232,92 @@ describe('Test uninstall', function () {
 });
 
 describe("Test ArgumentError for push ops", function() {
-    it("APIAuthor#installFCM when paramerter with the following cases:\
-     \n installationRegistrationID  development \
-     \n null                        null\
-     \n null                        boolean\
-     \n not empty string            null\
-     \n empty string                boolean", function(done) {
-
+    describe("Test APIAuthor#installFCM", function() {
         class TestCase {
             constructor(
                 public installationRegistrationID: string,
                 public development: boolean,
-                public succeeded: boolean,
-                public errorName?: string
+                public expectedError: string
             ){}
         }
         let tests = [
-            new TestCase(null, null, false, Errors.ArgumentError),
-            new TestCase(null, true, false, Errors.ArgumentError),
-            new TestCase("someID", null, false, Errors.ArgumentError),
-            new TestCase("", true, false, Errors.ArgumentError)
+            new TestCase(null, null, Errors.ArgumentError),
+            new TestCase(null, true, Errors.ArgumentError),
+            new TestCase("someID", null, Errors.ArgumentError),
+            new TestCase("", true, Errors.ArgumentError),
+            new TestCase(<any>6, true, Errors.ArgumentError),
+            new TestCase("someID", <any>4, Errors.ArgumentError),
+            new TestCase(<any>true, <any>"str", Errors.ArgumentError)
         ]
 
-        let i=0, loop = tests.length;
-        promiseWhile(()=>{
-            return i < loop;
-        },()=>{
-            return new P<void>((resolve, reject)=>{
-                var testCase = tests[i];
-                au.installFCM(testCase.installationRegistrationID, testCase.development).then(()=>{
-                    reject("should fail");
+        tests.forEach(function(test) {
+            it("when installationRegistrationID="+test.installationRegistrationID
+                +", development="+test.development+ ", "
+                +test.expectedError+" error should be returned",
+                function (done) {
+                au.installFCM(test.installationRegistrationID, test.development)
+                .then(()=>{
+                    done("should fail");
                 }).catch((err)=>{
-                    expect(err.name).to.equal(testCase.errorName);
-                    i++;
-                    resolve();
+                    expect(err.name).to.equal(test.expectedError);
+                    done();
                 })
             })
-        }).then(()=>{
-            done();
-        }).catch((err)=>{
-            done(err);
         })
     })
 
-    it("APIAuthor#installMqtt, when development is null", function(done) {
-        au.installMqtt(null).then(()=>{
-            done("should fail");
-        }).catch((err)=>{
-            expect(err.name).to.be.equal(Errors.ArgumentError);
-            done();
+    describe("Test APIAuthor#installMqtt", function() {
+        class TestCase {
+            constructor(
+                public development: boolean,
+                public expectedError: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, Errors.ArgumentError),
+            new TestCase(<any>"", Errors.ArgumentError) // when development is not boolean type
+        ]
+
+        tests.forEach(function(test) {
+            it("when development="+test.development+ ", "
+                +test.expectedError+" error should be returned",
+                function (done) {
+                au.installMqtt(test.development)
+                .then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(test.expectedError);
+                    done();
+                })
+            })
         })
     })
 
-    it("APIAuthor#uninstallPush, if installationID is null or empty string", function(done) {
+    describe("Test APIAuthor#uninstallPush", function() {
         class TestCase {
             constructor(
                 public installationID: string,
-                public succeeded: boolean,
-                public errorName?: string
+                public expectedError: string
             ){}
         }
         let tests = [
-            new TestCase(null, false, Errors.ArgumentError),
-            new TestCase("", false, Errors.ArgumentError)
+            new TestCase(null, Errors.ArgumentError),
+            new TestCase("", Errors.ArgumentError),
+            new TestCase(<any>5, Errors.ArgumentError) // when development is not string type
         ]
 
-        let i=0, loop = tests.length;
-        promiseWhile(()=>{
-            return i < loop;
-        },()=>{
-            return new P<void>((resolve, reject)=>{
-                var testCase = tests[i];
-                au.uninstallPush(testCase.installationID).then(()=>{
-                    reject("should fail");
+        tests.forEach(function(test) {
+            it("when installationID="+test.installationID+ ", "
+                +test.expectedError+" error should be returned",
+                function (done) {
+                au.uninstallPush(test.installationID)
+                .then(()=>{
+                    done("should fail");
                 }).catch((err)=>{
-                    expect(err.name).to.equal(testCase.errorName);
-                    i++;
-                    resolve();
+                    expect(err.name).to.equal(test.expectedError);
+                    done();
                 })
             })
-        }).then(()=>{
-            done();
-        }).catch((err)=>{
-            done(err);
         })
     })
 })
