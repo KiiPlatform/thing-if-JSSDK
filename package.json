@@ -4,8 +4,11 @@
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
   "main": "index.js",
   "scripts": {
-    "pretest": "tsc test/**/*Test.ts ./typings/globals/node/index.d.ts --target es5 --module commonjs --outDir built",
-    "test": "mocha 'built/test/**/*.js'"
+    "build-test": "tsc test/**/*Test.ts ./typings/globals/node/index.d.ts --target es5 --module commonjs --outDir built",
+    "pretest": "npm run build-test",
+    "test": "mocha 'built/test/*/*.js'",
+    "small-test": "npm run build-test; mocha 'built/test/small/*.js'",
+    "large-test": "npm run build-test; mocha 'built/test/large/*.js'"
   },
   "repository": {
     "type": "git",
