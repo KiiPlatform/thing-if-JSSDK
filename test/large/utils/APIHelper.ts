@@ -32,8 +32,7 @@ export class KiiUser {
 export class APIHelper {
     private kiiCloudBaseUrl: string;
     constructor(
-        public app: App,
-        public adminToken: string
+        public app: App
     ){
         this.kiiCloudBaseUrl = `${this.app.site}/api/apps/${this.app.appID}`
     };
@@ -80,27 +79,53 @@ export class APIHelper {
             })
         });
     }
-
     deleteKiiUser(user: KiiUser): Promise<void> {
         return new Promise<void>((resolve, reject) =>{
-           request.del(<any>{
-               url: `${this.kiiCloudBaseUrl}/users/${user.userID}`,
-               headers: {
-                   "Authorization": `Bearer ${this.adminToken}`
-               }
-           }).then((res)=>{
-               if(res.status == 204) {
-                   resolve();
-               }else{
-                   reject(newError(res));
-               }
-           }).catch((err)=>{
-               reject(err);
-           })
+            this.getAdminToken()
+            .then((adminToken:string)=>{
+                return request.del(<any>{
+                    url: `${this.kiiCloudBaseUrl}/users/${user.userID}`,
+                    headers: {
+                        "Authorization": `Bearer ${adminToken}`
+                    }
+                });
+            }).then((res)=>{
+                if(res.status == 204) {
+                    resolve();
+                }else{
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            })
         });
     }
-
-    // getAdminToken(clientID: string, clientSecret: string): Promise<>
+    getAdminToken(): Promise<string> {
+        let reqHeader = {
+            "X-Kii-AppID": this.app.appID,
+            "X-Kii-AppKey": this.app.appKey,
+            "Content-Type": "application/json"
+        };
+        return new Promise<string>((resolve, reject) =>{
+            request.post(<any>{
+                url: `${this.kiiCloudBaseUrl}/oauth2/token`,
+                headers: reqHeader,
+                body:{
+                    grant_type: "client_credentials",
+                    client_id: TestApp.CLIENT_ID,
+                    client_secret: TestApp.CLIENT_SECRET
+                }
+            }).then((res)=>{
+                if(res.status == 200){
+                    resolve(res.body.access_token);
+                }else {
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+    }
 }
 
-export const apiHelper = new APIHelper(TestApp.testApp, TestApp.TOKEN);
+export const apiHelper = new APIHelper(TestApp.testApp);

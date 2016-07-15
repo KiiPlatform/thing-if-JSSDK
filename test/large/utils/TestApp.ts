@@ -10,7 +10,7 @@ let envApp = (process.env.TestApp || "").split(":");
 describe('TestApp Configuration', () => {
     describe('#check env string', () => {
         it('should be configured', () => {
-            expect(envApp.length).to.equal(4);
+            expect(envApp.length).to.equal(5);
         });
     });
 });
@@ -18,7 +18,8 @@ describe('TestApp Configuration', () => {
 export const APPID = envApp[0];
 export const APPKEY = envApp[1];
 export const SITE = envApp[2];
-export const TOKEN = envApp[3];
+export const CLIENT_ID = envApp[3];
+export const CLIENT_SECRET = envApp[4];
 
 let baseUrl: string;
 if( SITE.toLowerCase() == "jp" ||
@@ -31,4 +32,5 @@ if( SITE.toLowerCase() == "jp" ||
     baseUrl = SITE;
 }
 
-export const testApp = new App(APPID,APPKEY, baseUrl);
+export const testApp = new App(APPID, APPKEY, baseUrl);
+
