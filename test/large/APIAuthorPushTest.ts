@@ -12,7 +12,7 @@ describe("Large Tests for Push Ops:", function () {
     let user: KiiUser;
     let au: any;
 
-    beforeEach(function(done) {
+    before(function(done) {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
             au = new thingIFSDK.APIAuthor(newUser.token, testApp);
@@ -22,7 +22,7 @@ describe("Large Tests for Push Ops:", function () {
         })
     });
 
-    afterEach(function(done) {
+    after(function(done) {
         apiHelper.deleteKiiUser(user).then(()=>{
             done();
         }).catch((err)=>{
@@ -57,25 +57,6 @@ describe("Large Tests for Push Ops:", function () {
                 done(err);
             })
         });
-
-        it("handle 400 error response", function (done) {
-            let callbacksCalled = false;
-            au.installFCM("", true, (err, installID)=>{
-                callbacksCalled = true;
-                expect(err).not.null;
-                expect((<any>err)["status"]).to.equal(400);
-                expect(installID).to.be.null;
-            }).then((installID)=>{
-                done("should fail");
-            }).catch((err)=>{
-                expect(callbacksCalled).to.true;
-                expect(err).not.null;
-                expect((<any>err)["status"]).to.equal(400);
-                done();
-            }).catch((err: Error)=>{
-                done(err);
-            });
-        });
     });
 
     describe('installMQTT:', function () {
@@ -105,47 +86,6 @@ describe("Large Tests for Push Ops:", function () {
             }).catch((err)=>{
                 done(err);
             })
-        });
-
-        it("handle 403 error response", function (done) {
-            let callbacksCalled = false;
-            au._token = "invalidToken";
-            au.installMqtt(true, (err, result)=>{
-                callbacksCalled = true;
-                expect(err).not.null;
-                expect((<any>err)["status"]).to.equal(403);
-                expect(result).to.null;
-            }).then((result)=>{
-                done("should fail");
-            }).catch((err)=>{
-                expect(callbacksCalled).to.true;
-                expect(err).not.null;
-                expect((<any>err)["status"]).to.equal(403);
-                done();
-            }).catch((err: Error)=>{
-                done(err);
-            });
-        });
-    });
-
-    describe('uninstallPush:', function () {
-
-        it("uninstall with non-existing installationID", function (done) {
-            let callbacksCalled = false;
-            au.uninstallPush(`not-existing-id-${(new Date()).getTime()}`, (err)=>{
-                expect(err).not.null;
-                expect((<any>err)["status"]).to.equal(404);
-                callbacksCalled = true;
-            }).then(()=>{
-                done("should fail");
-            }).catch((err)=>{
-                expect(callbacksCalled).to.be.true;
-                expect(err).not.null;
-                expect((<any>err)["status"]).to.equal(404);
-                done();
-            }).catch((err: Error)=>{
-                done(err);
-            });
         });
     });
 })

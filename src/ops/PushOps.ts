@@ -3,10 +3,11 @@ import {Promise} from 'es6-promise';
 import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
-import {HttpRequestError} from '../ThingIFError'
+import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import MqttInstallationResult from '../MqttInstallationResult'
 import {Response} from './Response'
 import BaseOp from './BaseOp'
+import * as KiiUtil from '../internal/KiiUtilities'
 
 export default class CommandOps extends BaseOp {
     constructor(
@@ -40,6 +41,20 @@ export default class CommandOps extends BaseOp {
         development: boolean
         ): Promise<string> {
         return new Promise<string>((resolve, reject) => {
+            if (!installationRegistrationID){
+                reject(new ThingIFError(Errors.ArgumentError, "installationRegistrationID is null or empty"));
+                return;
+            }else if (!KiiUtil.isString(installationRegistrationID)){
+                reject(new ThingIFError(Errors.ArgumentError, "installationRegistrationID is not a string"));
+                return;
+            }
+            if (!development){
+                reject(new ThingIFError(Errors.ArgumentError, "development is null"));
+                return;
+            }else if (!KiiUtil.isBoolean(development)){
+                reject(new ThingIFError(Errors.ArgumentError, "development is not boolean"));
+                return;
+            }
             let requestBody = {
                 installationRegistrationID: installationRegistrationID,
                 deviceType: "ANDROID",
@@ -56,25 +71,25 @@ export default class CommandOps extends BaseOp {
     }
 
     installMqtt(development: boolean): Promise<MqttInstallationResult> {
-
         return new Promise<MqttInstallationResult>((resolve, reject) => {
+            if (!development){
+                reject(new ThingIFError(Errors.ArgumentError, "development is null"));
+                return;
+            }else if(!KiiUtil.isBoolean(development)){
+                reject(new ThingIFError(Errors.ArgumentError, "development is not boolean"));
+                return;
+            }
+
             let requestBody = {
                 deviceType: "MQTT",
                 development: development
             };
             this.installPush(requestBody).then((res)=>{
                 let body = res.body;
-                let installationID = (<any>body).installationID;
-                let installationRegistrationID = (<any>body).installationRegistrationID;
-                if(!!installationID && !! installationRegistrationID) {
-                    let result = new MqttInstallationResult(installationID, installationRegistrationID);
+                    let result = new MqttInstallationResult(
+                        (<any>body).installationID,
+                        (<any>body).installationRegistrationID);
                     resolve(result);
-                }else{
-                    let err = new Error();
-                    err.name = "InvalidResponse"
-                    err.message = "No installationID or installationRegistrationID in response: "+ JSON.stringify(res);
-                    reject(err);
-                }
             }).catch((err)=>{
                 reject(err);
             })
@@ -82,9 +97,15 @@ export default class CommandOps extends BaseOp {
     }
 
     uninstall(installationID: string): Promise<void> {
-
         let url = `${this.au.app.getKiiCloudBaseUrl()}/installations/${installationID}`;
         return new Promise<void>((resolve, reject) => {
+            if (!installationID){
+                reject(new ThingIFError(Errors.ArgumentError, "installationID is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(installationID)){
+                reject(new ThingIFError(Errors.ArgumentError, "installationID is not string"));
+                return;
+            }
             request({
                 method: "DELETE",
                 headers: this.getHeaders(),

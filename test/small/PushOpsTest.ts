@@ -1,6 +1,8 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 /// <reference path="../../typings/modules/nock/index.d.ts" />
+/// <reference path="../../typings/modules/es6-promise/index.d.ts" />
+import {Promise as P} from 'es6-promise'
 import TestApp from './TestApp'
 import {expect} from 'chai';
 import {Response} from '../../src/ops/Response'
@@ -8,6 +10,7 @@ import PushOps from '../../src/ops/PushOps'
 import {default as request} from '../../src/ops/Request'
 import {APIAuthor} from '../../src/APIAuthor'
 import MqttInstallationResult from '../../src/MqttInstallationResult'
+import {Errors} from '../../src/ThingIFError'
 
 import * as nock from 'nock'
 let scope : nock.Scope;
@@ -227,3 +230,94 @@ describe('Test uninstall', function () {
         });
     });
 });
+
+describe("Test ArgumentError for push ops", function() {
+    describe("Test APIAuthor#installFCM", function() {
+        class TestCase {
+            constructor(
+                public installationRegistrationID: string,
+                public development: boolean,
+                public expectedError: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, null, Errors.ArgumentError),
+            new TestCase(null, true, Errors.ArgumentError),
+            new TestCase("someID", null, Errors.ArgumentError),
+            new TestCase("", true, Errors.ArgumentError),
+            new TestCase(<any>6, true, Errors.ArgumentError),
+            new TestCase("someID", <any>4, Errors.ArgumentError),
+            new TestCase(<any>true, <any>"str", Errors.ArgumentError)
+        ]
+
+        tests.forEach(function(test) {
+            it("when installationRegistrationID="+test.installationRegistrationID
+                +", development="+test.development+ ", "
+                +test.expectedError+" error should be returned",
+                function (done) {
+                au.installFCM(test.installationRegistrationID, test.development)
+                .then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(test.expectedError);
+                    done();
+                })
+            })
+        })
+    })
+
+    describe("Test APIAuthor#installMqtt", function() {
+        class TestCase {
+            constructor(
+                public development: boolean,
+                public expectedError: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, Errors.ArgumentError),
+            new TestCase(<any>"", Errors.ArgumentError) // when development is not boolean type
+        ]
+
+        tests.forEach(function(test) {
+            it("when development="+test.development+ ", "
+                +test.expectedError+" error should be returned",
+                function (done) {
+                au.installMqtt(test.development)
+                .then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(test.expectedError);
+                    done();
+                })
+            })
+        })
+    })
+
+    describe("Test APIAuthor#uninstallPush", function() {
+        class TestCase {
+            constructor(
+                public installationID: string,
+                public expectedError: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, Errors.ArgumentError),
+            new TestCase("", Errors.ArgumentError),
+            new TestCase(<any>5, Errors.ArgumentError) // when development is not string type
+        ]
+
+        tests.forEach(function(test) {
+            it("when installationID="+test.installationID+ ", "
+                +test.expectedError+" error should be returned",
+                function (done) {
+                au.uninstallPush(test.installationID)
+                .then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(test.expectedError);
+                    done();
+                })
+            })
+        })
+    })
+})
