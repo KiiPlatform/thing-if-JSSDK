@@ -232,7 +232,7 @@ describe('Test uninstall', function () {
     });
 });
 
-describe("Test ArgumentError", function() {
+describe("Test ArgumentError for push ops", function() {
     it("APIAuthor#installFCM when paramerter with the following cases:\
      \n installationRegistrationID  development \
      \n null                        null\
