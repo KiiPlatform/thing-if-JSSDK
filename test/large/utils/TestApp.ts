@@ -3,7 +3,6 @@
 import {expect} from 'chai';
 import {Site} from '../../../src/Site'
 import {App} from '../../../src/App'
-import {APIHelper} from './APIHelper'
 declare var process: any
 
 let envApp = (process.env.TestApp || "").split(":");
