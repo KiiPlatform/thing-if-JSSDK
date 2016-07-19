@@ -7,7 +7,7 @@ import {APIAuthor} from '../APIAuthor';
 import BaseOp from './BaseOp'
 import {Trigger, TriggersWhat} from '../Trigger'
 import {QueryResult} from '../QueryResult'
-import {CommandTriggerRequest, ServerCodeTriggerRequest} from '../RequestObjects'
+import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../RequestObjects'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import {TypedID} from '../TypedID'
 
@@ -182,10 +182,35 @@ export default class TriggerOps extends BaseOp {
         });
     }
 
-    listTriggers(listOptions?: Object): Promise<QueryResult<Trigger>> {
-        //TODO: implment me
+    listTriggers(listOptions?: ListQueryOptions): Promise<QueryResult<Trigger>> {
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
+        var queryParams:string = "";
+        if (listOptions.paginationKey) {
+            queryParams = "?paginationKey=" + listOptions.paginationKey;
+        }
+        if (listOptions.bestEffortLimit) {
+            if (queryParams) {
+                queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
+            } else {
+                queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
+            }
+        }
+        url += queryParams;
         return new Promise<QueryResult<Trigger>>((resolve, reject)=>{
-            resolve(null);
+            var headers: Object = this.getHeaders();
+            var req = {
+                method: "GET",
+                headers: headers,
+                url: url
+            };
+            request(req).then((res: Response)=>{
+                var triggers: Array<Trigger> = [];
+                // TODO
+                var paginationKey = (<any>res).body.nextPaginationKey;
+                resolve(new QueryResult(triggers, paginationKey))
+            }).catch((err)=>{
+                reject(err);
+            });
         })
     }
 
