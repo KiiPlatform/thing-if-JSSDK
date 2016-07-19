@@ -4,7 +4,7 @@ import {Promise} from 'es6-promise';
 import {App} from './App';
 import {Command} from './Command';
 import {Trigger} from './Trigger'
-import ServerCodeResult from './ServerCodeResult'
+import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'

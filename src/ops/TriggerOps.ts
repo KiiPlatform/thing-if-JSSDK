@@ -10,6 +10,7 @@ import {QueryResult} from '../QueryResult'
 import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../RequestObjects'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import {TypedID} from '../TypedID'
+import {ServerCodeResult} from '../ServerCodeResult'
 
 export default class TriggerOps extends BaseOp {
     constructor(
@@ -185,14 +186,16 @@ export default class TriggerOps extends BaseOp {
     listTriggers(listOptions?: ListQueryOptions): Promise<QueryResult<Trigger>> {
         let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
         var queryParams:string = "";
-        if (listOptions.paginationKey) {
-            queryParams = "?paginationKey=" + listOptions.paginationKey;
-        }
-        if (listOptions.bestEffortLimit) {
-            if (queryParams) {
-                queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
-            } else {
-                queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
+        if (listOptions) {
+            if (listOptions.paginationKey) {
+                queryParams = "?paginationKey=" + listOptions.paginationKey;
+            }
+            if (listOptions.bestEffortLimit) {
+                if (queryParams) {
+                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
+                } else {
+                    queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
+                }
             }
         }
         url += queryParams;
@@ -211,15 +214,42 @@ export default class TriggerOps extends BaseOp {
             }).catch((err)=>{
                 reject(err);
             });
-        })
+        });
     }
 
     listServerCodeResults(
         triggerID: string,
-        listOptions?: Object): Promise<Object> {
-        //TODO: implment me
-        return new Promise<Object>((resolve, reject)=>{
-            resolve({});
-        })
+        listOptions?: ListQueryOptions): Promise<QueryResult<ServerCodeResult>> {
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/results/server-code`;
+        var queryParams:string = "";
+        if (listOptions) {
+            if (listOptions.paginationKey) {
+                queryParams = "?paginationKey=" + listOptions.paginationKey;
+            }
+            if (listOptions.bestEffortLimit) {
+                if (queryParams) {
+                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
+                } else {
+                    queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
+                }
+            }
+        }
+        url += queryParams;
+        return new Promise<QueryResult<ServerCodeResult>>((resolve, reject)=>{
+            var headers: Object = this.getHeaders();
+            var req = {
+                method: "GET",
+                headers: headers,
+                url: url
+            };
+            request(req).then((res: Response)=>{
+                var results: Array<ServerCodeResult> = [];
+                // TODO
+                var paginationKey = (<any>res).body.nextPaginationKey;
+                resolve(new QueryResult(results, paginationKey))
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
     }
 }
