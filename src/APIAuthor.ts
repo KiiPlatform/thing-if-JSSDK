@@ -89,7 +89,7 @@ export class APIAuthor {
         target: TypedID,
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        return PromiseWrapper.promise((new CommandOps(this, target.toString())).postNewCommand(command),onCompletion);
+        return PromiseWrapper.promise((new CommandOps(this, target)).postNewCommand(command),onCompletion);
     }
 
     /** Retrieve command with specified ID.
@@ -102,7 +102,7 @@ export class APIAuthor {
         target: TypedID,
         commandID: string,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        return PromiseWrapper.promise((new CommandOps(this, target.toString())).getCommand(commandID), onCompletion);
+        return PromiseWrapper.promise((new CommandOps(this, target)).getCommand(commandID), onCompletion);
     }
 
     /** Retrieve commands.
@@ -115,7 +115,7 @@ export class APIAuthor {
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, commands:QueryResult<Command>)=> void): Promise<QueryResult<Command>>{
-        return PromiseWrapper.promise((new CommandOps(this, target.toString())).listCommands(listOpitons), onCompletion);
+        return PromiseWrapper.promise((new CommandOps(this, target)).listCommands(listOpitons), onCompletion);
     }
 
     /** Post a new command trigger.

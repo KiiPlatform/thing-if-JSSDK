@@ -56,13 +56,17 @@ export class OnboardEndnodeWithGatewayRequest {
 export class PostCommandRequest {
     public issuer: string;
     constructor(
-        public schemaName: string,
+        public schema: string,
         public schemaVersion: number,
-        public actions: Object,
-        issuerType: TypedID,
+        public actions: Array<Object>,
+        issuerID: TypedID,
         public title?: string,
         public description?: string,
-        public metaData?: Object){}
+        public metaData?: Object){
+            if(!!issuerID && !!issuerID.id && !!issuerID.type){
+                this.issuer = issuerID.toString();
+            }
+        }
 }
 
 /** ListQueryOptions contains the optional parameters when request list of endpoints */
