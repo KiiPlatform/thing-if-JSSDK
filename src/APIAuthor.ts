@@ -128,7 +128,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postTrigger(requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postCommandTrigger(requestObject), onCompletion);
     }
 
     /** Post a new servercode trigger.
@@ -141,7 +141,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postTrigger(requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postServerCodeTriggger(requestObject), onCompletion);
     }
 
     /** Retrieve trigger.
@@ -211,8 +211,8 @@ export class APIAuthor {
     deleteTrigger(
         target: TypedID,
         triggerID: string,
-        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).deleteTrigger(triggerID), onCompletion);
+        onCompletion?: (err: Error, triggerID:string)=> void): Promise<string>{
+        return PromiseWrapper.promise((new TriggerOps(this, target.toString())).deleteTrigger(triggerID), onCompletion);
     }
 
     /** Retrive triggers.

@@ -246,7 +246,7 @@ export class ThingIFAPI {
      */
     deleteTrigger(
         triggerID: string,
-        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, triggerID:string)=> void): Promise<string>{
         return this._au.deleteTrigger(this.target, triggerID, onCompletion);
     }
 
