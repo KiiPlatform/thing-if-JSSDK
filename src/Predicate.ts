@@ -2,8 +2,8 @@ import {Condition} from './Condition';
 import {TriggersWhen} from './Trigger';
 
 /** Represent Predicate for a Trigger */
-export abstract class Predicate {
-    abstract getEventSource(): EventSource;
+export interface Predicate {
+    getEventSource(): EventSource;
 }
 export enum EventSource {
     STATES,
@@ -11,31 +11,25 @@ export enum EventSource {
     SCHEDULE_ONCE
 }
 /** Represent StatePredicate for a Trigger */
-export class StatePredicate extends Predicate {
+export class StatePredicate implements Predicate {
     constructor(
         public condition: Condition,
         public triggersWhen: TriggersWhen
-    ) {
-        super();
-    }
+    ) {}
     getEventSource(): EventSource {
         return EventSource.STATES;
     }
 }
 /** Represent SchedulePredicate for a Trigger */
-export class SchedulePredicate extends Predicate {
-    constructor(public cronExpression: string) {
-        super();
-    }
+export class SchedulePredicate implements Predicate {
+    constructor(public cronExpression: string) {}
     getEventSource(): EventSource {
         return EventSource.SCHEDULE;
     }
 }
 /** Represent ScheduleOncePredicate for a Trigger */
-export class ScheduleOncePredicate extends Predicate {
-    constructor(public scheduleAt: number) {
-        super();
-    }
+export class ScheduleOncePredicate implements Predicate {
+    constructor(public scheduleAt: number) {}
     getEventSource(): EventSource {
         return EventSource.SCHEDULE_ONCE;
     }

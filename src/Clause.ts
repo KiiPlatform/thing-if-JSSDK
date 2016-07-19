@@ -1,13 +1,11 @@
-export abstract class Clause {
-    abstract toJson(): any;
+export interface Clause {
+    toJson(): any;
 }
-export class Equals extends Clause {
+export class Equals implements Clause {
     constructor(
         public field: string,
         public value: string|number|boolean
-    ) {
-        super();
-    }
+    ) {}
     toJson(): any {
         return {
             type: "eq",
@@ -16,13 +14,11 @@ export class Equals extends Clause {
         };
     }
 }
-export class NotEquals extends Clause {
+export class NotEquals implements Clause {
     constructor(
         public field: string,
         public value: string|number|boolean
-    ) {
-        super();
-    }
+    ) {}
     toJson(): any {
         return {
             type: "not",
@@ -34,10 +30,9 @@ export class NotEquals extends Clause {
         };
     }
 }
-export class And extends Clause {
+export class And implements Clause {
     public clauses: Clause[];
     constructor(...clauses: Clause[]) {
-        super();
         this.clauses = clauses;
     }
     toJson(): any {
@@ -50,10 +45,9 @@ export class And extends Clause {
         return json;
     }
 }
-export class Or extends Clause {
+export class Or implements Clause {
     public clauses: Clause[];
     constructor(...clauses: Clause[]) {
-        super();
         this.clauses = clauses;
     }
     toJson(): any {
@@ -66,16 +60,14 @@ export class Or extends Clause {
         return json;
     }
 }
-export class Range extends Clause {
+export class Range implements Clause {
     constructor(
         public field: string,
         public upperLimit: number,
         public upperIncluded: boolean,
         public lowerLimit: number,
         public lowerIncluded: boolean
-    ) {
-        super();
-    }
+    ) {}
     static greaterThan(field: string, lowerLimit: number): Range {
         return new Range(field, null, null, lowerLimit, false);
     }
