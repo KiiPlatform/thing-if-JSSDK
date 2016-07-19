@@ -132,6 +132,28 @@ export class APIHelper {
             })
         });
     }
+
+    deleteKiiThing(thingID: string): Promise<void> {
+        return new Promise<void>((resolve, reject) =>{
+            this.getAdminToken()
+            .then((adminToken:string)=>{
+                return request.del(<any>{
+                    url: `${this.kiiCloudBaseUrl}/things/${thingID}`,
+                    headers: {
+                        "Authorization": `Bearer ${adminToken}`
+                    }
+                });
+            }).then((res)=>{
+                if(res.status == 204) {
+                    resolve();
+                }else{
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+    }
     getAdminToken(): Promise<string> {
         let reqHeader = {
             "X-Kii-AppID": this.app.appID,
