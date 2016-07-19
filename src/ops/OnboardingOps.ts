@@ -19,12 +19,15 @@ export default class OnboardingOps extends BaseOp {
         return new Promise<OnboardingResult>((resolve, reject)=>{
             if (!onboardRequest.thingID) {
                 reject(new ThingIFError(Errors.ArgumentError, "thingID is null or empty"));
+                return;
             }
             if (!onboardRequest.thingPassword) {
                 reject(new ThingIFError(Errors.ArgumentError, "thingPassword is null or empty"));
+                return;
             }
             if (!onboardRequest.owner) {
                 reject(new ThingIFError(Errors.ArgumentError, "owner is null or empty"));
+                return;
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithThingIDByOwner+json",
@@ -41,12 +44,15 @@ export default class OnboardingOps extends BaseOp {
         return new Promise<OnboardingResult>((resolve, reject)=>{
             if (!onboardRequest.vendorThingID) {
                 reject(new ThingIFError(Errors.ArgumentError, "vendorThingID is null or empty"));
+                return;
             }
             if (!onboardRequest.thingPassword) {
                 reject(new ThingIFError(Errors.ArgumentError, "thingPassword is null or empty"));
+                return;
             }
             if (!onboardRequest.owner) {
                 reject(new ThingIFError(Errors.ArgumentError, "owner is null or empty"));
+                return;
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json",
