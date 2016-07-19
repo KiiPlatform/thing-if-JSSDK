@@ -44,4 +44,17 @@ describe("Test KiiUtilities:", function() {
             expect(KiiUtil.isBoolean({})).to.be.false;
         })
     })
+
+    describe("test KiiUtilities#isObject", function() {
+        it("should return true, when parameter is object", function() {
+            expect(KiiUtil.isObject({})).to.be.true;
+            expect(KiiUtil.isObject({"key": "value"})).to.be.true;
+        })
+        it("should return false, when parameter is not object", function() {
+            expect(KiiUtil.isObject(new Date())).to.be.false;
+            expect(KiiUtil.isObject("string")).to.be.false;
+            expect(KiiUtil.isObject(5.6)).to.be.false;
+            expect(KiiUtil.isObject(true)).to.be.false;
+        })
+    })
 })
