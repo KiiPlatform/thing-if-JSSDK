@@ -18,6 +18,7 @@ import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
+import {QueryResult} from './QueryResult'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
@@ -140,7 +141,7 @@ export class ThingIFAPI {
      */
     listCommands(
         listOpitons?: Options.ListQueryOptions,
-        onCompletion?: (err: Error, commands:Array<Command>)=> void): Promise<Array<Command>>{
+        onCompletion?: (err: Error, commands:QueryResult<Command>)=> void): Promise<QueryResult<Command>>{
         return this._au.listCommands(this.target, listOpitons, onCompletion);
     }
 
@@ -257,7 +258,7 @@ export class ThingIFAPI {
      */
     listTriggers(
         listOpitons?: Options.ListQueryOptions,
-        onCompletion?: (err: Error, triggers:Array<Trigger>)=> void): Promise<Array<Trigger>>{
+        onCompletion?: (err: Error, triggers:QueryResult<Trigger>)=> void): Promise<QueryResult<Trigger>>{
         return this._au.listTriggers(this.target, listOpitons, onCompletion);
     }
 
@@ -273,7 +274,7 @@ export class ThingIFAPI {
     listServerCodeExecutionResults(
         triggerID: string,
         listOpitons?: Options.ListQueryOptions,
-        onCompletion?: (err: Error, results:Array<ServerCodeResult>)=> void): Promise<Array<ServerCodeResult>>{
+        onCompletion?: (err: Error, results:QueryResult<ServerCodeResult>)=> void): Promise<QueryResult<ServerCodeResult>>{
         return this._au.listServerCodeExecutionResults(this.target, triggerID, listOpitons, onCompletion);
     }
 
