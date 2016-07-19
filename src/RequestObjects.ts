@@ -1,6 +1,6 @@
 
-import Predicate from './Predicate'
-import ServerCode from './ServerCode'
+import {Predicate} from './Predicate'
+import {ServerCode} from './ServerCode'
 import {TypedID} from './TypedID'
 
 /** OnboardWithVendorThingIDRequest contains necessary fields to request onboarding
