@@ -19,7 +19,7 @@ let owner = new TypedID(Types.User, "userid-01234");
 let au = new APIAuthor(ownerToken, testApp.app);
 let onboardingOps = new OnboardingOps(au);
 
-describe('OnboardingOps', function () {
+describe('Test OnboardingOps', function () {
 
     let path = `/thing-if/apps/${testApp.appID}/onboardings`;
     let responseBody = {
@@ -76,61 +76,6 @@ describe('OnboardingOps', function () {
                 done(err);
             });
         });
-        it("should handle error when thingID is null", function (done) {
-            var request = new RequestObjects.OnboardWithThingIDRequest(null, "password", owner);
-            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("thingID is null or empty");
-                done();
-            });
-        });
-        it("should handle error when thingID is empty string", function (done) {
-            var request = new RequestObjects.OnboardWithThingIDRequest("", "password", owner);
-            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("thingID is null or empty");
-                done();
-            });
-        });
-        it("should handle error when password is null", function (done) {
-            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", null, owner);
-            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("thingPassword is null or empty");
-                done();
-            });
-        });
-        it("should handle error when password is empty string", function (done) {
-            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "", owner);
-            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("thingPassword is null or empty");
-                done();
-            });
-        });
-        it("should handle error when owner is null", function (done) {
-            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", null);
-            (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("owner is null or empty");
-                done();
-            });
-        });
         it("should handle error when server returned 403 error", function (done) {
             let errResponse = {
                 "errorCode": "WRONG_TOKEN",
@@ -185,61 +130,6 @@ describe('OnboardingOps', function () {
                 done(err);
             });
         });
-        it("should handle error when vendorThingID is null", function (done) {
-            var request = new RequestObjects.OnboardWithVendorThingIDRequest(null, "password", owner);
-            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("vendorThingID is null or empty");
-                done();
-            });
-        });
-        it("should handle error when vendorThingID is empty string", function (done) {
-            var request = new RequestObjects.OnboardWithVendorThingIDRequest("", "password", owner);
-            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("vendorThingID is null or empty");
-                done();
-            });
-        });
-        it("should handle error when password is null", function (done) {
-            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", null, owner);
-            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("thingPassword is null or empty");
-                done();
-            });
-        });
-        it("should handle error when password is empty string", function (done) {
-            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "", owner);
-            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("thingPassword is null or empty");
-                done();
-            });
-        });
-        it("should handle error when owner is null", function (done) {
-            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", null);
-            (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
-                done("should fail");
-            }).catch((err:ThingIFError)=>{
-                expect(err).be.not.null;
-                expect(err.name).to.equals(Errors.ArgumentError);
-                expect(err.message).to.equals("owner is null or empty");
-                done();
-            });
-        });
         it("should handle error when server returned 403 error", function (done) {
             let errResponse = {
                 "errorCode": "WRONG_TOKEN",
@@ -268,6 +158,72 @@ describe('OnboardingOps', function () {
                 expect(err.name).to.equals(Errors.HttpError);
                 expect(err.message).to.equals(errResponse.message);
                 done();
+            });
+        });
+    });
+});
+describe("Test ArgumentError for OnboardingOps", function() {
+    describe("#onboardWithThingID() with promise", function() {
+        class TestCase {
+            constructor(
+                public thingID: string,
+                public thingPassword: string,
+                public owner: TypedID,
+                public expectedError: string,
+                public expectedErrorMsg: string,
+                public description: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, "passowrd", owner, Errors.ArgumentError, "thingID is null or empty", "should handle error when thingID is null"),
+            new TestCase("", "passowrd", owner, Errors.ArgumentError, "thingID is null or empty", "should handle error when thingID is empty string"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", null, owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "", owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
+        ]
+        tests.forEach(function(test) {
+            it(test.description, function(done){
+                var request = new RequestObjects.OnboardWithThingIDRequest(test.thingID, test.thingPassword, test.owner);
+                (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
+                    done("should fail");
+                }).catch((err:ThingIFError)=>{
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(test.expectedError);
+                    expect(err.message).to.equals(test.expectedErrorMsg);
+                    done();
+                });
+            });
+        });
+    });
+    describe("#onboardWithVendorThingID() with promise", function() {
+        class TestCase {
+            constructor(
+                public vendorThingID: string,
+                public thingPassword: string,
+                public owner: TypedID,
+                public expectedError: string,
+                public expectedErrorMsg: string,
+                public description: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, "passowrd", owner, Errors.ArgumentError, "vendorThingID is null or empty", "should handle error when vendorThingID is null"),
+            new TestCase("", "passowrd", owner, Errors.ArgumentError, "vendorThingID is null or empty", "should handle error when vendorThingID is empty string"),
+            new TestCase("01234-56789-abcdefg-hijklm", null, owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
+            new TestCase("01234-56789-abcdefg-hijklm", "", owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
+            new TestCase("01234-56789-abcdefg-hijklm", "passowrd", null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
+        ]
+        tests.forEach(function(test) {
+            it(test.description, function(done){
+                var request = new RequestObjects.OnboardWithVendorThingIDRequest(test.vendorThingID, test.thingPassword, test.owner);
+                (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
+                    done("should fail");
+                }).catch((err:ThingIFError)=>{
+                    expect(err).be.not.null;
+                    expect(err.name).to.equals(test.expectedError);
+                    expect(err.message).to.equals(test.expectedErrorMsg);
+                    done();
+                });
             });
         });
     });

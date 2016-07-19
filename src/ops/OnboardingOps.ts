@@ -24,7 +24,7 @@ export default class OnboardingOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "thingPassword is null or empty"));
             }
             if (!onboardRequest.owner) {
-                reject(new ThingIFError(Errors.ArgumentError, "owner is null or empty"));
+                reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithThingIDByOwner+json",
@@ -46,7 +46,7 @@ export default class OnboardingOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "thingPassword is null or empty"));
             }
             if (!onboardRequest.owner) {
-                reject(new ThingIFError(Errors.ArgumentError, "owner is null or empty"));
+                reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json",
