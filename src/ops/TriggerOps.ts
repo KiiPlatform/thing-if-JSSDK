@@ -9,11 +9,12 @@ import {Trigger, TriggersWhat} from '../Trigger'
 import {QueryResult} from '../QueryResult'
 import {CommandTriggerRequest, ServerCodeTriggerRequest} from '../RequestObjects'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
+import {TypedID} from '../TypedID'
 
 export default class TriggerOps extends BaseOp {
     constructor(
         public au: APIAuthor,
-        public target: string
+        public target: TypedID
     ){
         super(au);
     }
@@ -47,7 +48,7 @@ export default class TriggerOps extends BaseOp {
         });
     }
     private postTriggger(requestBody: Object): Promise<Trigger> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers`;
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
         return new Promise<Trigger>((resolve, reject)=>{
             var headers: Object = this.addHeader("Content-Type", "application/json");
             var req = {
@@ -69,7 +70,7 @@ export default class TriggerOps extends BaseOp {
     }
 
     getTrigger(triggerID: string): Promise<Trigger> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}`;
         return new Promise<Trigger>((resolve, reject)=>{
             var headers: Object = this.getHeaders();
             var req = {
@@ -120,7 +121,7 @@ export default class TriggerOps extends BaseOp {
     }
 
     private patchTriggger(triggerID: string, requestBody: Object): Promise<Trigger> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}`;
         return new Promise<Trigger>((resolve, reject)=>{
             var headers: Object = this.addHeader("Content-Type", "application/json");
             var req = {
@@ -144,7 +145,7 @@ export default class TriggerOps extends BaseOp {
         triggerID: string,
         enable: boolean): Promise<Trigger> {
         var operation = (enable? "enable" : "disable");
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}}/${operation}`;
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}}/${operation}`;
         return new Promise<Trigger>((resolve, reject) => {
             var headers: Object = this.getHeaders();
             var req = {
@@ -165,7 +166,7 @@ export default class TriggerOps extends BaseOp {
     }
 
     deleteTrigger(triggerID: string): Promise<string> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}`;
         return new Promise<string>((resolve, reject) => {
             var headers: Object = this.getHeaders();
             var req = {
