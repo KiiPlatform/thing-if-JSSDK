@@ -8,6 +8,7 @@ import BaseOp from './BaseOp'
 import {Trigger, TriggersWhat} from '../Trigger'
 import {QueryResult} from '../QueryResult'
 import {CommandTriggerRequest, ServerCodeTriggerRequest} from '../RequestObjects'
+import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 
 export default class TriggerOps extends BaseOp {
     constructor(
@@ -58,10 +59,25 @@ export default class TriggerOps extends BaseOp {
     enableTrigger(
         triggerID: string,
         enable: boolean): Promise<Trigger> {
-        //TODO: implment me
-        return new Promise<Trigger>((resolve, reject)=>{
-            resolve(null);
-        })
+        var operation = (enable? "enable" : "disable");
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}}/${operation}`;
+        return new Promise<Trigger>((resolve, reject) => {
+            var headers: Object = this.getHeaders();
+            var req = {
+                method: "PUT",
+                headers: headers,
+                url: url
+            };
+            request(req).then((res: Response)=>{
+                this.getTrigger(triggerID).then((trigger:Trigger)=>{
+                    resolve(trigger);
+                }).catch((err:ThingIFError)=>{
+                    reject(err);
+                })
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
     }
 
     deleteTrigger(triggerID: string): Promise<string> {
