@@ -1,7 +1,8 @@
 
 export const Errors = {
     ArgumentError: "ArgumentError",
-    HttpError: "HttpRequestError"
+    HttpError: "HttpRequestError",
+    IlllegalStateError: "IlllegalStateError"
 }
 
 export class ThingIFError {
