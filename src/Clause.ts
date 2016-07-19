@@ -25,7 +25,7 @@ export class NotEquals extends Clause {
     }
     toJson(): any {
         return {
-            tyep: "not",
+            type: "not",
             clause: {
                 type: "eq",
                 field: this.field,
@@ -41,7 +41,7 @@ export class And extends Clause {
         this.clauses = clauses;
     }
     toJson(): any {
-        var json: any = {tyep: "and"};
+        var json: any = {type: "and"};
         var clauses :Array<Clause> = new Array<Clause>();
         for (var clause of this.clauses) {
             clauses.push(clause.toJson());
@@ -57,7 +57,7 @@ export class Or extends Clause {
         this.clauses = clauses;
     }
     toJson(): any {
-        var json: any = {tyep: "or"};
+        var json: any = {type: "or"};
         var clauses :Array<Clause> = new Array<Clause>();
         for (var clause of this.clauses) {
             clauses.push(clause.toJson());
@@ -89,7 +89,7 @@ export class Range extends Clause {
         return new Range(field, upperLimit, true, null, null);
     }
     toJson(): any {
-        var json: any = {tyep: "range"};
+        var json: any = {type: "range", field: this.field};
         if (this.upperLimit != null && this.upperLimit != undefined) {
             json["upperLimit"] = this.upperLimit;
         }
