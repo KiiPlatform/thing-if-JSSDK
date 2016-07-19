@@ -85,15 +85,61 @@ export default class TriggerOps extends BaseOp {
         })
     }
 
-    patchTrigger(
+    patchCommandTrigger(
         triggerID: string,
-        requestObject: Object): Promise<Trigger> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
+        requestObject: CommandTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
-            resolve(null);
-        })
+            var resuestBody = {
+                predicate: requestObject.predicate.toJson(),
+                triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
+                // command: new Command().toJson()
+            }
+            this.patchTriggger(triggerID, resuestBody).then((result)=>{
+                resolve(result);
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
     }
 
+    patchServerCodeTrigger(
+        triggerID: string,
+        requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
+        return new Promise<Trigger>((resolve, reject)=>{
+            var resuestBody = {
+                predicate: requestObject.predicate.toJson(),
+                triggersWhat: TriggersWhat[TriggersWhat.SERVER_CODE],
+                serverCode: requestObject.serverCode.toJson()
+            }
+            this.patchTriggger(triggerID, resuestBody).then((result)=>{
+                resolve(result);
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
+    }
+
+    private patchTriggger(triggerID: string, requestBody: Object): Promise<Trigger> {
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
+        return new Promise<Trigger>((resolve, reject)=>{
+            var headers: Object = this.addHeader("Content-Type", "application/json");
+            var req = {
+                method: "PATCH",
+                headers: headers,
+                url: url,
+                body: requestBody
+            };
+            request(req).then((res: Response)=>{
+                this.getTrigger((<any>res).body.triggerID).then((trigger:Trigger)=>{
+                    resolve(trigger);
+                }).catch((err:ThingIFError)=>{
+                    reject(err);
+                })
+            }).catch((err)=>{
+                reject(err);
+            });
+        })
+    }
     enableTrigger(
         triggerID: string,
         enable: boolean): Promise<Trigger> {

@@ -215,7 +215,7 @@ export class ThingIFAPI {
      */
    patchServerCodeTrigger(
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return this._au.patchServerCodeTrigger(this.target, triggerID, requestObject, onCompletion);
     }

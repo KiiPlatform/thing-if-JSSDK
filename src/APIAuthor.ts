@@ -169,7 +169,7 @@ export class APIAuthor {
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchCommandTrigger(triggerID, requestObject), onCompletion);
     }
 
     /** Update a servercode trigger.
@@ -182,9 +182,9 @@ export class APIAuthor {
    patchServerCodeTrigger(
         target: TypedID,
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchServerCodeTrigger(triggerID, requestObject), onCompletion);
     }
 
     /** Enable/Disable a specified trigger.
