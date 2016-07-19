@@ -8,6 +8,7 @@ import {OnboardWithThingIDRequest, OnboardWithVendorThingIDRequest} from '../Req
 import {OnboardingResult} from '../OnboardingResult'
 import {MqttEndpoint} from '../OnboardingResult'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
+import * as KiiUtil from '../internal/KiiUtilities'
 
 import BaseOp from './BaseOp'
 export default class OnboardingOps extends BaseOp {
@@ -19,12 +20,21 @@ export default class OnboardingOps extends BaseOp {
         return new Promise<OnboardingResult>((resolve, reject)=>{
             if (!onboardRequest.thingID) {
                 reject(new ThingIFError(Errors.ArgumentError, "thingID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(onboardRequest.thingID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "thingID is not string"));
+                return;
             }
             if (!onboardRequest.thingPassword) {
                 reject(new ThingIFError(Errors.ArgumentError, "thingPassword is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(onboardRequest.thingPassword)) {
+                reject(new ThingIFError(Errors.ArgumentError, "thingPassword is not string"));
+                return;
             }
             if (!onboardRequest.owner) {
                 reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
+                return;
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithThingIDByOwner+json",
@@ -41,12 +51,21 @@ export default class OnboardingOps extends BaseOp {
         return new Promise<OnboardingResult>((resolve, reject)=>{
             if (!onboardRequest.vendorThingID) {
                 reject(new ThingIFError(Errors.ArgumentError, "vendorThingID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(onboardRequest.vendorThingID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "vendorThingID is not string"));
+                return;
             }
             if (!onboardRequest.thingPassword) {
                 reject(new ThingIFError(Errors.ArgumentError, "thingPassword is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(onboardRequest.thingPassword)) {
+                reject(new ThingIFError(Errors.ArgumentError, "thingPassword is not string"));
+                return;
             }
             if (!onboardRequest.owner) {
                 reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
+                return;
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json",
