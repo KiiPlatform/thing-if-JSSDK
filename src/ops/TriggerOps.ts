@@ -20,37 +20,75 @@ export default class TriggerOps extends BaseOp {
 
     postCommandTrigger(requestObject: CommandTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
-            // TODO:command
-            var resuest = {
+            var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
+                // command: new Command().toJson()
             }
-            // requestBody.put("predicate", JsonUtils.newJson(GsonRepository.gson(schema).toJson(predicate)));
-            // requestBody.put("triggersWhat", TriggersWhat.COMMAND.name());
-            // requestBody.put("command", JsonUtils.newJson(GsonRepository.gson(schema).toJson(command)));
-            resolve(null);
-        })
+            this.postTriggger(resuestBody).then((result)=>{
+                resolve(result);
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
     }
     postServerCodeTriggger(requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
-            resolve(null);
-        })
+            var resuestBody = {
+                predicate: requestObject.predicate.toJson(),
+                triggersWhat: TriggersWhat[TriggersWhat.SERVER_CODE],
+                serverCode: requestObject.serverCode.toJson()
+            }
+            this.postTriggger(resuestBody).then((result)=>{
+                resolve(result);
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
     }
-    private postTriggger(): Promise<Trigger> {
-        return null;
+    private postTriggger(requestBody: Object): Promise<Trigger> {
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers`;
+        return new Promise<Trigger>((resolve, reject)=>{
+            var headers: Object = this.addHeader("Content-Type", "application/json");
+            var req = {
+                method: "POST",
+                headers: headers,
+                url: url,
+                body: requestBody
+            };
+            request(req).then((res: Response)=>{
+                this.getTrigger((<any>res).body.triggerID).then((trigger:Trigger)=>{
+                    resolve(trigger);
+                }).catch((err:ThingIFError)=>{
+                    reject(err);
+                })
+            }).catch((err)=>{
+                reject(err);
+            });
+        })
     }
 
     getTrigger(triggerID: string): Promise<Trigger> {
-        //TODO: implment me
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
         return new Promise<Trigger>((resolve, reject)=>{
-            resolve(null);
+            var headers: Object = this.getHeaders();
+            var req = {
+                method: "GET",
+                headers: headers,
+                url: url
+            };
+            request(req).then((res: Response)=>{
+                // TODO
+            }).catch((err)=>{
+                reject(err);
+            });
         })
     }
 
     patchTrigger(
         triggerID: string,
         requestObject: Object): Promise<Trigger> {
-        //TODO: implment me
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
         return new Promise<Trigger>((resolve, reject)=>{
             resolve(null);
         })
@@ -81,7 +119,7 @@ export default class TriggerOps extends BaseOp {
     }
 
     deleteTrigger(triggerID: string): Promise<string> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}}`;
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target}/triggers/${triggerID}`;
         return new Promise<string>((resolve, reject) => {
             var headers: Object = this.getHeaders();
             var req = {
