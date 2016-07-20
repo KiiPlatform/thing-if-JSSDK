@@ -3,38 +3,38 @@ import {TriggersWhen} from './Trigger';
 
 /** Represent Predicate for a Trigger */
 export abstract class Predicate {
-    abstract getEventSource(): EventSource;
+    abstract getEventSource(): string;
     abstract toJson(): any;
     static fromJson(obj:any): Predicate {
-        if (obj.eventSource == EventSource[EventSource.STATES]) {
-            StatePredicate.fromJson(obj);
-        } else if (obj.eventSource == EventSource[EventSource.SCHEDULE]) {
-            SchedulePredicate.fromJson(obj);
-        } else if (obj.eventSource == EventSource[EventSource.SCHEDULE_ONCE]) {
-            ScheduleOncePredicate.fromJson(obj);
+        if (obj.eventSource == EventSource.STATES) {
+            return StatePredicate.fromJson(obj);
+        } else if (obj.eventSource == EventSource.SCHEDULE) {
+            return SchedulePredicate.fromJson(obj);
+        } else if (obj.eventSource == EventSource.SCHEDULE_ONCE) {
+            return ScheduleOncePredicate.fromJson(obj);
         }
         return null;
     }
 }
-export enum EventSource {
-    STATES,
-    SCHEDULE,
-    SCHEDULE_ONCE
+export const EventSource = {
+    STATES: "STATES",
+    SCHEDULE: "SCHEDULE",
+    SCHEDULE_ONCE: "SCHEDULE_ONCE"
 }
 /** Represent StatePredicate for a Trigger */
 export class StatePredicate implements Predicate {
     constructor(
         public condition: Condition,
-        public triggersWhen: TriggersWhen
+        public triggersWhen: string
     ) {}
-    getEventSource(): EventSource {
+    getEventSource(): string {
         return EventSource.STATES;
     }
     toJson(): any {
         return {
             condition: this.condition.clause.toJson(),
-            eventSource: EventSource[EventSource.STATES],
-            triggersWhen: TriggersWhen[this.triggersWhen]
+            eventSource: EventSource.STATES,
+            triggersWhen: this.triggersWhen
         };
     }
     static fromJson(obj:any): StatePredicate {
@@ -46,13 +46,13 @@ export class StatePredicate implements Predicate {
 /** Represent SchedulePredicate for a Trigger */
 export class SchedulePredicate implements Predicate {
     constructor(public cronExpression: string) {}
-    getEventSource(): EventSource {
+    getEventSource(): string {
         return EventSource.SCHEDULE;
     }
     toJson(): any {
         return {
             schedule: this.cronExpression,
-            eventSource: EventSource[EventSource.SCHEDULE]
+            eventSource: EventSource.SCHEDULE
         };
     }
     static fromJson(obj:any): SchedulePredicate {
@@ -63,13 +63,13 @@ export class SchedulePredicate implements Predicate {
 /** Represent ScheduleOncePredicate for a Trigger */
 export class ScheduleOncePredicate implements Predicate {
     constructor(public scheduleAt: number) {}
-    getEventSource(): EventSource {
+    getEventSource(): string {
         return EventSource.SCHEDULE_ONCE;
     }
     toJson(): any {
         return {
             scheduleAt: this.scheduleAt,
-            eventSource: EventSource[EventSource.SCHEDULE_ONCE]
+            eventSource: EventSource.SCHEDULE_ONCE
         };
     }
     static fromJson(obj:any): ScheduleOncePredicate {

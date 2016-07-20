@@ -6,9 +6,9 @@
   "scripts": {
     "build-test": "tsc test/**/*Test.ts ./typings/globals/node/index.d.ts --target es5 --module commonjs --outDir built",
     "pretest": "npm run build-test",
-    "test": "mocha 'built/test/*/*.js' --timeout 5000",
+    "test": "mocha 'built/test/*/*.js' --timeout 10000",
     "small-test": "npm run build-test; mocha 'built/test/small/*.js'",
-    "large-test": "npm run build-test; mocha 'built/test/large/*.js' --timeout 5000"
+    "large-test": "npm run build-test; mocha 'built/test/large/*.js' --timeout 10000"
   },
   "repository": {
     "type": "git",

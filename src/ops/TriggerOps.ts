@@ -25,8 +25,8 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
-                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
+                triggersWhat: TriggersWhat.COMMAND,
+                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions).toJson()
             }
             this.postTriggger(resuestBody).then((result)=>{
                 resolve(result);
@@ -39,7 +39,7 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.SERVER_CODE],
+                triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
             this.postTriggger(resuestBody).then((result)=>{
@@ -94,7 +94,7 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
+                triggersWhat: TriggersWhat.COMMAND,
                 command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
             }
             this.patchTriggger(triggerID, resuestBody).then((result)=>{
@@ -111,7 +111,7 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.SERVER_CODE],
+                triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
             this.patchTriggger(triggerID, resuestBody).then((result)=>{
