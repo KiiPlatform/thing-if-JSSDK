@@ -108,7 +108,7 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     }
     deleteKiiUser(user: KiiUser): Promise<void> {
@@ -129,7 +129,7 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     }
 
@@ -151,7 +151,7 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     }
     getAdminToken(): Promise<string> {
@@ -177,20 +177,23 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     }
     deployServerCode(script: string): Promise<string> {
-        let reqHeader = {
-            "X-Kii-AppID": this.app.appID,
-            "X-Kii-AppKey": this.app.appKey,
-            "Content-Type": "application/javascript"
-        };
         return new Promise<string>((resolve, reject) =>{
-            request.post(<any>{
-                url: `${this.kiiCloudBaseUrl}/server-code`,
-                headers: reqHeader,
-                body: script
+            this.getAdminToken()
+            .then((adminToken:string)=>{
+                return request.post(<any>{
+                    url: `${this.kiiCloudBaseUrl}/server-code`,
+                    headers: {
+                        "X-Kii-AppID": this.app.appID,
+                        "X-Kii-AppKey": this.app.appKey,
+                        "Content-Type": "application/javascript",
+                        "Authorization": `Bearer ${adminToken}`
+                    },
+                    body: script
+                });
             }).then((res)=>{
                 if(res.status == 201){
                     resolve(res.body.versionID);
@@ -199,7 +202,7 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     };
 }
