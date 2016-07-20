@@ -68,17 +68,17 @@ export class Command {
         if(!!obj.actionResults){
             command.actionResults = obj.actionResults;
         }
-        if(!!obj.commandState && !!CommandState[obj.commandState]){
+        if(!!obj.commandState){
             command.commandState= parseInt(CommandState[(obj.commandState)]);
         }
         if(!!obj.firedByTriggerID){
             command.firedByTriggerID = obj.firedByTriggerID;
         }
-        if(!!obj.created){
-            command.created = new Date(obj.created);
+        if(!!obj.createdAt){
+            command.created = new Date(obj.createdAt);
         }
-        if(!!obj.modified){
-            command.modified = new Date(obj.modified);
+        if(!!obj.modifiedAt){
+            command.modified = new Date(obj.createdAt);
         }
         if(!!obj.title){
             command.title = obj.title;
@@ -89,7 +89,6 @@ export class Command {
         if(!!obj.metadata){
             command.metadata = obj.metadata;
         }
-
         return command;
     }
 }
