@@ -75,6 +75,17 @@ export class ListQueryOptions {
         public bestEffortLimit?: number,
         public paginationKey?: string
     ){}
+
+    static getQueryString(options: ListQueryOptions): string{
+        let arr: Array<string> = [];
+        if(!!options.bestEffortLimit){
+            arr.push(`bestEffortLimit=${options.bestEffortLimit}`);
+        }
+        if(!!options.paginationKey){
+            arr.push(`paginationKey=${options.paginationKey}`);
+        }
+        return arr.join('&')
+    }
 }
 
 export class CommandTriggerRequest{
