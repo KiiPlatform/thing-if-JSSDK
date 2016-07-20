@@ -124,6 +124,9 @@ export class ThingIFAPI {
     postNewCommand(
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
+        if (!command.issuer) {
+            command.issuer = this._owner.toString();
+        }
         return this._au.postNewCommand(this.target, command, onCompletion);
     }
 

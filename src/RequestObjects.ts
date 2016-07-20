@@ -59,7 +59,7 @@ export class PostCommandRequest {
         public schema: string,
         public schemaVersion: number,
         public actions: Array<Object>,
-        issuerID: TypedID,
+        issuerID?: TypedID,
         public title?: string,
         public description?: string,
         public metaData?: Object){
@@ -82,7 +82,8 @@ export class CommandTriggerRequest{
         public schemaName: string,
         public schemaVersion: number,
         public actions: Array<Object>,
-        public predicate: Predicate
+        public predicate: Predicate,
+        public issuerID?: TypedID
     ){}
 }
 
