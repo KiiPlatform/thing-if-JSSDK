@@ -81,7 +81,7 @@ export default class CommandOps extends BaseOp {
             var url = this.baseUrl;
             if(!!listOptions){
                 var queryString = ListQueryOptions.getQueryString(listOptions);
-                if(queryString != ""){
+                if(queryString){
                     url = `${url}?${queryString}`;
                 }
             }
