@@ -124,10 +124,22 @@ export class ThingIFAPI {
     postNewCommand(
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        if (!command.issuer) {
-            command.issuer = this._owner.toString();
-        }
-        return this._au.postNewCommand(this.target, command, onCompletion);
+
+        let orgPromise = new Promise<Command>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            if (!command.issuer) {
+                command.issuer = this._owner.toString();
+            }
+            (new CommandOps(this._au, this._target)).postNewCommand(command).then((cmd)=>{
+                resolve(cmd);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Retrieve command with specified ID.
@@ -141,7 +153,18 @@ export class ThingIFAPI {
     getCommand(
         commandID: string,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
-        return this._au.getCommand(this.target, commandID, onCompletion);
+        let orgPromise = new Promise<Command>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new CommandOps(this._au, this._target)).getCommand(commandID).then((cmd)=>{
+                resolve(cmd);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Retrieve commands.
@@ -155,7 +178,18 @@ export class ThingIFAPI {
     listCommands(
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, commands:QueryResult<Command>)=> void): Promise<QueryResult<Command>>{
-        return this._au.listCommands(this.target, listOpitons, onCompletion);
+        let orgPromise = new Promise<QueryResult<Command>>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new CommandOps(this._au, this._target)).listCommands(listOpitons).then((result)=>{
+                resolve(result);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Post a new command trigger.
