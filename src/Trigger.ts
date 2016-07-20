@@ -30,6 +30,11 @@ export class Trigger {
         }
         return TriggersWhat.SERVER_CODE;
     }
+
+    static fromJson(obj: any): Trigger {
+        return null;
+    }
+
 }
 export enum TriggersWhen {
     CONDITION_TRUE,

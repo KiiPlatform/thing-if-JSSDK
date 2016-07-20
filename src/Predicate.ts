@@ -2,9 +2,19 @@ import {Condition} from './Condition';
 import {TriggersWhen} from './Trigger';
 
 /** Represent Predicate for a Trigger */
-export interface Predicate {
-    getEventSource(): EventSource;
-    toJson(): any;
+export abstract class Predicate {
+    abstract getEventSource(): EventSource;
+    abstract toJson(): any;
+    static fromJson(obj:any): Predicate {
+        if (obj.eventSource == EventSource[EventSource.STATES]) {
+            StatePredicate.fromJson(obj);
+        } else if (obj.eventSource == EventSource[EventSource.SCHEDULE]) {
+            SchedulePredicate.fromJson(obj);
+        } else if (obj.eventSource == EventSource[EventSource.SCHEDULE_ONCE]) {
+            ScheduleOncePredicate.fromJson(obj);
+        }
+        return null;
+    }
 }
 export enum EventSource {
     STATES,
@@ -27,6 +37,11 @@ export class StatePredicate implements Predicate {
             triggersWhen: TriggersWhen[this.triggersWhen]
         };
     }
+    static fromJson(obj:any): StatePredicate {
+        let condition: Condition = Condition.fromJson(obj.condition);
+        let triggersWhen = (<any>TriggersWhen)[obj.triggersWhen];
+        return new StatePredicate(condition, triggersWhen);
+    }
 }
 /** Represent SchedulePredicate for a Trigger */
 export class SchedulePredicate implements Predicate {
@@ -40,6 +55,10 @@ export class SchedulePredicate implements Predicate {
             eventSource: EventSource[EventSource.SCHEDULE]
         };
     }
+    static fromJson(obj:any): SchedulePredicate {
+        let schedule = obj.schedule;
+        return new SchedulePredicate(schedule);
+    }
 }
 /** Represent ScheduleOncePredicate for a Trigger */
 export class ScheduleOncePredicate implements Predicate {
@@ -52,6 +71,10 @@ export class ScheduleOncePredicate implements Predicate {
             scheduleAt: this.scheduleAt,
             eventSource: EventSource[EventSource.SCHEDULE_ONCE]
         };
+    }
+    static fromJson(obj:any): ScheduleOncePredicate {
+        let scheduleAt = obj.scheduleAt;
+        return new ScheduleOncePredicate(scheduleAt);
     }
 }
 
