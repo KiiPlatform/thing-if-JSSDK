@@ -28,7 +28,7 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             done();
         }).catch((err)=>{
             done(err);
-        })
+        });
     });
 
     after(function(done) {
@@ -38,41 +38,70 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             done();
         }).catch((err)=>{
             done(err);
-        })
+        });
     })
 
-    describe('postNewCommand with promise:', function () {
-        let installationRegistrationID = `${new Date()}`
+    describe('test with promise:', function () {
 
-        it("handle success response", function (done) {
+        it("handle success response by calling APIAuthor#postNewCommand, APIAuthor#getCommand, and APIAuthor#listCommands", function (done) {
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
             var postCommandRequest = new thingIFSDK.PostCommandRequest("led", 1, [{turnPower: {power:true}}], issuerID)
             au.postNewCommand(targetID, postCommandRequest).then((cmd)=>{
                 expect(cmd).not.null;
                 expect(cmd.commandID).not.equal("");
+                return au.postNewCommand(targetID, postCommandRequest);
+            }).then((cmd)=>{
+                expect(cmd).not.null;
+                expect(cmd.commandID).not.equal("");
+                return au.getCommand(targetID, cmd.commandID);
+            }).then(()=>{
+                return au.listCommands(targetID)
+            }).then((result)=>{
+                expect(result.results.length).to.gte(2);
                 done();
             }).catch((err)=>{
                 done(err);
-            })
+            });
         });
     });
 
-    describe('postNewCommand with callback:', function () {
-        let installationRegistrationID = `${new Date()}`
+    describe('test with callbacks:', function () {
 
-        it("handle success response", function (done) {
+        it("handle success response by calling APIAuthor#postNewCommand, APIAuthor#getCommand, and APIAuthor#listCommands", function (done) {
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
             var postCommandRequest = new thingIFSDK.PostCommandRequest("led", 1, [{turnPower: {power:true}}], issuerID)
-            au.postNewCommand(targetID, postCommandRequest,(err, cmd)=>{
-                expect(err).to.null;
+            au.postNewCommand(targetID, postCommandRequest, (err, cmd)=>{
+                if(!!err){
+                    done(err);
+                    return;
+                }
                 expect(cmd).not.null;
                 expect(cmd.commandID).not.equal("");
-                done();
-            })
+                au.postNewCommand(targetID, postCommandRequest, (err, cmd1)=>{
+                    if(!!err){
+                        done(err);
+                        return;
+                    }
+                    expect(cmd1).not.null;
+                    expect(cmd1.commandID).not.equal("");
+                    au.getCommand(targetID, cmd.commandID,(err, cmd)=>{
+                        if(!!err){
+                            done(err);
+                            return;
+                        }
+                        au.listCommands(targetID, null, (err, result)=>{
+                            if(!!err){
+                                done(err);
+                                return;
+                            }
+                            expect(result.results.length).to.gte(2);
+                            done();
+                        });
+                    });
+                });
+            });
         });
     });
-
-
 })
