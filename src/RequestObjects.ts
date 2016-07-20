@@ -11,7 +11,7 @@ export class OnboardWithVendorThingIDRequest {
     constructor(
         public vendorThingID: string,
         public thingPassword: string,
-        ownerType: TypedID,
+        ownerType?: TypedID,
         public thingType?:string,
         public thingProperties?:Object){
             if (!!ownerType) {
@@ -28,7 +28,7 @@ export class OnboardWithThingIDRequest {
     constructor(
         public thingID: string,
         public thingPassword: string,
-        ownerType: TypedID){
+        ownerType?: TypedID){
             if (!!ownerType) {
                 this.owner = ownerType.toString();
             }
@@ -59,7 +59,7 @@ export class PostCommandRequest {
         public schema: string,
         public schemaVersion: number,
         public actions: Array<Object>,
-        issuerID: TypedID,
+        issuerID?: TypedID,
         public title?: string,
         public description?: string,
         public metaData?: Object){
@@ -82,7 +82,8 @@ export class CommandTriggerRequest{
         public schemaName: string,
         public schemaVersion: number,
         public actions: Array<Object>,
-        public predicate: Predicate
+        public predicate: Predicate,
+        public issuerID?: TypedID
     ){}
 }
 
