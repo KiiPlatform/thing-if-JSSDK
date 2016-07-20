@@ -3,10 +3,12 @@
 import TestApp from './TestApp'
 import {expect} from 'chai';
 import {ThingIFAPI} from '../../src/ThingIFAPI'
+import {TypedID, Types} from '../../src/TypedID'
 import {Errors} from '../../src/ThingIFError'
 
 let testApp = new TestApp();
-let thingIFAPI = new ThingIFAPI("dummy-token", testApp.app);
+let owner = new TypedID(Types.User, "dummy-user");
+let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app);
 
 describe("Test IllegalStateError for push APIs of ThingIFAPI", function() {
     describe("Test APIAuthor#installFCM", function() {

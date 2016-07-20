@@ -23,19 +23,22 @@ import {QueryResult} from './QueryResult'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
-    private _target: TypedID;
+    private _owner: TypedID;
     private _au: APIAuthor;
+    private _target: TypedID;
 
     /**
+     * @param {string} owner Specify who uses the ThingIFAPI
      * @param {string} token A token can access Thing-IF APIs, which can be admin token or token of
      *  a registered kii user.
      * @param {App} app App instance of existing Kii App. You must create a app in
      *  [Kii developer portal]{@link https://developer.kii.com}
      * @param {TypedID} [target] TypedID for a specified target.
     */
-    constructor(token:string, app: App, target?: TypedID) {
-        this._target = target;
+    constructor(owner:TypedID, token:string, app: App, target?: TypedID) {
+        this._owner = owner;
         this._au = new APIAuthor(token, app);
+        this._target = target;
     }
 
     /** Access token. */
@@ -62,6 +65,9 @@ export class ThingIFAPI {
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
 
+        if (!onboardRequest.owner) {
+            onboardRequest.owner = this._owner.toString();
+        }
         let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
             (new OnboardingOps(this._au)).onboardWithVendorThingID(onboardRequest).then((result:OnboardingResult)=>{
                 this._target = new TypedID(Types.Thing, result.thingID);
@@ -82,6 +88,9 @@ export class ThingIFAPI {
         onboardRequest: Options.OnboardWithThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
 
+        if (!onboardRequest.owner) {
+            onboardRequest.owner = this._owner.toString();
+        }
         let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
             (new OnboardingOps(this._au)).onboardWithThingID(onboardRequest).then((result:OnboardingResult)=>{
                 this._target = new TypedID(Types.Thing, result.thingID);

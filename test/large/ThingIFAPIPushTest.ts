@@ -17,10 +17,10 @@ describe("Large Tests for Push Ops(ThingIFAPI):", function () {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
             au = new thingIFSDK.APIAuthor(newUser.token, testApp);
-            thingIFAPI = new thingIFSDK.ThingIFAPI(newUser.token, testApp);
+            var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, newUser.userID);
+            thingIFAPI = new thingIFSDK.ThingIFAPI(owner, newUser.token, testApp);
             var vendorThingID = "vendor-" + new Date().getTime();
             var password = "password";
-            var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, newUser.userID);
             var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
             return thingIFAPI.onboardWithVendorThingID(request)
         }).then(()=>{

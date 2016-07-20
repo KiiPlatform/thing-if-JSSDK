@@ -15,7 +15,8 @@ describe("Large Tests for ThingIFAPI#Onboarding:", function () {
     beforeEach(function(done) {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
-            api = new thingIFSDK.ThingIFAPI(newUser.token, testApp);
+            var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
+            api = new thingIFSDK.ThingIFAPI(owner, newUser.token, testApp);
             done();
         }).catch((err)=>{
             done(err);
@@ -35,8 +36,7 @@ describe("Large Tests for ThingIFAPI#Onboarding:", function () {
             it("handle success response", function (done) {
                 var vendorThingID = "vendor-" + new Date().getTime();
                 var password = "password";
-                var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password);
                 api.onboardWithVendorThingID(request).then((result:any)=>{
                     expect(result.thingID).to.be.not.null;
                     expect(api.target.id).to.equal(result.thingID)
@@ -62,8 +62,7 @@ describe("Large Tests for ThingIFAPI#Onboarding:", function () {
             it("handle success response", function (done) {
                 var vendorThingID = "vendor-" + new Date().getTime();
                 var password = "password";
-                var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password);
                 api.onboardWithVendorThingID(request, (err:Error, result:any)=>{
                     try {
                         expect(err).to.be.null;
@@ -93,8 +92,7 @@ describe("Large Tests for ThingIFAPI#Onboarding:", function () {
         describe('with promise:', function () {
             it("handle success response", function (done) {
                 apiHelper.createKiiThing().then((thing:KiiThing)=>{
-                    var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
+                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password);
                     return api.onboardWithThingID(request);
                 }).then((result:any)=>{
                     expect(result.thingID).to.be.not.null;
@@ -120,8 +118,7 @@ describe("Large Tests for ThingIFAPI#Onboarding:", function () {
         describe('with callback:', function () {
             it("handle success response", function (done) {
                 apiHelper.createKiiThing().then((thing:KiiThing)=>{
-                    var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
+                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password);
                     return api.onboardWithThingID(request, (err:Error, result:any)=>{
                         try {
                             expect(err).to.be.null;

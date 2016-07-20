@@ -11,7 +11,7 @@ export class OnboardWithVendorThingIDRequest {
     constructor(
         public vendorThingID: string,
         public thingPassword: string,
-        ownerType: TypedID,
+        ownerType?: TypedID,
         public thingType?:string,
         public thingProperties?:Object){
             if (!!ownerType) {
@@ -28,7 +28,7 @@ export class OnboardWithThingIDRequest {
     constructor(
         public thingID: string,
         public thingPassword: string,
-        ownerType: TypedID){
+        ownerType?: TypedID){
             if (!!ownerType) {
                 this.owner = ownerType.toString();
             }
