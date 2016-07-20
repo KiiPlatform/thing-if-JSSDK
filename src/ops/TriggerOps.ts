@@ -25,9 +25,8 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
-                // TODO: set issuerID
-                command: Command.newCommand(this.target, null, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
+                triggersWhat: TriggersWhat.COMMAND,
+                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions).toJson()
             }
             this.postTriggger(resuestBody).then((result)=>{
                 resolve(result);
@@ -40,7 +39,7 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.SERVER_CODE],
+                triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
             this.postTriggger(resuestBody).then((result)=>{
@@ -82,7 +81,7 @@ export default class TriggerOps extends BaseOp {
                 url: url
             };
             request(req).then((res: Response)=>{
-                // TODO
+                resolve(Trigger.fromJson((<any>res).body));
             }).catch((err)=>{
                 reject(err);
             });
@@ -95,9 +94,8 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
-                // TODO: set issuerID
-                command: Command.newCommand(this.target, null, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
+                triggersWhat: TriggersWhat.COMMAND,
+                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
             }
             this.patchTriggger(triggerID, resuestBody).then((result)=>{
                 resolve(result);
@@ -113,7 +111,7 @@ export default class TriggerOps extends BaseOp {
         return new Promise<Trigger>((resolve, reject)=>{
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat[TriggersWhat.SERVER_CODE],
+                triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
             this.patchTriggger(triggerID, resuestBody).then((result)=>{
@@ -211,8 +209,10 @@ export default class TriggerOps extends BaseOp {
             };
             request(req).then((res: Response)=>{
                 var triggers: Array<Trigger> = [];
-                // TODO
                 var paginationKey = (<any>res).body.nextPaginationKey;
+                for (var json of (<any>res).body.triggers) {
+                    triggers.push(Trigger.fromJson(json));
+                }
                 resolve(new QueryResult(triggers, paginationKey))
             }).catch((err)=>{
                 reject(err);
@@ -247,8 +247,10 @@ export default class TriggerOps extends BaseOp {
             };
             request(req).then((res: Response)=>{
                 var results: Array<ServerCodeResult> = [];
-                // TODO
                 var paginationKey = (<any>res).body.nextPaginationKey;
+                for (var json of (<any>res).body.triggerServerCodeResults) {
+                    results.push(ServerCodeResult.fromJson(json));
+                }
                 resolve(new QueryResult(results, paginationKey))
             }).catch((err)=>{
                 reject(err);

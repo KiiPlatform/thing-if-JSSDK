@@ -19,4 +19,11 @@ export class ServerCode{
         }
         return json;
     }
+    static fromJson(obj:any): ServerCode {
+        let endpoint = obj.endpoint;
+        let executorAccessToken = obj.executorAccessToken ? obj.executorAccessToken : null;
+        let targetAppID = obj.targetAppID ? obj.targetAppID : null;
+        let parameters = obj.parameters ? obj.parameters : null;
+        return new ServerCode(endpoint, executorAccessToken, targetAppID, parameters);
+    }
 }

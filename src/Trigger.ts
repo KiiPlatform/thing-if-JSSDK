@@ -24,19 +24,34 @@ export class Trigger {
         this.command = command;
         this.serverCode = serverCode;
     }
-    get triggersWhat(): TriggersWhat {
+    get triggersWhat(): string {
         if (this.command) {
             return TriggersWhat.COMMAND;
         }
         return TriggersWhat.SERVER_CODE;
     }
+
+    static fromJson(obj: any): Trigger {
+        let predicate: Predicate = Predicate.fromJson(obj.predicate);
+        let command: Command = obj.command ? Command.fromJson(obj.command) : null;
+        let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
+        let trigger = new Trigger(predicate, command, serverCode);
+        trigger.triggerID = obj.triggerID ? obj.triggerID : null;
+        trigger.disabled = obj.disabled === undefined ?  null : obj.disabled;
+        trigger.disabledReason = obj.disabledReason ? obj.disabledReason : null;
+        trigger.title = obj.title ? obj.title : null;
+        trigger.description = obj.description ? obj.description : null;
+        trigger.metadata = obj.metadata ? obj.metadata : null;
+        return trigger;
+    }
+
 }
-export enum TriggersWhen {
-    CONDITION_TRUE,
-    CONDITION_FALSE_TO_TRUE,
-    CONDITION_CHANGED
+export const TriggersWhen = {
+    CONDITION_TRUE: "CONDITION_TRUE",
+    CONDITION_FALSE_TO_TRUE: "CONDITION_FALSE_TO_TRUE",
+    CONDITION_CHANGED: "CONDITION_CHANGED"
 }
-export enum TriggersWhat {
-    COMMAND,
-    SERVER_CODE
+export const TriggersWhat = {
+    COMMAND: "COMMAND",
+    SERVER_CODE: "SERVER_CODE"
 }

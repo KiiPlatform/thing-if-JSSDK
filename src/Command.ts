@@ -10,7 +10,7 @@ export class Command {
         public schemaVersion: number,
         public actions: Array<Object>,
         public actionResults?: Array<Object>,
-        public commandState?:CommandState,
+        public commandState?:string,
         public firedByTriggerID?:string,
         public created?:Date,
         public modified?:Date,
@@ -53,9 +53,10 @@ export class Command {
         if(!!this.metadata){
             jsonObject.metadata = this.metadata;
         }
+        return jsonObject;
     }
     static fromJson(obj: any): Command{
-        if(!obj.commandID || !obj.target || !obj.issuer || !obj.schema || !obj.schemaVersion || !obj.actions){
+        if(!obj.target || !obj.issuer || !obj.schema || !obj.schemaVersion || !obj.actions){
             return null;
         }
         let command = new Command(
@@ -69,7 +70,7 @@ export class Command {
             command.actionResults = obj.actionResults;
         }
         if(!!obj.commandState){
-            command.commandState= parseInt(CommandState[(obj.commandState)]);
+            command.commandState= obj.commandState;
         }
         if(!!obj.firedByTriggerID){
             command.firedByTriggerID = obj.firedByTriggerID;
@@ -93,9 +94,9 @@ export class Command {
     }
 }
 
-export enum CommandState {
-    SENDING,
-    DELIVERED,
-    INCOMPLETE,
-    DONE
+export const CommandState = {
+    SENDING: "SENDING",
+    DELIVERED: "DELIVERED",
+    INCOMPLETE: "INCOMPLETE",
+    DONE: "DONE"
 }
