@@ -28,7 +28,7 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             done();
         }).catch((err)=>{
             done(err);
-        })
+        });
     });
 
     after(function(done) {
@@ -38,7 +38,7 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             done();
         }).catch((err)=>{
             done(err);
-        })
+        });
     })
 
     describe('test with promise:', function () {
@@ -62,7 +62,7 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
                 done();
             }).catch((err)=>{
                 done(err);
-            })
+            });
         });
     });
 
@@ -98,10 +98,10 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
                             }
                             expect(result.results.length).to.gte(2);
                             done();
-                        })
+                        });
                     });
                 });
-            })
+            });
         });
     });
 })
