@@ -4,7 +4,7 @@ import {Promise} from 'es6-promise';
 import {App} from './App';
 import {Command} from './Command';
 import {Trigger} from './Trigger'
-import ServerCodeResult from './ServerCodeResult'
+import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
@@ -23,19 +23,22 @@ import {QueryResult} from './QueryResult'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
-    private _target: TypedID;
+    private _owner: TypedID;
     private _au: APIAuthor;
+    private _target: TypedID;
 
     /**
+     * @param {string} owner Specify who uses the ThingIFAPI
      * @param {string} token A token can access Thing-IF APIs, which can be admin token or token of
      *  a registered kii user.
      * @param {App} app App instance of existing Kii App. You must create a app in
      *  [Kii developer portal]{@link https://developer.kii.com}
      * @param {TypedID} [target] TypedID for a specified target.
     */
-    constructor(token:string, app: App, target?: TypedID) {
-        this._target = target;
+    constructor(owner:TypedID, token:string, app: App, target?: TypedID) {
+        this._owner = owner;
         this._au = new APIAuthor(token, app);
+        this._target = target;
     }
 
     /** Access token. */
@@ -62,6 +65,9 @@ export class ThingIFAPI {
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
 
+        if (!onboardRequest.owner) {
+            onboardRequest.owner = this._owner.toString();
+        }
         let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
             (new OnboardingOps(this._au)).onboardWithVendorThingID(onboardRequest).then((result:OnboardingResult)=>{
                 this._target = new TypedID(Types.Thing, result.thingID);
@@ -82,6 +88,9 @@ export class ThingIFAPI {
         onboardRequest: Options.OnboardWithThingIDRequest,
         onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
 
+        if (!onboardRequest.owner) {
+            onboardRequest.owner = this._owner.toString();
+        }
         let orgPromise = new Promise<OnboardingResult>((resolve, reject) => {
             (new OnboardingOps(this._au)).onboardWithThingID(onboardRequest).then((result:OnboardingResult)=>{
                 this._target = new TypedID(Types.Thing, result.thingID);
@@ -115,6 +124,9 @@ export class ThingIFAPI {
     postNewCommand(
         command: Options.PostCommandRequest,
         onCompletion?: (err: Error, command:Command)=> void): Promise<Command>{
+        if (!command.issuer) {
+            command.issuer = this._owner.toString();
+        }
         return this._au.postNewCommand(this.target, command, onCompletion);
     }
 
@@ -215,7 +227,7 @@ export class ThingIFAPI {
      */
    patchServerCodeTrigger(
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return this._au.patchServerCodeTrigger(this.target, triggerID, requestObject, onCompletion);
     }
@@ -246,7 +258,7 @@ export class ThingIFAPI {
      */
     deleteTrigger(
         triggerID: string,
-        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, triggerID:string)=> void): Promise<string>{
         return this._au.deleteTrigger(this.target, triggerID, onCompletion);
     }
 

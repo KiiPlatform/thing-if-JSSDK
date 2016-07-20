@@ -18,6 +18,9 @@ export class Command {
         public description?:string,
         public metadata?:Object
     ){}
+    static newCommand(targetID: TypedID, issuerID: TypedID, schemaName: string, schemaVersion: number, actions: Array<Object>): Command {
+        return new Command(null, targetID, issuerID, schemaName, schemaVersion, actions);
+    }
     toJson(): any{
         var jsonObject: any ={};
         if(!!this.commandID){
