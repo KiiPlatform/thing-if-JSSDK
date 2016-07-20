@@ -4,18 +4,21 @@ import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import BaseOp from './BaseOp'
-import {PostCommandRequest} from '../RequestObjects'
+import {PostCommandRequest, ListQueryOptions} from '../RequestObjects'
 import {Command, CommandState} from '../Command'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import * as KiiUtil from '../internal/KiiUtilities'
 import {TypedID} from '../TypedID'
+import {QueryResult} from '../QueryResult'
 
 export default class CommandOps extends BaseOp {
+    private baseUrl: string;
     constructor(
         public au: APIAuthor,
         public targetID: TypedID
     ){
         super(au);
+        this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/commands`;
     }
 
     postNewCommand(requestObject: PostCommandRequest): Promise<Command> {
@@ -51,11 +54,10 @@ export default class CommandOps extends BaseOp {
             }
 
             var headers = this.addHeader("Content-Type", "application/json");
-            var url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/commands`;
             var req = {
                 method: "POST",
                 headers: headers,
-                url: url,
+                url: this.baseUrl,
                 body: requestObject,
             };
 
@@ -74,19 +76,60 @@ export default class CommandOps extends BaseOp {
         });
     }
 
-    listCommands(listOptions?: Object): Promise<Object> {
-        //TODO: implement me
-        this.addHeaders({});// add necessary headers
-        return new Promise<Object>((resolve, reject)=>{
-            resolve({});
+    listCommands(listOptions?: ListQueryOptions): Promise<QueryResult<Command>> {
+        return new Promise<QueryResult<Command>>((resolve, reject)=>{
+            var url = this.baseUrl;
+            if(!!listOptions){
+                var queryString = ListQueryOptions.getQueryString(listOptions);
+                if(queryString != ""){
+                    url = `${url}?${queryString}`;
+                }
+            }
+            var headers = this.addHeader("Content-Type", "application/json");
+            var req = {
+                method: "GET",
+                headers: headers,
+                url: url
+            };
+            request(req).then((res)=>{
+                var rawCmds = (<any>res.body)["commands"];
+                var commands = new Array<Command>();
+                for (var i in rawCmds){
+                    var rawCmd = rawCmds[i];
+                    var command = Command.fromJson(rawCmd);
+                    commands.push(command);
+                }
+                var paginationKey = (<any>res.body)["nextPaginationKey"];
+                var result = new QueryResult<Command>(commands, paginationKey);
+                resolve(<any>result);
+            }).catch((err)=>{
+                reject(err);
+            });
         });
     }
 
-    getCommand(commandID: string): Promise<Object> {
-        //TODO: implement me
-        this.addHeaders({});// add necessary headers
-        return new Promise<Object>((resolve, reject)=>{
-            resolve({});
+    getCommand(commandID: string): Promise<Command> {
+        return new Promise<Command>((resolve, reject)=>{
+            // validate parameters
+            if(!commandID){
+                reject(new ThingIFError(Errors.ArgumentError, "commandID is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(commandID)){
+                reject(new ThingIFError(Errors.ArgumentError, "commandID is not string"));
+                return;
+            }
+
+            var headers = this.addHeader("Content-Type", "application/json");
+            var req = {
+                method: "GET",
+                headers: headers,
+                url: `${this.baseUrl}/${commandID}`
+            };
+            request(req).then((res)=>{
+                resolve(Command.fromJson(res.body));
+            }).catch((err)=>{
+                reject(err);
+            });
         });
     }
 }
