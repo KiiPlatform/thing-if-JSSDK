@@ -81,7 +81,7 @@ export class CommandTriggerRequest{
     constructor(
         public schemaName: string,
         public schemaVersion: number,
-        public actions: Object,
+        public actions: Array<Object>,
         public predicate: Predicate
     ){}
 }

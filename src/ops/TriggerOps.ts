@@ -10,6 +10,7 @@ import {QueryResult} from '../QueryResult'
 import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../RequestObjects'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import {TypedID} from '../TypedID'
+import {Command} from '../Command'
 import {ServerCodeResult} from '../ServerCodeResult'
 
 export default class TriggerOps extends BaseOp {
@@ -25,7 +26,8 @@ export default class TriggerOps extends BaseOp {
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
-                // command: new Command().toJson()
+                // TODO: set issuerID
+                command: Command.newCommand(this.target, null, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
             }
             this.postTriggger(resuestBody).then((result)=>{
                 resolve(result);
@@ -94,7 +96,8 @@ export default class TriggerOps extends BaseOp {
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat[TriggersWhat.COMMAND],
-                // command: new Command().toJson()
+                // TODO: set issuerID
+                command: Command.newCommand(this.target, null, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
             }
             this.patchTriggger(triggerID, resuestBody).then((result)=>{
                 resolve(result);
