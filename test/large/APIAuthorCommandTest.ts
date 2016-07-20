@@ -66,7 +66,7 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
         });
     });
 
-    describe.only('test with callbacks:', function () {
+    describe('test with callbacks:', function () {
 
         it("handle success response by calling APIAuthor#postNewCommand, APIAuthor#getCommand, and APIAuthor#listCommands", function (done) {
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
