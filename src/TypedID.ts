@@ -46,4 +46,24 @@ export class TypedID {
         }
         return `${typeString}:${this._id}`;
     }
+
+    static fromString(str: string): TypedID{
+        var arr = str.split(":");
+        if(arr.length < 2){
+            return null;
+        }
+        var t = arr[0].toLowerCase();
+        var id = arr[1];
+        if(t == "user"){
+            return new TypedID(Types.User, id);
+        }else if(t == "group"){
+            return new TypedID(Types.Group, id);
+        }else if(t == "thing"){
+            return new TypedID(Types.Thing, id);
+        }else{
+            return null;
+        }
+    }
 }
+
+

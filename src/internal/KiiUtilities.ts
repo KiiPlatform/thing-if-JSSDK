@@ -1,11 +1,22 @@
 export function isString(mayStr: any): boolean {
-    return (typeof mayStr) == "string";
+    return (getType(mayStr) == "[object String]");
 }
 
 export function isNumber(mayNum: any): boolean {
-    return (typeof mayNum) == "number";
+    return (getType(mayNum) == "[object Number]");
 }
 
 export function  isBoolean(mayBool:any): boolean {
-    return (typeof mayBool) == "boolean";
+    return (getType(mayBool) == "[object Boolean]");
+}
+
+export function isObject(mayObject: any): boolean {
+    return (getType(mayObject) == "[object Object]");
+}
+export function isArray(mayObject: any): boolean {
+    return (getType(mayObject) == "[object Array]");
+}
+
+function getType(obj:any): string {
+    return Object.prototype.toString.call(obj);
 }
