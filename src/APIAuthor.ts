@@ -4,7 +4,7 @@ import {Promise} from 'es6-promise';
 import {App} from './App';
 import {Command} from './Command';
 import {Trigger} from './Trigger'
-import ServerCodeResult from './ServerCodeResult'
+import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
@@ -128,7 +128,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postTrigger(requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).postCommandTrigger(requestObject), onCompletion);
     }
 
     /** Post a new servercode trigger.
@@ -141,7 +141,7 @@ export class APIAuthor {
         target: TypedID,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).postTrigger(requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).postServerCodeTriggger(requestObject), onCompletion);
     }
 
     /** Retrieve trigger.
@@ -154,7 +154,7 @@ export class APIAuthor {
         target: TypedID,
         triggerID: string,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).getTrigger(triggerID), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).getTrigger(triggerID), onCompletion);
     }
 
     /** Update a command trigger.
@@ -169,7 +169,7 @@ export class APIAuthor {
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).patchCommandTrigger(triggerID, requestObject), onCompletion);
     }
 
     /** Update a servercode trigger.
@@ -182,9 +182,9 @@ export class APIAuthor {
    patchServerCodeTrigger(
         target: TypedID,
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).patchTrigger(triggerID, requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).patchServerCodeTrigger(triggerID, requestObject), onCompletion);
     }
 
     /** Enable/Disable a specified trigger.
@@ -199,7 +199,7 @@ export class APIAuthor {
         triggerID: string,
         enable: boolean,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).enableTrigger(triggerID, enable), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).enableTrigger(triggerID, enable), onCompletion);
     }
 
     /** Delete a specified trigger.
@@ -211,8 +211,8 @@ export class APIAuthor {
     deleteTrigger(
         target: TypedID,
         triggerID: string,
-        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).deleteTrigger(triggerID), onCompletion);
+        onCompletion?: (err: Error, triggerID:string)=> void): Promise<string>{
+        return PromiseWrapper.promise((new TriggerOps(this, target)).deleteTrigger(triggerID), onCompletion);
     }
 
     /** Retrive triggers.
@@ -224,7 +224,7 @@ export class APIAuthor {
         target: TypedID,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, triggers:QueryResult<Trigger>)=> void): Promise<QueryResult<Trigger>>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).listTriggers(listOpitons), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).listTriggers(listOpitons), onCompletion);
     }
 
     /** Retrieve execution results of server code trigger.
@@ -239,7 +239,7 @@ export class APIAuthor {
         triggerID: string,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, results:QueryResult<ServerCodeResult>)=> void): Promise<QueryResult<ServerCodeResult>>{
-        return PromiseWrapper.promise((new TriggerOps(this,target.toString())).listServerCodeResults(triggerID, listOpitons), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).listServerCodeResults(triggerID, listOpitons), onCompletion);
     }
 
     /** Get State of specified target.

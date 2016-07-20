@@ -88,7 +88,6 @@ export default class OnboardingOps extends BaseOp {
         contentType: string,
         onboardRequest: Object): Promise<OnboardingResult> {
         let onboardUrl = `${this.au.app.getThingIFBaseUrl()}/onboardings`;
-        var callbackCalled = false;
         return new Promise<OnboardingResult>((resolve, reject) => {
             var headers: Object = this.addHeader("Content-Type", contentType);
             var req = {

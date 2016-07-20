@@ -4,7 +4,7 @@ import {Promise} from 'es6-promise';
 import {App} from './App';
 import {Command} from './Command';
 import {Trigger} from './Trigger'
-import ServerCodeResult from './ServerCodeResult'
+import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
@@ -215,7 +215,7 @@ export class ThingIFAPI {
      */
    patchServerCodeTrigger(
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return this._au.patchServerCodeTrigger(this.target, triggerID, requestObject, onCompletion);
     }
@@ -246,7 +246,7 @@ export class ThingIFAPI {
      */
     deleteTrigger(
         triggerID: string,
-        onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
+        onCompletion?: (err: Error, triggerID:string)=> void): Promise<string>{
         return this._au.deleteTrigger(this.target, triggerID, onCompletion);
     }
 
