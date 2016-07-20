@@ -32,7 +32,17 @@ export class Trigger {
     }
 
     static fromJson(obj: any): Trigger {
-        return null;
+        let predicate: Predicate = Predicate.fromJson(obj.predicate);
+        let command: Command = obj.command ? Command.fromJson(obj.command) : null;
+        let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
+        let trigger = new Trigger(predicate, command, serverCode);
+        trigger.triggerID = obj.triggerID ? obj.triggerID : null;
+        trigger.disabled = obj.disabled ? obj.disabled : null;
+        trigger.disabledReason = obj.disabledReason === undefined ? null : obj.disabledReason;
+        trigger.title = obj.title ? obj.title : null;
+        trigger.description = obj.description ? obj.description : null;
+        trigger.metadata = obj.metadata ? obj.metadata : null;
+        return trigger;
     }
 
 }

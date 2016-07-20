@@ -81,7 +81,7 @@ export default class TriggerOps extends BaseOp {
                 url: url
             };
             request(req).then((res: Response)=>{
-                // TODO
+                resolve(Trigger.fromJson((<any>res).body));
             }).catch((err)=>{
                 reject(err);
             });
@@ -209,8 +209,10 @@ export default class TriggerOps extends BaseOp {
             };
             request(req).then((res: Response)=>{
                 var triggers: Array<Trigger> = [];
-                // TODO
                 var paginationKey = (<any>res).body.nextPaginationKey;
+                for (var json of (<any>res).body.triggers) {
+                    triggers.push(Trigger.fromJson(json));
+                }
                 resolve(new QueryResult(triggers, paginationKey))
             }).catch((err)=>{
                 reject(err);
@@ -245,8 +247,10 @@ export default class TriggerOps extends BaseOp {
             };
             request(req).then((res: Response)=>{
                 var results: Array<ServerCodeResult> = [];
-                // TODO
                 var paginationKey = (<any>res).body.nextPaginationKey;
+                for (var json of (<any>res).body.triggerServerCodeResults) {
+                    results.push(ServerCodeResult.fromJson(json));
+                }
                 resolve(new QueryResult(results, paginationKey))
             }).catch((err)=>{
                 reject(err);
