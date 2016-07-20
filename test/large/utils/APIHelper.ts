@@ -180,6 +180,28 @@ export class APIHelper {
             })
         });
     }
+    deployServerCode(script: string): Promise<string> {
+        let reqHeader = {
+            "X-Kii-AppID": this.app.appID,
+            "X-Kii-AppKey": this.app.appKey,
+            "Content-Type": "application/javascript"
+        };
+        return new Promise<string>((resolve, reject) =>{
+            request.post(<any>{
+                url: `${this.kiiCloudBaseUrl}/server-code`,
+                headers: reqHeader,
+                body: script
+            }).then((res)=>{
+                if(res.status == 201){
+                    resolve(res.body.versionID);
+                }else {
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+    };
 }
 
 export const apiHelper = new APIHelper(TestApp.testApp);
