@@ -26,7 +26,7 @@ let target = new TypedID(Types.Thing, "th.01234-abcde");
 let au = new APIAuthor(ownerToken, testApp.app);
 let triggerOps = new TriggerOps(au, target);
 
-describe('Test TriggerOps', function () {
+describe.only('Test TriggerOps', function () {
 
     beforeEach(function() {
         nock.cleanAll();
@@ -149,7 +149,7 @@ describe('Test TriggerOps', function () {
         // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
         let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
-        beforeEach(function() {
+        it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
                 <any>{
@@ -159,10 +159,23 @@ describe('Test TriggerOps', function () {
                         "Content-Type": "application/json"
                     }
                 }).post(postCommandTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-        });
-        it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
                 <any>{
@@ -173,7 +186,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate);
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -202,11 +215,34 @@ describe('Test TriggerOps', function () {
                     reqheaders: {
                         "X-Kii-SDK": "0.1",
                         "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).post(postCommandTriggerPath, {
+                    "predicate":{
+                        "schedule":"0 12 1 * *",
+                        "eventSource":"SCHEDULE"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithSchedule, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate);
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -234,11 +270,34 @@ describe('Test TriggerOps', function () {
                     reqheaders: {
                         "X-Kii-SDK": "0.1",
                         "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).post(postCommandTriggerPath, {
+                    "predicate":{
+                        "scheduleAt": 1469089120402,
+                        "eventSource":"SCHEDULE_ONCE"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithScheduleOnce, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate);
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, scheduleOncePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -296,12 +355,12 @@ describe('Test TriggerOps', function () {
         });
     });
     describe('#postServerCodeTriggger() with promise', function () {
-        // postCommandTrigger method sends request to server twice.
+        // postServerCodeTrigger method sends request to server twice.
         // 1. POST `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`
         // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
-        let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
+        let postServerCodeTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
         let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
-        beforeEach(function() {
+        it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
                 <any>{
@@ -310,11 +369,23 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postCommandTriggerPath, {
+                }).post(postServerCodeTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-        });
-        it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
                 <any>{
@@ -353,11 +424,33 @@ describe('Test TriggerOps', function () {
                     reqheaders: {
                         "X-Kii-SDK": "0.1",
                         "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).post(postServerCodeTriggerPath, {
+                    "predicate":{
+                        "schedule":"0 12 1 * *",
+                        "eventSource":"SCHEDULE"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
+                })
+                .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithSchedule, {"Content-Type": "application/json"});
             
-            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            let request = new ServerCodeTriggerRequest(serverCode, schedulePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -384,11 +477,33 @@ describe('Test TriggerOps', function () {
                     reqheaders: {
                         "X-Kii-SDK": "0.1",
                         "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).post(postServerCodeTriggerPath, {
+                    "predicate":{
+                        "scheduleAt": 1469089120402,
+                        "eventSource":"SCHEDULE_ONCE"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
+                })
+                .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithScheduleOnce, {"Content-Type": "application/json"});
             
-            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            let request = new ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -443,14 +558,179 @@ describe('Test TriggerOps', function () {
         });
     });
     describe('#patchCommandTrigger() with promise', function () {
+        // patchCommandTrigger method sends request to server twice.
+        // 1. PATCH `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+        // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+        let patchCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+        let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         it("with StatePredicate", function (done) {
-            done();
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchCommandTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
+            
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
+            triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         it("with SchedulePredicate", function (done) {
-            done();
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchCommandTriggerPath, {
+                    "predicate":{
+                        "schedule":"0 12 1 * *",
+                        "eventSource":"SCHEDULE"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4CommandTriggerWithSchedule, {"Content-Type": "application/json"});
+            
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, owner);
+            triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
+                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         it("with ScheduleOncePredicate", function (done) {
-            done();
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchCommandTriggerPath, {
+                    "predicate":{
+                        "scheduleAt": 1469089120402,
+                        "eventSource":"SCHEDULE_ONCE"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4CommandTriggerWithScheduleOnce, {"Content-Type": "application/json"});
+            
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, scheduleOncePredicate, owner);
+            triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
+                    expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         describe("Argument Test", function() {
             class TestCase {
@@ -491,14 +771,173 @@ describe('Test TriggerOps', function () {
         });
     });
     describe('#patchServerCodeTrigger() with promise', function () {
+        // patchServerCodeTrigger method sends request to server twice.
+        // 1. PATCH `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+        // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+        let patchServerCodeTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+        let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         it("with StatePredicate", function (done) {
-            done();
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchServerCodeTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
+                })
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4ServerCodeTriggerWithState, {"Content-Type": "application/json"});
+            
+            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         it("with SchedulePredicate", function (done) {
-            done();
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchServerCodeTriggerPath, {
+                    "predicate":{
+                        "schedule":"0 12 1 * *",
+                        "eventSource":"SCHEDULE"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
+                })
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4ServerCodeTriggerWithSchedule, {"Content-Type": "application/json"});
+            
+            let request = new ServerCodeTriggerRequest(serverCode, schedulePredicate);
+            triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
+                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         it("with ScheduleOncePredicate", function (done) {
-            done();
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchServerCodeTriggerPath, {
+                    "predicate":{
+                        "scheduleAt": 1469089120402,
+                        "eventSource":"SCHEDULE_ONCE"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
+                })
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4ServerCodeTriggerWithScheduleOnce, {"Content-Type": "application/json"});
+            
+            let request = new ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
+            triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
+                    expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         describe("Argument Test", function() {
             class TestCase {
