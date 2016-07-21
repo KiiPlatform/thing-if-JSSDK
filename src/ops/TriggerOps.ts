@@ -238,7 +238,6 @@ export default class TriggerOps extends BaseOp {
             }
         }
         url += queryParams;
-console.log("###### url=" + url);
         return new Promise<QueryResult<ServerCodeResult>>((resolve, reject)=>{
             var headers: Object = this.getHeaders();
             var req = {
@@ -248,11 +247,10 @@ console.log("###### url=" + url);
             };
             request(req).then((res: Response)=>{
                 var results: Array<ServerCodeResult> = [];
-                var paginationKey = (<any>res).body.nextPaginationKey;
+                var paginationKey = (<any>res).body.nextPaginationKey ? (<any>res).body.nextPaginationKey : null;
                 for (var json of (<any>res).body.triggerServerCodeResults) {
                     results.push(ServerCodeResult.fromJson(json));
                 }
-console.log("###### body=" + JSON.stringify((<any>res).body));
                 resolve(new QueryResult(results, paginationKey))
             }).catch((err)=>{
                 reject(err);

@@ -182,10 +182,12 @@ export class APIHelper {
             });
         });
     }
-    deployServerCode(script: string): Promise<string> {
-        return new Promise<string>((resolve, reject) =>{
+    deployServerCode(script: string): Promise<void> {
+        return new Promise<void>((resolve, reject) =>{
+            var adminToken: string;
             this.getAdminToken()
-            .then((adminToken:string)=>{
+            .then((token:string)=>{
+                adminToken = token;
                 return request.post(<any>{
                     url: `${this.kiiCloudBaseUrl}/server-code`,
                     headers: {
@@ -197,8 +199,19 @@ export class APIHelper {
                     body: script
                 });
             }).then((res)=>{
-                if(res.status == 201){
-                    resolve(res.body.versionID);
+                return request.put(<any>{
+                    url: `${this.kiiCloudBaseUrl}/server-code/versions/current`,
+                    headers: {
+                        "X-Kii-AppID": this.app.appID,
+                        "X-Kii-AppKey": this.app.appKey,
+                        "Content-Type": "text/plain",
+                        "Authorization": `Bearer ${adminToken}`
+                    },
+                    body: res.body.versionID
+                });
+            }).then((res)=>{
+                if(res.status == 204){
+                    resolve();
                 }else {
                     reject(newError(res));
                 }

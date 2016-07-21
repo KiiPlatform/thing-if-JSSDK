@@ -182,7 +182,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
         });
     });
-    describe.only("ServerCode Trigger", function () {
+    describe("ServerCode Trigger", function () {
         beforeEach(function(done) {
             let script =
                 "function server_code_for_trigger_1(params, context){\n" +
@@ -191,7 +191,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 "function server_code_for_trigger_2(params, context){\n" +
                 "    return 200;\n" +
                 "}\n"; 
-                apiHelper.deployServerCode(script).then((versionCode:string)=>{
+                apiHelper.deployServerCode(script).then(()=>{
                     done();
                 });
         });
@@ -202,7 +202,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
             var serverCode = new thingIFSDK.ServerCode("server_code_for_trigger_1", adminToken, testApp.appID, {param1: "hoge"});
             var scheduleAt = new Date().getTime() + (1000 * 60 * 60); 
             var scheduleOncePredicate = new thingIFSDK.ScheduleOncePredicate(scheduleAt);
-            var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "true"));
+            var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", true));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_TRUE);
             var request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             // 1. create server code trigger with ScheduleOncePredicate
