@@ -95,7 +95,7 @@ export default class TriggerOps extends BaseOp {
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
-                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions)
+                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions).toJson()
             }
             this.patchTriggger(triggerID, resuestBody).then((result)=>{
                 resolve(result);
@@ -133,7 +133,7 @@ export default class TriggerOps extends BaseOp {
                 body: requestBody
             };
             request(req).then((res: Response)=>{
-                this.getTrigger((<any>res).body.triggerID).then((trigger:Trigger)=>{
+                this.getTrigger(triggerID).then((trigger:Trigger)=>{
                     resolve(trigger);
                 }).catch((err:ThingIFError)=>{
                     reject(err);
@@ -147,7 +147,7 @@ export default class TriggerOps extends BaseOp {
         triggerID: string,
         enable: boolean): Promise<Trigger> {
         var operation = (enable? "enable" : "disable");
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}}/${operation}`;
+        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/${operation}`;
         return new Promise<Trigger>((resolve, reject) => {
             var headers: Object = this.getHeaders();
             var req = {
@@ -185,7 +185,7 @@ export default class TriggerOps extends BaseOp {
     }
 
     listTriggers(listOptions?: ListQueryOptions): Promise<QueryResult<Trigger>> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
+        var url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
         var queryParams:string = "";
         if (listOptions) {
             if (listOptions.paginationKey) {
@@ -209,7 +209,7 @@ export default class TriggerOps extends BaseOp {
             };
             request(req).then((res: Response)=>{
                 var triggers: Array<Trigger> = [];
-                var paginationKey = (<any>res).body.nextPaginationKey;
+                var paginationKey = (<any>res).body.nextPaginationKey ? (<any>res).body.nextPaginationKey : null;
                 for (var json of (<any>res).body.triggers) {
                     triggers.push(Trigger.fromJson(json));
                 }
@@ -223,7 +223,7 @@ export default class TriggerOps extends BaseOp {
     listServerCodeResults(
         triggerID: string,
         listOptions?: ListQueryOptions): Promise<QueryResult<ServerCodeResult>> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/results/server-code`;
+        var url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/results/server-code`;
         var queryParams:string = "";
         if (listOptions) {
             if (listOptions.paginationKey) {
@@ -247,7 +247,7 @@ export default class TriggerOps extends BaseOp {
             };
             request(req).then((res: Response)=>{
                 var results: Array<ServerCodeResult> = [];
-                var paginationKey = (<any>res).body.nextPaginationKey;
+                var paginationKey = (<any>res).body.nextPaginationKey ? (<any>res).body.nextPaginationKey : null;
                 for (var json of (<any>res).body.triggerServerCodeResults) {
                     results.push(ServerCodeResult.fromJson(json));
                 }

@@ -39,10 +39,12 @@ export class KiiThing {
 
 export class APIHelper {
     private kiiCloudBaseUrl: string;
+    private thingIFBaseUrl: string;
     constructor(
         public app: App
     ){
         this.kiiCloudBaseUrl = `${this.app.site}/api/apps/${this.app.appID}`
+        this.thingIFBaseUrl = `${this.app.site}/thing-if/apps/${this.app.appID}`
     };
     createKiiThing():Promise<KiiThing> {
         let vendorThingID = `testthing_${(new Date()).getTime()}`;
@@ -108,7 +110,7 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     }
     deleteKiiUser(user: KiiUser): Promise<void> {
@@ -129,7 +131,7 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     }
 
@@ -151,7 +153,7 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
         });
     }
     getAdminToken(): Promise<string> {
@@ -177,7 +179,77 @@ export class APIHelper {
                 }
             }).catch((err)=>{
                 reject(err);
-            })
+            });
+        });
+    }
+    deployServerCode(script: string): Promise<void> {
+        return new Promise<void>((resolve, reject) =>{
+            var adminToken: string;
+            this.getAdminToken()
+            .then((token:string)=>{
+                adminToken = token;
+                return request.post(<any>{
+                    url: `${this.kiiCloudBaseUrl}/server-code`,
+                    headers: {
+                        "X-Kii-AppID": this.app.appID,
+                        "X-Kii-AppKey": this.app.appKey,
+                        "Content-Type": "application/javascript",
+                        "Authorization": `Bearer ${adminToken}`
+                    },
+                    body: script
+                });
+            }).then((res)=>{
+                return request.put(<any>{
+                    url: `${this.kiiCloudBaseUrl}/server-code/versions/current`,
+                    headers: {
+                        "X-Kii-AppID": this.app.appID,
+                        "X-Kii-AppKey": this.app.appKey,
+                        "Content-Type": "text/plain",
+                        "Authorization": `Bearer ${adminToken}`
+                    },
+                    body: res.body.versionID
+                });
+            }).then((res)=>{
+                if(res.status == 204){
+                    resolve();
+                }else {
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
+    };
+    updateThingState(typedID:string, state:Object): Promise<void> {
+        return new Promise<void>((resolve, reject) =>{
+            this.getAdminToken()
+            .then((adminToken:string)=>{
+                return request.put(<any>{
+                    url: `${this.thingIFBaseUrl}/targets/${typedID}/states`,
+                    headers: {
+                        "X-Kii-AppID": this.app.appID,
+                        "X-Kii-AppKey": this.app.appKey,
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${adminToken}`
+                    },
+                    body: state
+                });
+            }).then((res)=>{
+                if(res.status == 201 || res.status == 204){
+                    resolve();
+                }else {
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
+    }
+    sleep(msec:number):Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            setTimeout(() => {
+                resolve()
+            }, msec);
         });
     }
 }
