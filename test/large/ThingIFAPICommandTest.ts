@@ -9,7 +9,7 @@ import {QueryResult} from '../../src/QueryResult'
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
 
-describe.only("Large Tests for Command APIs(ThingIFAPI):", function () {
+describe("Large Tests for Command APIs(ThingIFAPI):", function () {
 
     let user: KiiUser;
     let thingIFAPI: any;
