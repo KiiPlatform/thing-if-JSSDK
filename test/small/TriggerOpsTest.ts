@@ -26,7 +26,7 @@ let target = new TypedID(Types.Thing, "th.01234-abcde");
 let au = new APIAuthor(ownerToken, testApp.app);
 let triggerOps = new TriggerOps(au, target);
 
-describe.only('Test TriggerOps', function () {
+describe('Test TriggerOps', function () {
 
     beforeEach(function() {
         nock.cleanAll();
@@ -977,10 +977,98 @@ describe.only('Test TriggerOps', function () {
     });
     describe('#enableTrigger() with promise', function () {
         it("to enable", function (done) {
-            done();
+            // enableTrigger method sends request to server twice.
+            // 1. PUT `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/enable`
+            // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+            let enableTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/enable`;
+            let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).put(enableTriggerPath)
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
+            
+            triggerOps.enableTrigger(expectedTriggerID, true).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         it("to disable", function (done) {
-            done();
+            // enableTrigger method sends request to server twice.
+            // 1. PUT `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/disable`
+            // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+            let disableTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/disable`;
+            let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).put(disableTriggerPath)
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
+            
+            triggerOps.enableTrigger(expectedTriggerID, false).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         describe("Argument Test", function() {
             class TestCase {
@@ -1017,7 +1105,27 @@ describe.only('Test TriggerOps', function () {
     });
     describe('#deleteTrigger() with promise', function () {
         it("should send a request to the thing-if server", function (done) {
-            done();
+            let deleteTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).delete(deleteTriggerPath)
+                .reply(204, null);
+            triggerOps.deleteTrigger(expectedTriggerID).then((deletedTriggerID:string)=>{
+                try {
+                    expect(deletedTriggerID).to.equal(expectedTriggerID);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         describe("Argument Test", function() {
             class TestCase {
