@@ -4,27 +4,68 @@ import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import BaseOp from './BaseOp'
+import * as KiiUtil from '../internal/KiiUtilities'
+import {Errors, ThingIFError} from '../ThingIFError'
 export default class ThingOps extends BaseOp {
+    private baseUrl: string;
     constructor(
         public au: APIAuthor,
-        public target: string
+        public thingID: string
     ){
         super(au);
+        this.baseUrl = `${this.au.app.getKiiCloudBaseUrl()}/things/${this.thingID}`;
     }
 
-    getVendorThingID(): Promise<Object> {
-        //TODO: implment me
-        return new Promise<Object>((resolve, reject)=>{
-            resolve({});
-        })
+    getVendorThingID(): Promise<string> {
+        return new Promise<string>((resolve, reject)=>{
+            var req = {
+                method: "GET",
+                headers: this.getHeaders(),
+                url: `${this.baseUrl}/vendor-thing-id`
+            };
+            request(req).then((res)=>{
+                resolve((<any>res.body)["_vendorThingID"]);
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
     }
 
     updateVendorThingID(
         newVendorThingID: string,
         newPassword: string): Promise<void> {
-        //TODO: implment me
         return new Promise<void>((resolve, reject)=>{
-            resolve();
+            if(!newVendorThingID){
+                reject(new ThingIFError(Errors.ArgumentError, "newVendorThingID is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(newVendorThingID)){
+                reject(new ThingIFError(Errors.ArgumentError, "newVendorThingID is not string"));
+                return;
+            }
+            if(!newPassword){
+                reject(new ThingIFError(Errors.ArgumentError, "newPassword is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(newPassword)){
+                reject(new ThingIFError(Errors.ArgumentError, "newPassword is not string"));
+                return;
+            }
+
+
+            var req = {
+                method: "PUT",
+                headers: this.addHeader("Content-Type","application/vnd.kii.VendorThingIDUpdateRequest+json"),
+                url: `${this.baseUrl}/vendor-thing-id`,
+                body: {
+                    "_vendorThingID": newVendorThingID,
+                    "_password": newPassword
+                }
+            };
+            request(req).then((res)=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            });
+
         })
     }
 }

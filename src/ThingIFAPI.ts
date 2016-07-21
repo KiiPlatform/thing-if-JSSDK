@@ -346,7 +346,18 @@ export class ThingIFAPI {
      */
     getVendorThingID(
         onCompletion?: (err: Error, vendorThingID:string)=> void): Promise<string>{
-        return this._au.getVendorThingID(this.target.id, onCompletion);
+        let orgPromise = new Promise<string>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).getVendorThingID().then((vendorThingID)=>{
+                resolve(vendorThingID);
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Update vendorThingID of specified target
@@ -362,7 +373,19 @@ export class ThingIFAPI {
         newVendorThingID: string,
         newPassword: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        return this._au.updateVendorThingID(newVendorThingID, newPassword, this.target.id, onCompletion);
+
+        let orgPromise = new Promise<void>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateVendorThingID(newVendorThingID, newPassword).then(()=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
     /** Register the id issued by Firebase Cloud Message to Kii cloud for kii user.
