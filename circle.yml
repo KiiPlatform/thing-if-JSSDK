@@ -1,0 +1,16 @@
+dependencies:
+  post:
+    # install typings of dependencies
+    - typings install
+test:
+  pre:
+    # generate typedoc
+    - gulp doc; cp -fr ./doc $CIRCLE_ARTIFACTS/
+
+    # uglify library
+    - gulp --u
+    - cp ./dist/* $CIRCLE_ARTIFACTS/
+
+   # build sdk
+    - gulp
+    - cp ./dist/* $CIRCLE_ARTIFACTS/
