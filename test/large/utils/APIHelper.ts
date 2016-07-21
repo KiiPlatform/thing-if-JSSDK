@@ -227,8 +227,6 @@ export class APIHelper {
                 return request.put(<any>{
                     url: `${this.thingIFBaseUrl}/targets/${typedID}/states`,
                     headers: {
-                        "X-Kii-AppID": this.app.appID,
-                        "X-Kii-AppKey": this.app.appKey,
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${adminToken}`
                     },

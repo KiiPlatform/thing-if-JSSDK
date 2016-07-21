@@ -334,7 +334,18 @@ export class ThingIFAPI {
      */
     getState(
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        return this._au.getState(this.target, onCompletion);
+        let orgPromise = new Promise<Object>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new StateOps(this._au, this._target)).getState().then((state)=>{
+                resolve(state);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Get vendorThingID of specified target
