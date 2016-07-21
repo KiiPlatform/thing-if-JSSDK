@@ -1196,18 +1196,194 @@ describe('Test TriggerOps', function () {
         });
     });
     describe('#listTriggers() with promise', function () {
-        it("no pagination", function (done) {
-            done();
+        let paginationKey = "1/2"
+        let responseBody4ListTriggers1 = {
+            triggers: [
+                responseBody4CommandTriggerWithState,
+                responseBody4CommandTriggerWithSchedule,
+                responseBody4CommandTriggerWithScheduleOnce
+            ],
+            nextPaginationKey: paginationKey
+        }
+        let responseBody4ListTriggers2 = {
+            triggers: [
+                responseBody4ServerCodeTriggerWithState,
+                responseBody4ServerCodeTriggerWithSchedule,
+                responseBody4ServerCodeTriggerWithScheduleOnce
+            ]
+        }
+        let listTriggersPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
+        it("with bestEffortLimit", function (done) {
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listTriggersPath + "?bestEffortLimit=10")
+                .reply(200, responseBody4ListTriggers2, {"Content-Type": "application/json"});
+
+            triggerOps.listTriggers(new ListQueryOptions(10)).then((result:QueryResult<Trigger>)=>{
+                try {
+                    expect(result.paginationKey).to.be.null;
+                    expect(result.results.length).to.equal(3);
+
+                    var trigger = result.results[0];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+
+                    trigger = result.results[1];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
+                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+
+                    trigger = result.results[2];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
+                    expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
         it("with pagination", function (done) {
-            done();
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listTriggersPath)
+                .reply(200, responseBody4ListTriggers1, {"Content-Type": "application/json"});
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listTriggersPath + `?paginationKey=${paginationKey}`)
+                .reply(200, responseBody4ListTriggers2, {"Content-Type": "application/json"});
+            
+            triggerOps.listTriggers(null).then((result:QueryResult<Trigger>)=>{
+                try {
+                    expect(result.paginationKey).to.equal(paginationKey);
+                    expect(result.results.length).to.equal(3);
+
+                    var trigger = result.results[0];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+
+                    trigger = result.results[1];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
+                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+
+                    trigger = result.results[2];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
+                    expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
+                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(target);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                } catch (err) {
+                    done(err);
+                }
+                return triggerOps.listTriggers(new ListQueryOptions(null, result.paginationKey));
+            }).then((result:QueryResult<Trigger>)=>{
+                try {
+                    expect(result.paginationKey).to.be.null;
+                    expect(result.results.length).to.equal(3);
+
+                    var trigger = result.results[0];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+
+                    trigger = result.results[1];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
+                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+
+                    trigger = result.results[2];
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
+                    expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
+                    expect(trigger.command).to.be.null;
+                    expect(trigger.serverCode.endpoint).to.equal(endpoint);
+                    expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
+                    expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                    expect(trigger.serverCode.parameters).to.deep.equal(parameters);
+                } catch (err) {
+                    done(err);
+                }
+                done();
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
     });
     describe('#listServerCodeResults() with promise', function () {
         it("no pagination", function (done) {
-            done();
-        });
-        it("with pagination", function (done) {
             done();
         });
     });

@@ -298,9 +298,9 @@ export default class TriggerOps extends BaseOp {
             }
             if (listOptions.bestEffortLimit) {
                 if (queryParams) {
-                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
-                } else {
                     queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
+                } else {
+                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
                 }
             }
         }
