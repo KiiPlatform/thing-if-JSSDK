@@ -354,6 +354,7 @@ describe("Test CommandOps", function() {
                             );
                         cmdOp.listCommands(new Options.ListQueryOptions(test.bestEffortLimit, test.paginationKey)).then((result: QueryResult<Command>)=>{
                             expect(result.hasNext).to.be.true;
+                            expect(result.paginationKey).to.be.equal(responseBody.nextPaginationKey);
                             expect(result.results.length).to.be.equal(2);
 
                             //validate first command
