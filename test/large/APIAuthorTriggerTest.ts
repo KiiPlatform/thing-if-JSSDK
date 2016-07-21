@@ -46,7 +46,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
     });
 
     describe("Command Trigger", function () {
-        it("create/update/delete/get/list/disable", function (done) {
+        it("all operations", function (done) {
             var triggerID1: string;
             var triggerID2: string;
             var schemaName = "led";
@@ -59,7 +59,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_CHANGED);
             var request = new thingIFSDK.CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, issuerID);
 
-            // 1. create trigger with StatePredicate
+            // 1. create command trigger with StatePredicate
             au.postCommandTrigger(targetID, request).then((trigger:any)=>{
                 triggerID1 = trigger.triggerID;
                 expect(triggerID1).to.be.not.null;
@@ -74,7 +74,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 expect(trigger.command.issuerID).to.deep.equal(issuerID);
                 expect(trigger.serverCode).to.be.null;
 
-                // 2. create trigger with SchedulePredicate
+                // 2. create command trigger with SchedulePredicate
                 var schedulePredicate = new thingIFSDK.SchedulePredicate("0 12 1 * *");
                 request = new thingIFSDK.CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, issuerID);
                 // Admin token is needed when allowCreateTaskByPrincipal=false
@@ -182,12 +182,81 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
         });
     });
-    // describe("ServerCode Trigger", function () {
-    //     it("with StatePredicate", function (done) {
-    //     });
-    //     it("with SchedulePredicate", function (done) {
-    //     });
-    //     it("with ScheduleOncePredicate", function (done) {
-    //     });
-    // });
+    describe.only("ServerCode Trigger", function () {
+        beforeEach(function(done) {
+            let script =
+                "function server_code_for_trigger_1(params, context){\n" +
+                "    return 100;\n" +
+                "}\n" + 
+                "function server_code_for_trigger_2(params, context){\n" +
+                "    return 200;\n" +
+                "}\n"; 
+                apiHelper.deployServerCode(script).then((versionCode:string)=>{
+                    done();
+                });
+        });
+        it("all operations", function (done) {
+            var triggerID: string;
+            var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
+            var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, targetThingID);
+            var serverCode = new thingIFSDK.ServerCode("server_code_for_trigger_1", adminToken, testApp.appID, {param1: "hoge"});
+            var scheduleAt = new Date().getTime() + (1000 * 60 * 60); 
+            var scheduleOncePredicate = new thingIFSDK.ScheduleOncePredicate(scheduleAt);
+            var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "true"));
+            var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_TRUE);
+            var request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
+            // 1. create server code trigger with ScheduleOncePredicate
+            au._token = adminToken;
+            au.postServerCodeTriggger(targetID, request).then((trigger:any)=>{
+                triggerID = trigger.triggerID;
+                expect(triggerID).to.be.not.null;
+                expect(trigger.disabled).to.be.false;
+                expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
+                expect(trigger.predicate.scheduleAt).to.equal(scheduleAt);
+                expect(trigger.command).to.be.null;
+                expect(trigger.serverCode.endpoint).to.equal("server_code_for_trigger_1");
+                expect(trigger.serverCode.executorAccessToken).to.equal(adminToken);
+                expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                expect(trigger.serverCode.parameters).to.deep.equal({param1: "hoge"});
+                // 2. update server code trigger
+                serverCode = new thingIFSDK.ServerCode("server_code_for_trigger_2", adminToken, testApp.appID, {param2: "hage"});
+                request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, statePredicate);
+                return au.patchServerCodeTrigger(targetID, triggerID, request);
+            }).then((trigger:any)=>{
+                expect(trigger.triggerID).to.equals(triggerID);
+                expect(trigger.disabled).to.be.false;
+                expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                expect(trigger.predicate.triggersWhen).to.equal("CONDITION_TRUE");
+                expect(trigger.predicate.condition).to.deep.equal(condition);
+                expect(trigger.command).to.be.null;
+                expect(trigger.serverCode.endpoint).to.equal("server_code_for_trigger_2");
+                expect(trigger.serverCode.executorAccessToken).to.equal(adminToken);
+                expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
+                expect(trigger.serverCode.parameters).to.deep.equal({param2: "hage"});
+                // 3. register thing state
+                return apiHelper.updateThingState(targetID.toString(), {power: false});
+            }).then(()=>{
+                // 4. update thing state in order to trigger the server code
+                return apiHelper.updateThingState(targetID.toString(), {power: true});
+            }).then(()=>{
+                // 5. wait for a server code is finished 
+                return apiHelper.sleep(3000);
+            }).then(()=>{
+                // 6. get server code results
+                return au.listServerCodeExecutionResults(targetID, triggerID);
+            }).then((queryResult:any)=>{
+                expect(queryResult.results.length).to.equal(1);
+                expect(queryResult.paginationKey).to.be.null;
+                expect(queryResult.hasNext).to.be.false;
+                expect(queryResult.results[0].succeeded).to.be.true;
+                expect(queryResult.results[0].returnedValue).to.equal(200);
+                expect(queryResult.results[0].executedAt).to.be.not.null;
+                expect(queryResult.results[0].endpoint).to.equal("server_code_for_trigger_2");
+                expect(queryResult.results[0].error).to.be.null;
+                done();
+            }).catch((err:Error)=>{
+                done(err);
+            });
+        });
+    });
 });

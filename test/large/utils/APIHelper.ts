@@ -39,10 +39,12 @@ export class KiiThing {
 
 export class APIHelper {
     private kiiCloudBaseUrl: string;
+    private thingIFBaseUrl: string;
     constructor(
         public app: App
     ){
         this.kiiCloudBaseUrl = `${this.app.site}/api/apps/${this.app.appID}`
+        this.thingIFBaseUrl = `${this.app.site}/thing-if/apps/${this.app.appID}`
     };
     createKiiThing():Promise<KiiThing> {
         let vendorThingID = `testthing_${(new Date()).getTime()}`;
@@ -205,6 +207,38 @@ export class APIHelper {
             });
         });
     };
+    updateThingState(typedID:string, state:Object): Promise<void> {
+        return new Promise<void>((resolve, reject) =>{
+            this.getAdminToken()
+            .then((adminToken:string)=>{
+                return request.put(<any>{
+                    url: `${this.thingIFBaseUrl}/targets/${typedID}/states`,
+                    headers: {
+                        "X-Kii-AppID": this.app.appID,
+                        "X-Kii-AppKey": this.app.appKey,
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${adminToken}`
+                    },
+                    body: state
+                });
+            }).then((res)=>{
+                if(res.status == 201 || res.status == 204){
+                    resolve();
+                }else {
+                    reject(newError(res));
+                }
+            }).catch((err)=>{
+                reject(err);
+            });
+        });
+    }
+    sleep(msec:number):Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            setTimeout(() => {
+                resolve()
+            }, msec);
+        });
+    }
 }
 
 export const apiHelper = new APIHelper(TestApp.testApp);

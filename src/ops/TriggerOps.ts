@@ -185,7 +185,7 @@ export default class TriggerOps extends BaseOp {
     }
 
     listTriggers(listOptions?: ListQueryOptions): Promise<QueryResult<Trigger>> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
+        var url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
         var queryParams:string = "";
         if (listOptions) {
             if (listOptions.paginationKey) {
@@ -223,7 +223,7 @@ export default class TriggerOps extends BaseOp {
     listServerCodeResults(
         triggerID: string,
         listOptions?: ListQueryOptions): Promise<QueryResult<ServerCodeResult>> {
-        let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/results/server-code`;
+        var url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/results/server-code`;
         var queryParams:string = "";
         if (listOptions) {
             if (listOptions.paginationKey) {
@@ -238,6 +238,7 @@ export default class TriggerOps extends BaseOp {
             }
         }
         url += queryParams;
+console.log("###### url=" + url);
         return new Promise<QueryResult<ServerCodeResult>>((resolve, reject)=>{
             var headers: Object = this.getHeaders();
             var req = {
@@ -251,6 +252,7 @@ export default class TriggerOps extends BaseOp {
                 for (var json of (<any>res).body.triggerServerCodeResults) {
                     results.push(ServerCodeResult.fromJson(json));
                 }
+console.log("###### body=" + JSON.stringify((<any>res).body));
                 resolve(new QueryResult(results, paginationKey))
             }).catch((err)=>{
                 reject(err);
