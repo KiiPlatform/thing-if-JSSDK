@@ -1290,7 +1290,7 @@ describe('Test TriggerOps', function () {
                 }).get(listTriggersPath + `?paginationKey=${paginationKey}`)
                 .reply(200, responseBody4ListTriggers2, {"Content-Type": "application/json"});
             
-            triggerOps.listTriggers(null).then((result:QueryResult<Trigger>)=>{
+            triggerOps.listTriggers().then((result:QueryResult<Trigger>)=>{
                 try {
                     expect(result.paginationKey).to.equal(paginationKey);
                     expect(result.results.length).to.equal(3);
@@ -1383,8 +1383,165 @@ describe('Test TriggerOps', function () {
         });
     });
     describe('#listServerCodeResults() with promise', function () {
-        it("no pagination", function (done) {
-            done();
+        let paginationKey = "1/2"
+        let responseBody4ListServerCodeResults1 = {
+            triggerServerCodeResults: [
+                {
+                    succeeded:true,
+                    returnedValue:100,
+                    executedAt:1469102511270,
+                    endpoint: "server_function1"
+                },
+                {
+                    succeeded:false,
+                    executedAt:1469102511271,
+                    endpoint: "server_function2",
+                    error : {
+                        errorMessage:"Error found while executing the developer-defined code",
+                        details:{ 
+                            errorCode : "RUNTIME_ERROR",
+                            message : "adminContext is not defined"
+                        }
+                    }
+                },
+                {
+                    succeeded:true,
+                    returnedValue:"hoge",
+                    executedAt:1469102511272,
+                    endpoint: "server_function3"
+                },
+            ],
+            nextPaginationKey: paginationKey
+        }
+        let responseBody4ListServerCodeResults2 = {
+            triggerServerCodeResults: [
+                {
+                    succeeded:true,
+                    returnedValue:true,
+                    executedAt:1469102511273,
+                    endpoint: "server_function4"
+                },
+                {
+                    succeeded:true,
+                    returnedValue:{score:1000, bonus:400},
+                    executedAt:1469102511274,
+                    endpoint: "server_function5"
+                },
+            ]
+        }
+        let listServerCodeResultsPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/results/server-code`;
+        it("with bestEffortLimit", function (done) {
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listServerCodeResultsPath + `?bestEffortLimit=10`)
+                .reply(200, responseBody4ListServerCodeResults2, {"Content-Type": "application/json"});
+            triggerOps.listServerCodeResults(expectedTriggerID, new ListQueryOptions(10)).then((result:QueryResult<ServerCodeResult>)=>{
+                try {
+                    expect(result.paginationKey).to.be.null;
+                    expect(result.results.length).to.equal(2);
+
+                    var serverCodeResults = result.results[0];
+                    expect(serverCodeResults.succeeded).to.be.true;
+                    expect(serverCodeResults.endpoint).to.equal("server_function4");
+                    expect(serverCodeResults.executedAt).to.equal(1469102511273);
+                    expect(serverCodeResults.returnedValue).to.be.true;
+                    expect(serverCodeResults.error).to.be.null;
+
+                    serverCodeResults = result.results[1];
+                    expect(serverCodeResults.succeeded).to.be.true;
+                    expect(serverCodeResults.endpoint).to.equal("server_function5");
+                    expect(serverCodeResults.executedAt).to.equal(1469102511274);
+                    expect(serverCodeResults.returnedValue).to.deep.equal({score:1000, bonus:400});
+                    expect(serverCodeResults.error).to.be.null;
+                } catch (err) {
+                    done(err);
+                }
+                done();
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
+        });
+        it("with pagination", function (done) {
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listServerCodeResultsPath)
+                .reply(200, responseBody4ListServerCodeResults1, {"Content-Type": "application/json"});
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listServerCodeResultsPath + `?paginationKey=${paginationKey}`)
+                .reply(200, responseBody4ListServerCodeResults2, {"Content-Type": "application/json"});
+            triggerOps.listServerCodeResults(expectedTriggerID).then((result:QueryResult<ServerCodeResult>)=>{
+                try {
+                    expect(result.paginationKey).to.equal(paginationKey);
+                    expect(result.results.length).to.equal(3);
+
+                    var serverCodeResults = result.results[0];
+                    expect(serverCodeResults.succeeded).to.be.true;
+                    expect(serverCodeResults.endpoint).to.equal("server_function1");
+                    expect(serverCodeResults.executedAt).to.equal(1469102511270);
+                    expect(serverCodeResults.returnedValue).to.equal(100);
+                    expect(serverCodeResults.error).to.be.null;
+
+                    serverCodeResults = result.results[1];
+                    expect(serverCodeResults.succeeded).to.be.false;
+                    expect(serverCodeResults.endpoint).to.equal("server_function2");
+                    expect(serverCodeResults.executedAt).to.equal(1469102511271);
+                    expect(serverCodeResults.returnedValue).to.be.null;
+                    expect(serverCodeResults.error).to.be.not.null;
+                    expect(serverCodeResults.error.errorMessage).to.equal("Error found while executing the developer-defined code");
+                    expect(serverCodeResults.error.errorCode).to.equal("RUNTIME_ERROR");
+                    expect(serverCodeResults.error.detailMessage).to.equal("adminContext is not defined");
+
+                    serverCodeResults = result.results[2];
+                    expect(serverCodeResults.succeeded).to.be.true;
+                    expect(serverCodeResults.endpoint).to.equal("server_function3");
+                    expect(serverCodeResults.executedAt).to.equal(1469102511272);
+                    expect(serverCodeResults.returnedValue).to.equal("hoge");
+                    expect(serverCodeResults.error).to.be.null;
+                } catch (err) {
+                    done(err);
+                }
+                return triggerOps.listServerCodeResults(expectedTriggerID, new ListQueryOptions(null, result.paginationKey));
+            }).then((result:QueryResult<ServerCodeResult>)=>{
+                try {
+                    expect(result.paginationKey).to.be.null;
+                    expect(result.results.length).to.equal(2);
+
+                    var serverCodeResults = result.results[0];
+                    expect(serverCodeResults.succeeded).to.be.true;
+                    expect(serverCodeResults.endpoint).to.equal("server_function4");
+                    expect(serverCodeResults.executedAt).to.equal(1469102511273);
+                    expect(serverCodeResults.returnedValue).to.be.true;
+                    expect(serverCodeResults.error).to.be.null;
+
+                    serverCodeResults = result.results[1];
+                    expect(serverCodeResults.succeeded).to.be.true;
+                    expect(serverCodeResults.endpoint).to.equal("server_function5");
+                    expect(serverCodeResults.executedAt).to.equal(1469102511274);
+                    expect(serverCodeResults.returnedValue).to.deep.equal({score:1000, bonus:400});
+                    expect(serverCodeResults.error).to.be.null;
+                } catch (err) {
+                    done(err);
+                }
+                done();
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
         });
     });
 });
