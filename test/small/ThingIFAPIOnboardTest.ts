@@ -17,7 +17,7 @@ let testApp = new TestApp();
 let owner = new TypedID(Types.User, "dummy-user");
 let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app);
 
-describe.only("Small Test onboarding APIs of ThingIFAPI", function() {
+describe("Small Test onboarding APIs of ThingIFAPI", function() {
     describe("Test ThingIFAPI#onboardWithThingID", function() {
         let request = new Options.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
 
