@@ -214,10 +214,10 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
-    postServerCodeTriggger(
+    postServerCodeTrigger(
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.postServerCodeTriggger(this.target, requestObject, onCompletion);
+        return this._au.postServerCodeTrigger(this.target, requestObject, onCompletion);
     }
 
     /** Retrieve trigger.

@@ -187,10 +187,14 @@ describe("Test ArgumentError for OnboardingOps", function() {
                 (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
                     done("should fail");
                 }).catch((err:ThingIFError)=>{
-                    expect(err).be.not.null;
-                    expect(err.name).to.equals(test.expectedError);
-                    expect(err.message).to.equals(test.expectedErrorMsg);
-                    done();
+                    try {
+                        expect(err).be.not.null;
+                        expect(err.name).to.equals(test.expectedError);
+                        expect(err.message).to.equals(test.expectedErrorMsg);
+                        done();
+                    } catch (err) {
+                        done(err);
+                    }
                 });
             });
         });
@@ -219,10 +223,14 @@ describe("Test ArgumentError for OnboardingOps", function() {
                 (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
                     done("should fail");
                 }).catch((err:ThingIFError)=>{
-                    expect(err).be.not.null;
-                    expect(err.name).to.equals(test.expectedError);
-                    expect(err.message).to.equals(test.expectedErrorMsg);
-                    done();
+                    try {
+                        expect(err).be.not.null;
+                        expect(err.name).to.equals(test.expectedError);
+                        expect(err.message).to.equals(test.expectedErrorMsg);
+                        done();
+                    } catch (err) {
+                        done(err);
+                    }
                 });
             });
         });

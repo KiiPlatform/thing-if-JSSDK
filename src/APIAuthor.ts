@@ -137,11 +137,11 @@ export class APIAuthor {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      */
-    postServerCodeTriggger(
+    postServerCodeTrigger(
         target: TypedID,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return PromiseWrapper.promise((new TriggerOps(this,target)).postServerCodeTriggger(requestObject), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).postServerCodeTrigger(requestObject), onCompletion);
     }
 
     /** Retrieve trigger.
