@@ -15,7 +15,7 @@ let testApp = new TestApp();
 let owner = new TypedID(Types.User, "dummy-user");
 let target = new TypedID(Types.Thing, "dummy-thing-id");
 
-describe.only("Small test push APIs of ThingIFAPI", function() {
+describe("Small test push APIs of ThingIFAPI", function() {
     describe("Test APIAuthor#installFCM", function() {
         describe("handle illegalStateError", function() {
             let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app);
