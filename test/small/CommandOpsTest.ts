@@ -15,6 +15,7 @@ import {TypedID, Types} from '../../src/TypedID'
 import * as Options from '../../src/RequestObjects'
 import {Command, CommandState} from '../../src/Command'
 import {QueryResult} from '../../src/QueryResult'
+import * as TestUtil from './utils/TestUtil'
 
 import * as nock from 'nock'
 let scope : nock.Scope;
@@ -243,8 +244,8 @@ describe("Test CommandOps", function() {
                     expect(cmd.actions).to.be.deep.equal(responseBody.actions);
                     expect(cmd.actionResults).to.be.deep.equal(responseBody.actionResults);
                     expect(cmd.commandState).to.be.equal(CommandState.SENDING);
-                    expect(cmd.modified.getTime()).to.be.equal(date.getTime());
-                    expect(cmd.created.getTime()).to.be.equal(date.getTime());
+                    expect(TestUtil.sameDate(cmd.modified, date)).to.true;
+                    expect(TestUtil.sameDate(cmd.created, date));
                     expect(cmd.title).to.be.equal(responseBody.title);
                     expect(cmd.description).to.be.equal(responseBody.description);
                     expect(cmd.metadata).to.be.deep.equal(responseBody.metadata);
@@ -366,8 +367,8 @@ describe("Test CommandOps", function() {
                             expect(cmd1.actions).to.be.deep.equal(expectedCmd1.actions);
                             expect(cmd1.actionResults).to.be.deep.equal(expectedCmd1.actionResults);
                             expect(cmd1.commandState).to.be.equal(CommandState.SENDING);
-                            expect(cmd1.modified.getTime()).to.be.equal(expectedCmd1.modifiedAt);
-                            expect(cmd1.created.getTime()).to.be.equal(expectedCmd1.createdAt);
+                            expect(TestUtil.sameDate(cmd1.modified, new Date(expectedCmd1.modifiedAt))).to.true;
+                            expect(TestUtil.sameDate(cmd1.created, new Date(expectedCmd1.createdAt))).to.true;
                             expect(cmd1.title).to.be.equal(expectedCmd1.title);
                             expect(cmd1.description).to.be.equal(expectedCmd1.description);
                             expect(cmd1.metadata).to.be.deep.equal(expectedCmd1.metadata);
@@ -382,8 +383,8 @@ describe("Test CommandOps", function() {
                             expect(cmd2.actions).to.be.deep.equal(expectedCmd2.actions);
                             expect(cmd2.actionResults).to.be.deep.equal(expectedCmd2.actionResults);
                             expect(cmd2.commandState).to.be.equal(CommandState.SENDING);
-                            expect(cmd2.modified.getTime()).to.be.equal(expectedCmd2.modifiedAt);
-                            expect(cmd2.created.getTime()).to.be.equal(expectedCmd2.createdAt);
+                            expect(TestUtil.sameDate(cmd2.modified, new Date(expectedCmd2.modifiedAt))).to.true;
+                            expect(TestUtil.sameDate(cmd2.created, new Date(expectedCmd2.createdAt))).to.true;
                             expect(cmd2.title).to.be.equal(expectedCmd2.title);
                             expect(cmd2.description).to.be.equal(expectedCmd2.description);
                             expect(cmd2.metadata).to.be.deep.equal(expectedCmd2.metadata);
