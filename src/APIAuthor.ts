@@ -250,7 +250,7 @@ export class APIAuthor {
     getState(
         target: TypedID,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        return PromiseWrapper.promise((new StateOps(this, target.toString())).getState(), onCompletion);
+        return PromiseWrapper.promise((new StateOps(this, target)).getState(), onCompletion);
     }
 
     /** Get vendorThingID of specified target
