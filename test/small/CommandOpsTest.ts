@@ -118,7 +118,7 @@ describe("Test CommandOps", function() {
             })
 
             it("handle 400 response", function (done) {
-                var errRespone = {
+                var errResponse = {
                     "errorCode": "WRONG_COMMAND",
                     "message": "At least one action is required"
                 }
@@ -126,7 +126,7 @@ describe("Test CommandOps", function() {
                     .post(path)
                     .reply(
                         400,
-                        errRespone,
+                        errResponse,
                         {"Content-Type": "application/json"}
                     );
                 var issuerID = new TypedID(Types.User, issuerUserID);
@@ -138,7 +138,7 @@ describe("Test CommandOps", function() {
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
                     done("should fail");
                 }).catch((err:HttpRequestError)=>{
-                    expect(err.body).to.deep.equal(errRespone);
+                    expect(err.body).to.deep.equal(errResponse);
                     expect(err.status).to.equal(400);
                     expect(err.name).to.equal(Errors.HttpError);
                     done();
