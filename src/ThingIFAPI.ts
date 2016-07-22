@@ -203,7 +203,19 @@ export class ThingIFAPI {
     postCommandTrigger(
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.postCommandTrigger(this.target, requestObject, onCompletion);
+        let orgPromise = new Promise<Trigger>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).postCommandTrigger(requestObject)
+            .then((trigger)=>{
+                resolve(trigger);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Post a new servercode trigger.
