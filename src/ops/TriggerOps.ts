@@ -306,20 +306,12 @@ export default class TriggerOps extends BaseOp {
 
     listTriggers(listOptions?: ListQueryOptions): Promise<QueryResult<Trigger>> {
         var url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
-        var queryParams:string = "";
-        if (listOptions) {
-            if (listOptions.paginationKey) {
-                queryParams = "?paginationKey=" + listOptions.paginationKey;
-            }
-            if (listOptions.bestEffortLimit) {
-                if (queryParams) {
-                    queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
-                } else {
-                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
-                }
+        if(!!listOptions){
+            var queryString = ListQueryOptions.getQueryString(listOptions);
+            if(queryString){
+                url = `${url}?${queryString}`;
             }
         }
-        url += queryParams;
         return new Promise<QueryResult<Trigger>>((resolve, reject)=>{
             var headers: Object = this.getHeaders();
             var req = {
@@ -344,20 +336,12 @@ export default class TriggerOps extends BaseOp {
         triggerID: string,
         listOptions?: ListQueryOptions): Promise<QueryResult<ServerCodeResult>> {
         var url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/results/server-code`;
-        var queryParams:string = "";
-        if (listOptions) {
-            if (listOptions.paginationKey) {
-                queryParams = "?paginationKey=" + listOptions.paginationKey;
-            }
-            if (listOptions.bestEffortLimit) {
-                if (queryParams) {
-                    queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
-                } else {
-                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
-                }
+        if(!!listOptions){
+            var queryString = ListQueryOptions.getQueryString(listOptions);
+            if(queryString){
+                url = `${url}?${queryString}`;
             }
         }
-        url += queryParams;
         return new Promise<QueryResult<ServerCodeResult>>((resolve, reject)=>{
             if (!triggerID) {
                 reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
