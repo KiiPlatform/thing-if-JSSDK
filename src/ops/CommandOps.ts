@@ -63,12 +63,12 @@ export default class CommandOps extends BaseOp {
 
             request(req).then((res)=>{
                 var newCommand = new Command(
-                        (<any>res.body).commandID,
                         this.targetID,
                         TypedID.fromString(requestObject.issuer),
                         requestObject.schema,
                         requestObject.schemaVersion,
                         requestObject.actions);
+                newCommand.commandID = (<any>res.body).commandID;
                 resolve(newCommand);
             }).catch((err)=>{
                 reject(err);

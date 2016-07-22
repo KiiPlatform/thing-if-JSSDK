@@ -47,10 +47,16 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
                 return;
             }
+            var command = new Command(
+                this.target,
+                requestObject.issuerID,
+                requestObject.schemaName,
+                requestObject.schemaVersion,
+                requestObject.actions);
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
-                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions).toJson()
+                command: command.toJson()
             }
             this.postTriggger(resuestBody).then((result)=>{
                 resolve(result);
@@ -161,10 +167,16 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "must specify actions or predicate"));
                 return;
             }
+            var command = new Command(
+                this.target,
+                requestObject.issuerID,
+                requestObject.schemaName,
+                requestObject.schemaVersion,
+                requestObject.actions);
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
-                command: Command.newCommand(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions).toJson()
+                command: command.toJson()
             }
             this.patchTriggger(triggerID, resuestBody).then((result)=>{
                 resolve(result);
