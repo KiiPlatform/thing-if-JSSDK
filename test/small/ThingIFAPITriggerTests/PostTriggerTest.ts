@@ -23,7 +23,7 @@ let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-let schemaName = "LED";
+let schema = "LED";
 let schemaVersion = 1;
 let condition = new Condition(new Equals("power", "false"));
 let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
@@ -31,7 +31,7 @@ let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 
 describe("Small Test ThingIFAPI#postCommandTrigger", function() {
-    let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, predicate, owner);
+    let request = new CommandTriggerRequest(schema, schemaVersion, actions, predicate, owner);
     describe("handle IllegalStateError", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",

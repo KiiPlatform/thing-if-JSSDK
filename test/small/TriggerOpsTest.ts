@@ -33,7 +33,7 @@ describe('Test TriggerOps', function () {
     });
 
     let expectedTriggerID = "46bc25c0-4f12-11e6-ae54-22000ad9164c";
-    let schemaName = "LED";
+    let schema = "LED";
     let schemaVersion = 1;
     let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
     let condition = new Condition(new Equals("power", "false"));
@@ -51,7 +51,7 @@ describe('Test TriggerOps', function () {
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schemaName,
+            "schema": schema,
             "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
@@ -67,7 +67,7 @@ describe('Test TriggerOps', function () {
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schemaName,
+            "schema": schema,
             "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
@@ -83,7 +83,7 @@ describe('Test TriggerOps', function () {
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schemaName,
+            "schema": schema,
             "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
@@ -164,7 +164,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -173,7 +173,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -181,7 +181,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -211,7 +211,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -220,14 +220,14 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, schedulePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -257,7 +257,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -266,14 +266,14 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, scheduleOncePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, scheduleOncePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -310,7 +310,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -319,7 +319,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -341,8 +341,8 @@ describe('Test TriggerOps', function () {
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
                 new TestCase(null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase(new CommandTriggerRequest(null, 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaName is null or empty", "should handle error when schemaName is null"),
-                new TestCase(new CommandTriggerRequest("", 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaName is null or empty", "should handle error when schemaName is empty"),
+                new TestCase(new CommandTriggerRequest(null, 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is null"),
+                new TestCase(new CommandTriggerRequest("", 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is empty"),
                 new TestCase(new CommandTriggerRequest("led", null, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
                 new TestCase(new CommandTriggerRequest("led", 1, null, predicate), Errors.ArgumentError, "actions is null", "should handle error when actions is null"),
                 new TestCase(new CommandTriggerRequest("led", 1, [{turnPower: {power:true}}], null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
@@ -603,7 +603,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -621,7 +621,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -629,7 +629,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -659,7 +659,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -677,14 +677,14 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithSchedule, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, schedulePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -714,7 +714,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -732,14 +732,14 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithScheduleOnce, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, scheduleOncePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, scheduleOncePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -776,7 +776,7 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schemaName,
+                        "schema": schema,
                         "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
@@ -785,7 +785,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
             
-            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -810,8 +810,8 @@ describe('Test TriggerOps', function () {
                 new TestCase(null, new CommandTriggerRequest("led", 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
                 new TestCase("", new CommandTriggerRequest("led", 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
                 new TestCase("trigger-01234-abcd", null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase("trigger-01234-abcd", new CommandTriggerRequest(null, 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaName is null or empty", "should handle error when schemaName is null"),
-                new TestCase("trigger-01234-abcd", new CommandTriggerRequest("", 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaName is null or empty", "should handle error when schemaName is empty"),
+                new TestCase("trigger-01234-abcd", new CommandTriggerRequest(null, 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is null"),
+                new TestCase("trigger-01234-abcd", new CommandTriggerRequest("", 1, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is empty"),
                 new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", null, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
                 new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", 1, null, null), Errors.ArgumentError, "must specify actions or predicate", "should handle error when actions and predicate are null"),
             ]
@@ -1113,7 +1113,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -1160,7 +1160,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -1481,7 +1481,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -1493,7 +1493,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
@@ -1505,7 +1505,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schemaName).to.equal(schemaName);
+                    expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);

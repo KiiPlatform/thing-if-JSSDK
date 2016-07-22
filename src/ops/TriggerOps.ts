@@ -28,11 +28,11 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
                 return;
             }
-            if (!requestObject.schemaName) {
-                reject(new ThingIFError(Errors.ArgumentError, "schemaName is null or empty"));
+            if (!requestObject.schema) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema is null or empty"));
                 return;
-            } else if (!KiiUtil.isString(requestObject.schemaName)) {
-                reject(new ThingIFError(Errors.ArgumentError, "schemaName is not string"));
+            } else if (!KiiUtil.isString(requestObject.schema)) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema is not string"));
                 return;
             }
             if (requestObject.schemaVersion === null || requestObject.schemaVersion === undefined) {
@@ -50,7 +50,7 @@ export default class TriggerOps extends BaseOp {
             var command = new Command(
                 this.target,
                 requestObject.issuerID,
-                requestObject.schemaName,
+                requestObject.schema,
                 requestObject.schemaVersion,
                 requestObject.actions);
             var resuestBody = {
@@ -59,7 +59,7 @@ export default class TriggerOps extends BaseOp {
                 command: command.toJson()
             }
             this.postTrigger(resuestBody).then((res:Response)=>{
-                var command = new Command(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions);
+                var command = new Command(this.target, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
                 var trigger = new Trigger(requestObject.predicate, command, null);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
@@ -155,11 +155,11 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
                 return;
             }
-            if (!requestObject.schemaName) {
-                reject(new ThingIFError(Errors.ArgumentError, "schemaName is null or empty"));
+            if (!requestObject.schema) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema is null or empty"));
                 return;
-            } else if (!KiiUtil.isString(requestObject.schemaName)) {
-                reject(new ThingIFError(Errors.ArgumentError, "schemaName is not string"));
+            } else if (!KiiUtil.isString(requestObject.schema)) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema is not string"));
                 return;
             }
             if (requestObject.schemaVersion === null || requestObject.schemaVersion === undefined) {
@@ -173,7 +173,7 @@ export default class TriggerOps extends BaseOp {
             var command = new Command(
                 this.target,
                 requestObject.issuerID,
-                requestObject.schemaName,
+                requestObject.schema,
                 requestObject.schemaVersion,
                 requestObject.actions);
             var resuestBody = {

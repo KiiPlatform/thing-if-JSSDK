@@ -50,7 +50,7 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             // test postNewCommand
             expect(cmd).not.null;
             expect(cmd.commandID).not.null;
-            expect(cmd.schemaName).to.be.equal(postCommandRequest.schema);
+            expect(cmd.schema).to.be.equal(postCommandRequest.schema);
             expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
             expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
             expect(cmd.modified).not.null;
@@ -66,7 +66,7 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             // tet getCommand
             expect(cmd).not.null;
             expect(cmd.commandID).not.null;
-            expect(cmd.schemaName).to.be.equal(postCommandRequest.schema);
+            expect(cmd.schema).to.be.equal(postCommandRequest.schema);
             expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
             expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
             expect(cmd.modified).not.null;

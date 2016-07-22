@@ -103,7 +103,7 @@ describe("Test CommandOps", function() {
                     issuerID);
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
                     expect(cmd.commandID).to.be.equal(expectedCommandID);
-                    expect(cmd.schemaName).to.be.equal(expectedReqBody.schema);
+                    expect(cmd.schema).to.be.equal(expectedReqBody.schema);
                     expect(cmd.schemaVersion).to.be.equal(expectedReqBody.schemaVersion);
                     expect(cmd.actions).to.be.deep.equal(expectedReqBody.actions);
                     expect(cmd.actionResults).to.be.undefined;
@@ -239,7 +239,7 @@ describe("Test CommandOps", function() {
                     );
                 cmdOp.getCommand(commandID).then((cmd)=>{
                     expect(cmd.commandID).to.be.equal(commandID);
-                    expect(cmd.schemaName).to.be.equal(responseBody.schema);
+                    expect(cmd.schema).to.be.equal(responseBody.schema);
                     expect(cmd.schemaVersion).to.be.equal(responseBody.schemaVersion);
                     expect(cmd.actions).to.be.deep.equal(responseBody.actions);
                     expect(cmd.actionResults).to.be.deep.equal(responseBody.actionResults);
@@ -362,7 +362,7 @@ describe("Test CommandOps", function() {
                             var cmd1 = result.results[0];
                             var expectedCmd1 = responseBody.commands[0];
                             expect(cmd1.commandID).to.be.equal(expectedCmd1.commandID);
-                            expect(cmd1.schemaName).to.be.equal(expectedCmd1.schema);
+                            expect(cmd1.schema).to.be.equal(expectedCmd1.schema);
                             expect(cmd1.schemaVersion).to.be.equal(expectedCmd1.schemaVersion);
                             expect(cmd1.actions).to.be.deep.equal(expectedCmd1.actions);
                             expect(cmd1.actionResults).to.be.deep.equal(expectedCmd1.actionResults);
@@ -378,7 +378,7 @@ describe("Test CommandOps", function() {
                             var cmd2 = result.results[1];
                             var expectedCmd2 = responseBody.commands[1];
                             expect(cmd2.commandID).to.be.equal(expectedCmd2.commandID);
-                            expect(cmd2.schemaName).to.be.equal(expectedCmd2.schema);
+                            expect(cmd2.schema).to.be.equal(expectedCmd2.schema);
                             expect(cmd2.schemaVersion).to.be.equal(expectedCmd2.schemaVersion);
                             expect(cmd2.actions).to.be.deep.equal(expectedCmd2.actions);
                             expect(cmd2.actionResults).to.be.deep.equal(expectedCmd2.actionResults);

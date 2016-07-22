@@ -50,7 +50,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
         it("all operations", function (done) {
             var triggerID1: string;
             var triggerID2: string;
-            var schemaName = "led";
+            var schema = "led";
             var schemaVersion = 1;
             var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
@@ -58,7 +58,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "false"));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_CHANGED);
-            var request = new thingIFSDK.CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, issuerID);
+            var request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
 
             // 1. create command trigger with StatePredicate
             api.postCommandTrigger(request).then((trigger:any)=>{
@@ -69,7 +69,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(trigger.predicate.getEventSource()).to.equal("STATES");
                 expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                 expect(trigger.predicate.condition).to.deep.equal(condition);
-                expect(trigger.command.schemaName).to.equal(schemaName);
+                expect(trigger.command.schema).to.equal(schema);
                 expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
@@ -78,7 +78,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
 
                 // 2. create command trigger with SchedulePredicate
                 var schedulePredicate = new thingIFSDK.SchedulePredicate("0 12 1 * *");
-                request = new thingIFSDK.CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, issuerID);
+                request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, actions, schedulePredicate, issuerID);
                 // Admin token is needed when allowCreateTaskByPrincipal=false
                 api._au._token = adminToken;
                 return api.postCommandTrigger(request);
@@ -87,7 +87,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(triggerID2).to.be.not.null;
                 expect(trigger.disabled).to.be.false;
                 expect(trigger.predicate.cronExpression).to.equal("0 12 1 * *");
-                expect(trigger.command.schemaName).to.equal(schemaName);
+                expect(trigger.command.schema).to.equal(schema);
                 expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
@@ -100,7 +100,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(trigger.triggerID).to.equal(triggerID2);
                 expect(trigger.disabled).to.be.true;
                 expect(trigger.predicate.cronExpression).to.equal("0 12 1 * *");
-                expect(trigger.command.schemaName).to.equal(schemaName);
+                expect(trigger.command.schema).to.equal(schema);
                 expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
@@ -121,7 +121,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                         expect(trigger.predicate.getEventSource()).to.equal("STATES");
                         expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                         expect(trigger.predicate.condition).to.deep.equal(condition);
-                        expect(trigger.command.schemaName).to.equal(schemaName);
+                        expect(trigger.command.schema).to.equal(schema);
                         expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                         expect(trigger.command.actions).to.deep.equal(actions);
                         expect(trigger.command.targetID).to.deep.equal(targetID);
@@ -130,7 +130,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                     } else if (trigger.triggerID == triggerID2) {
                         expect(trigger.disabled).to.be.true;
                         expect(trigger.predicate.cronExpression).to.equal("0 12 1 * *");
-                        expect(trigger.command.schemaName).to.equal(schemaName);
+                        expect(trigger.command.schema).to.equal(schema);
                         expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                         expect(trigger.command.actions).to.deep.equal(actions);
                         expect(trigger.command.targetID).to.deep.equal(targetID);
@@ -149,7 +149,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(trigger.predicate.getEventSource()).to.equal("STATES");
                 expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                 expect(trigger.predicate.condition).to.deep.equal(condition);
-                expect(trigger.command.schemaName).to.equal("led2");
+                expect(trigger.command.schema).to.equal("led2");
                 expect(trigger.command.schemaVersion).to.equal(2);
                 expect(trigger.command.actions).to.deep.equal([{setBrightness: {brightness:50}}]);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
@@ -171,7 +171,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(queryResult.results[0].predicate.getEventSource()).to.equal("STATES");
                 expect(queryResult.results[0].predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                 expect(queryResult.results[0].predicate.condition).to.deep.equal(condition);
-                expect(queryResult.results[0].command.schemaName).to.equal("led2");
+                expect(queryResult.results[0].command.schema).to.equal("led2");
                 expect(queryResult.results[0].command.schemaVersion).to.equal(2);
                 expect(queryResult.results[0].command.actions).to.deep.equal([{setBrightness: {brightness:50}}]);
                 expect(queryResult.results[0].command.targetID).to.deep.equal(targetID);
