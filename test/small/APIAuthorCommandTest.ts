@@ -25,12 +25,12 @@ describe("Small Test command APIs of APIAuthor", function() {
         describe("handle succeeded reponse", function() {
             let cmdRequest = new Options.PostCommandRequest("LED",1,[{"turnPower": {"power": true}}], owner);
             let expectedCommand = new Command(
-                "dummy-command-id",
                 target,
                 owner,
                 cmdRequest.schema,
                 cmdRequest.schemaVersion,
                 cmdRequest.actions);
+            expectedCommand.commandID = "dummy-id";
 
             beforeEach(function() {
                 simple.mock(CommandOps.prototype, 'postNewCommand').returnWith(
@@ -111,12 +111,12 @@ describe("Small Test command APIs of APIAuthor", function() {
         describe("handle succeeded reponse", function() {
 
             let expectedCommand = new Command(
-                "dummy-command-id",
                 target,
                 owner,
                 "LED",
                 1,
                 [{"turnPower": {"power": true}}]);
+            expectedCommand.commandID = commandID;
 
             beforeEach(function() {
                 simple.mock(CommandOps.prototype, 'getCommand').returnWith(
@@ -192,11 +192,13 @@ describe("Small Test command APIs of APIAuthor", function() {
     describe("Test APIAuthor#listCommands", function() {
 
         describe("handle succeeded reponse", function() {
-            let expectedResults = new QueryResult<Command>([
-                    new Command("id1",target,owner,"LED",1,[{"turnPower": {"power": true}}]),
-                    new Command("id2",target,owner,"LED",1,[{"turnPower": {"power": false}}]),
-                    new Command("id3",target,owner,"LED",1,[{"turnPower": {"power": true}}])
-                ], "200/1");
+            let cmd1 = new Command(target,owner,"LED",1,[{"turnPower": {"power": true}}]);
+            let cmd2 = new Command(target,owner,"LED",1,[{"turnPower": {"power": false}}]);
+            let cmd3 = new Command(target,owner,"LED",1,[{"turnPower": {"power": true}}]);
+            cmd1.commandID = "id1";
+            cmd2.commandID = "id2";
+            cmd3.commandID = "id3";
+            let expectedResults = new QueryResult<Command>([cmd1, cmd2, cmd3], "200/1");
 
             beforeEach(function() {
                 simple.mock(CommandOps.prototype, 'listCommands').returnWith(

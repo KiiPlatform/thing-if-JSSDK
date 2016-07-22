@@ -2,25 +2,24 @@ import {TypedID} from './TypedID'
 import * as KiiUtil from './internal/KiiUtilities'
 /** Represent Command */
 export class Command {
+    public commandID: string;
+    public actionResults: Array<Object>;
+    public commandState:string;
+    public firedByTriggerID:string;
+    public created:Date;
+    public modified:Date;
+    public title:string;
+    public description:string;
+    public metadata:Object
+
     constructor(
-        public commandID: string,
         public targetID: TypedID,
         public issuerID: TypedID,
         public schemaName: string,
         public schemaVersion: number,
-        public actions: Array<Object>,
-        public actionResults?: Array<Object>,
-        public commandState?:string,
-        public firedByTriggerID?:string,
-        public created?:Date,
-        public modified?:Date,
-        public title?:string,
-        public description?:string,
-        public metadata?:Object
+        public actions: Array<Object>
     ){}
-    static newCommand(targetID: TypedID, issuerID: TypedID, schemaName: string, schemaVersion: number, actions: Array<Object>): Command {
-        return new Command(null, targetID, issuerID, schemaName, schemaVersion, actions);
-    }
+
     toJson(): any{
         var jsonObject: any ={};
         if(!!this.commandID){
@@ -60,35 +59,24 @@ export class Command {
             return null;
         }
         let command = new Command(
-            obj.commandID,
             TypedID.fromString(obj.target),
             TypedID.fromString(obj.issuer),
             obj.schema,
             obj.schemaVersion,
             obj.actions);
-        if(!!obj.actionResults){
-            command.actionResults = obj.actionResults;
-        }
-        if(!!obj.commandState){
-            command.commandState= obj.commandState;
-        }
-        if(!!obj.firedByTriggerID){
-            command.firedByTriggerID = obj.firedByTriggerID;
-        }
+        command.commandID = obj.commandID;
+        command.actionResults = obj.actionResults;
+        command.commandState= obj.commandState;
+        command.firedByTriggerID = obj.firedByTriggerID;
+        command.title = obj.title;
+        command.description = obj.description;
+        command.metadata = obj.metadata;
+
         if(!!obj.createdAt){
             command.created = new Date(obj.createdAt);
         }
         if(!!obj.modifiedAt){
             command.modified = new Date(obj.createdAt);
-        }
-        if(!!obj.title){
-            command.title = obj.title;
-        }
-        if(!!obj.description){
-            command.description = obj.description;
-        }
-        if(!!obj.metadata){
-            command.metadata = obj.metadata;
         }
         return command;
     }
