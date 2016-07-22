@@ -13,10 +13,8 @@ describe("Large Tests for Push Ops(ThingIFAPI):", function () {
     let thingIFAPI: any;
 
     before(function(done) {
-        let au: any;
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
-            au = new thingIFSDK.APIAuthor(newUser.token, testApp);
             var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, newUser.userID);
             thingIFAPI = new thingIFSDK.ThingIFAPI(owner, newUser.token, testApp);
             var vendorThingID = "vendor-" + new Date().getTime();
