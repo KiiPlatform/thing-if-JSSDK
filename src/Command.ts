@@ -15,7 +15,7 @@ export class Command {
     constructor(
         public targetID: TypedID,
         public issuerID: TypedID,
-        public schemaName: string,
+        public schema: string,
         public schemaVersion: number,
         public actions: Array<Object>
     ){}
@@ -31,8 +31,8 @@ export class Command {
         if(!!this.issuerID){
             jsonObject.issuer = this.issuerID.toString();
         }
-        if(!!this.schemaName){
-            jsonObject.schema = this.schemaName;
+        if(!!this.schema){
+            jsonObject.schema = this.schema;
         }
         if(!!this.schemaVersion){
             jsonObject.schemaVersion = this.schemaVersion;

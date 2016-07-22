@@ -90,7 +90,7 @@ export class ListQueryOptions {
 
 export class CommandTriggerRequest{
     constructor(
-        public schemaName: string,
+        public schema: string,
         public schemaVersion: number,
         public actions?: Array<Object>,
         public predicate?: Predicate,
