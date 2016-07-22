@@ -26,7 +26,7 @@ let target = new TypedID(Types.Thing, "th.01234-abcde");
 let au = new APIAuthor(ownerToken, testApp.app);
 let triggerOps = new TriggerOps(au, target);
 
-describe('Test TriggerOps', function () {
+describe.only('Test TriggerOps', function () {
 
     beforeEach(function() {
         nock.cleanAll();
@@ -318,6 +318,48 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TRIGGER",
+                "message": "The provided trigger is not valid"
+            };
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).post(postCommandTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(400, errResponse, {"Content-Type": "application/json"});
+            
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
+            triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(400);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
+            });
+        });
         describe("Argument Test", function() {
             class TestCase {
                 constructor(
@@ -521,6 +563,47 @@ describe('Test TriggerOps', function () {
                 }
             }).catch((err:ThingIFError)=>{
                 done(err);
+            });
+        });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TRIGGER",
+                "message": "The provided trigger is not valid"
+            };
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).post(postServerCodeTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
+                })
+                .reply(400, errResponse, {"Content-Type": "application/json"});
+            
+            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(400);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
             });
         });
         describe("Argument Test", function() {
@@ -732,6 +815,48 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TRIGGER",
+                "message": "The provided trigger is not valid"
+            };
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchCommandTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schemaName,
+                        "schemaVersion": schemaVersion,
+                        "target": target.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(400, errResponse, {"Content-Type": "application/json"});
+            
+            let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
+            triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(400);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
+            });
+        });
         describe("Argument Test", function() {
             class TestCase {
                 constructor(
@@ -939,6 +1064,47 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TRIGGER",
+                "message": "The provided trigger is not valid"
+            };
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchServerCodeTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"SERVER_CODE",
+                    "serverCode" : {
+                        "endpoint" : endpoint,
+                        "parameters" : parameters,
+                        "executorAccessToken" : ownerToken,
+                        "targetAppID": testApp.appID
+                    }
+                })
+                .reply(400, errResponse, {"Content-Type": "application/json"});
+            
+            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(400);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
+            });
+        });
         describe("Argument Test", function() {
             class TestCase {
                 constructor(
@@ -1070,6 +1236,32 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "TRIGGER_NOT_FOUND",
+                "message": "The trigger is not found"
+            };
+            let enableTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/enable`;
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).put(enableTriggerPath)
+                .reply(404, errResponse, {"Content-Type": "application/json"});
+            
+            triggerOps.enableTrigger(expectedTriggerID, true).then((trigger:Trigger)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(404);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
+            });
+        });
         describe("Argument Test", function() {
             class TestCase {
                 constructor(
@@ -1127,6 +1319,31 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "TRIGGER_NOT_FOUND",
+                "message": "The trigger is not found"
+            };
+            let deleteTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).delete(deleteTriggerPath)
+                .reply(404, errResponse, {"Content-Type": "application/json"});
+            triggerOps.deleteTrigger(expectedTriggerID).then((deletedTriggerID:string)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(404);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
+            });
+        });
         describe("Argument Test", function() {
             class TestCase {
                 constructor(
@@ -1159,10 +1376,35 @@ describe('Test TriggerOps', function () {
         });
     });
     describe('#getTrigger() with promise', function () {
+        let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         it("should send a request to the thing-if server", function (done) {
             // getTrigger() method is used by other methods internally.
             // So we can skip small test for getTrigger() method.
             done();
+        });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "TRIGGER_NOT_FOUND",
+                "message": "The trigger is not found"
+            };
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(404, errResponse, {"Content-Type": "application/json"});
+            
+            triggerOps.getTrigger(expectedTriggerID).then((trigger:Trigger)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(404);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
+            });
         });
         describe("Argument Test", function() {
             class TestCase {
@@ -1381,6 +1623,30 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TOKEN",
+                "message": "The provided token is not valid"
+            };
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listTriggersPath + "?bestEffortLimit=10")
+                .reply(401, errResponse, {"Content-Type": "application/json"});
+
+            triggerOps.listTriggers(new ListQueryOptions(10)).then((result:QueryResult<Trigger>)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(401);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
+            });
+        });
     });
     describe('#listServerCodeResults() with promise', function () {
         let paginationKey = "1/2"
@@ -1541,6 +1807,29 @@ describe('Test TriggerOps', function () {
                 done();
             }).catch((err:ThingIFError)=>{
                 done(err);
+            });
+        });
+        it("handle error response", function (done) {
+            let errResponse = {
+                "errorCode": "WRONG_TOKEN",
+                "message": "The provided token is not valid"
+            };
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK": "0.1",
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(listServerCodeResultsPath + `?bestEffortLimit=10`)
+                .reply(401, errResponse, {"Content-Type": "application/json"});
+            triggerOps.listServerCodeResults(expectedTriggerID, new ListQueryOptions(10)).then((result:QueryResult<ServerCodeResult>)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err.body).to.deep.equal(errResponse);
+                expect(err.status).to.equal(401);
+                expect(err.name).to.equal(Errors.HttpError);
+                done();
             });
         });
     });
