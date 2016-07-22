@@ -26,7 +26,7 @@ let target = new TypedID(Types.Thing, "th.01234-abcde");
 let au = new APIAuthor(ownerToken, testApp.app);
 let triggerOps = new TriggerOps(au, target);
 
-describe.only('Test TriggerOps', function () {
+describe('Test TriggerOps', function () {
 
     beforeEach(function() {
         nock.cleanAll();

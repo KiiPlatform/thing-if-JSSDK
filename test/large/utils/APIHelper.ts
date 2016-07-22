@@ -38,6 +38,7 @@ export class KiiThing {
 }
 
 export class APIHelper {
+    static adminTokenCache: any = {};
     private kiiCloudBaseUrl: string;
     private thingIFBaseUrl: string;
     constructor(
@@ -157,6 +158,12 @@ export class APIHelper {
         });
     }
     getAdminToken(): Promise<string> {
+        var cachedToken = APIHelper.adminTokenCache[this.app.appID];
+        if (cachedToken) {
+            return new Promise<string>((resolve, reject) =>{
+                resolve(cachedToken);
+            });
+        }
         let reqHeader = {
             "X-Kii-AppID": this.app.appID,
             "X-Kii-AppKey": this.app.appKey,
@@ -173,6 +180,7 @@ export class APIHelper {
                 }
             }).then((res)=>{
                 if(res.status == 200){
+                    APIHelper.adminTokenCache[this.app.appID] = res.body.access_token;
                     resolve(res.body.access_token);
                 }else {
                     reject(newError(res));
