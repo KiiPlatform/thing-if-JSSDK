@@ -11,7 +11,7 @@ let thingIFSDK = require('../../../dist/thing-if-sdk.js');
 describe("Large Tests for thing APIs(ThingIFAPI):", function () {
 
     let user: KiiUser;
-    let au: ThingIFAPI;
+    let api: ThingIFAPI;
     let thingID: string;
     let orgVendorThingID: string;
 
@@ -19,11 +19,11 @@ describe("Large Tests for thing APIs(ThingIFAPI):", function () {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
             var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, newUser.userID);
-            au = new thingIFSDK.ThingIFAPI(owner,newUser.token, testApp);
+            api = new thingIFSDK.ThingIFAPI(owner,newUser.token, testApp);
             orgVendorThingID = "vendor-" + new Date().getTime();
             var password = "password";
             var request = new thingIFSDK.OnboardWithVendorThingIDRequest(orgVendorThingID, password);
-            return au.onboardWithVendorThingID(request)
+            return api.onboardWithVendorThingID(request)
         }).then((result)=>{
             expect(result.thingID).not.null;
             thingID = result.thingID;
@@ -46,11 +46,11 @@ describe("Large Tests for thing APIs(ThingIFAPI):", function () {
     it("handle success response by calling ThingIFAPI#getVendorThingID, ThingIFAPI#updateVendorThingID", function (done) {
         let newVendorThingID = `new${(new Date()).getTime()}`
         let newPassword = "pass";
-        au.getVendorThingID().then((vendorThingID)=>{
+        api.getVendorThingID().then((vendorThingID)=>{
             expect(vendorThingID).to.be.equal(orgVendorThingID);
-            return au.updateVendorThingID(newVendorThingID, newPassword);
+            return api.updateVendorThingID(newVendorThingID, newPassword);
         }).then(()=>{
-            return au.getVendorThingID();
+            return api.getVendorThingID();
         }).then((vendorThingID)=>{
             expect(vendorThingID).to.be.equal(newVendorThingID);
             done();

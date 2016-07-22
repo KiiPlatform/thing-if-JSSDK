@@ -15,10 +15,8 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
     let thingIFAPI: any;
 
     beforeEach(function(done) {
-        let au: any;
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
-            au = new thingIFSDK.ThingIFAPI(newUser.token, testApp);
             var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, newUser.userID);
             thingIFAPI = new thingIFSDK.ThingIFAPI(owner, newUser.token, testApp);
             var vendorThingID = "vendor-" + new Date().getTime();
@@ -99,7 +97,7 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             expect(result.hasNext).to.be.false;
             expect(!result.paginationKey).to.be.true;
             done();
-        }).catch((err)=>{
+        }).catch((err:Error)=>{
             done(err);
         });
     });
