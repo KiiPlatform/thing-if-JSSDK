@@ -203,7 +203,19 @@ export class ThingIFAPI {
     postCommandTrigger(
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.postCommandTrigger(this.target, requestObject, onCompletion);
+        let orgPromise = new Promise<Trigger>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).postCommandTrigger(requestObject)
+            .then((trigger)=>{
+                resolve(trigger);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Post a new servercode trigger.
@@ -217,7 +229,19 @@ export class ThingIFAPI {
     postServerCodeTrigger(
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.postServerCodeTrigger(this.target, requestObject, onCompletion);
+        let orgPromise = new Promise<Trigger>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).postServerCodeTrigger(requestObject)
+            .then((trigger)=>{
+                resolve(trigger);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Retrieve trigger.
@@ -231,7 +255,19 @@ export class ThingIFAPI {
     getTrigger(
         triggerID: string,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.getTrigger(this.target, triggerID, onCompletion);
+        let orgPromise = new Promise<Trigger>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).getTrigger(triggerID)
+            .then((trigger)=>{
+                resolve(trigger);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Update a command trigger.
@@ -247,7 +283,19 @@ export class ThingIFAPI {
         triggerID: string,
         requestObject: Options.CommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.patchCommandTrigger(this.target, triggerID, requestObject, onCompletion);
+        let orgPromise = new Promise<Trigger>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).patchCommandTrigger(triggerID, requestObject)
+            .then((trigger)=>{
+                resolve(trigger);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Update a servercode trigger.
@@ -263,7 +311,19 @@ export class ThingIFAPI {
         triggerID: string,
         requestObject: Options.ServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.patchServerCodeTrigger(this.target, triggerID, requestObject, onCompletion);
+        let orgPromise = new Promise<Trigger>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).patchServerCodeTrigger(triggerID, requestObject)
+            .then((trigger)=>{
+                resolve(trigger);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Enable/Disable a specified trigger.
@@ -279,7 +339,19 @@ export class ThingIFAPI {
         triggerID: string,
         enable: boolean,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
-        return this._au.enableTrigger(this.target, triggerID, enable, onCompletion);
+        let orgPromise = new Promise<Trigger>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).enableTrigger(triggerID, enable)
+            .then((trigger)=>{
+                resolve(trigger);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Delete a specified trigger.
@@ -293,7 +365,19 @@ export class ThingIFAPI {
     deleteTrigger(
         triggerID: string,
         onCompletion?: (err: Error, triggerID:string)=> void): Promise<string>{
-        return this._au.deleteTrigger(this.target, triggerID, onCompletion);
+        let orgPromise = new Promise<string>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).deleteTrigger(triggerID)
+            .then((triggerID)=>{
+                resolve(triggerID);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Retrive triggers.
@@ -306,7 +390,19 @@ export class ThingIFAPI {
     listTriggers(
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, triggers:QueryResult<Trigger>)=> void): Promise<QueryResult<Trigger>>{
-        return this._au.listTriggers(this.target, listOpitons, onCompletion);
+        let orgPromise = new Promise<QueryResult<Trigger>>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).listTriggers(listOpitons)
+            .then((triggers)=>{
+                resolve(triggers);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Retrieve execution results of server code trigger.
@@ -322,7 +418,19 @@ export class ThingIFAPI {
         triggerID: string,
         listOpitons?: Options.ListQueryOptions,
         onCompletion?: (err: Error, results:QueryResult<ServerCodeResult>)=> void): Promise<QueryResult<ServerCodeResult>>{
-        return this._au.listServerCodeExecutionResults(this.target, triggerID, listOpitons, onCompletion);
+        let orgPromise = new Promise<QueryResult<ServerCodeResult>>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new TriggerOps(this._au, this._target)).listServerCodeResults(triggerID, listOpitons)
+            .then((results)=>{
+                resolve(results);
+            }).catch((err)=>{
+                reject(err);
+            })
+        })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Get State of specified target.
