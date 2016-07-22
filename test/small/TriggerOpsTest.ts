@@ -144,11 +144,7 @@ describe('Test TriggerOps', function () {
     }
 
     describe('#postCommandTrigger() with promise', function () {
-        // postCommandTrigger method sends request to server twice.
-        // 1. POST `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`
-        // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
@@ -176,15 +172,6 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            nock(
-                testApp.site,
-                <any>{
-                    reqheaders: {
-                        "X-Kii-SDK": "0.1",
-                        "Authorization":"Bearer " + ownerToken,
-                    }
-                }).get(getTriggerPath)
-                .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
             
             let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
@@ -232,15 +219,6 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            nock(
-                testApp.site,
-                <any>{
-                    reqheaders: {
-                        "X-Kii-SDK": "0.1",
-                        "Authorization":"Bearer " + ownerToken,
-                    }
-                }).get(getTriggerPath)
-                .reply(200, responseBody4CommandTriggerWithSchedule, {"Content-Type": "application/json"});
             
             let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
@@ -287,15 +265,6 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            nock(
-                testApp.site,
-                <any>{
-                    reqheaders: {
-                        "X-Kii-SDK": "0.1",
-                        "Authorization":"Bearer " + ownerToken,
-                    }
-                }).get(getTriggerPath)
-                .reply(200, responseBody4CommandTriggerWithScheduleOnce, {"Content-Type": "application/json"});
             
             let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, scheduleOncePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
@@ -397,11 +366,7 @@ describe('Test TriggerOps', function () {
         });
     });
     describe('#postServerCodeTriggger() with promise', function () {
-        // postServerCodeTrigger method sends request to server twice.
-        // 1. POST `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`
-        // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         let postServerCodeTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
@@ -428,15 +393,6 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            nock(
-                testApp.site,
-                <any>{
-                    reqheaders: {
-                        "X-Kii-SDK": "0.1",
-                        "Authorization":"Bearer " + ownerToken,
-                    }
-                }).get(getTriggerPath)
-                .reply(200, responseBody4ServerCodeTriggerWithState, {"Content-Type": "application/json"});
             
             let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
@@ -482,15 +438,6 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            nock(
-                testApp.site,
-                <any>{
-                    reqheaders: {
-                        "X-Kii-SDK": "0.1",
-                        "Authorization":"Bearer " + ownerToken,
-                    }
-                }).get(getTriggerPath)
-                .reply(200, responseBody4ServerCodeTriggerWithSchedule, {"Content-Type": "application/json"});
             
             let request = new ServerCodeTriggerRequest(serverCode, schedulePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
@@ -535,15 +482,6 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            nock(
-                testApp.site,
-                <any>{
-                    reqheaders: {
-                        "X-Kii-SDK": "0.1",
-                        "Authorization":"Bearer " + ownerToken,
-                    }
-                }).get(getTriggerPath)
-                .reply(200, responseBody4ServerCodeTriggerWithScheduleOnce, {"Content-Type": "application/json"});
             
             let request = new ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{

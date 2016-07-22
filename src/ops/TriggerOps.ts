@@ -58,8 +58,12 @@ export default class TriggerOps extends BaseOp {
                 triggersWhat: TriggersWhat.COMMAND,
                 command: command.toJson()
             }
-            this.postTriggger(resuestBody).then((result)=>{
-                resolve(result);
+            this.postTrigger(resuestBody).then((res:Response)=>{
+                var command = new Command(this.target, requestObject.issuerID, requestObject.schemaName, requestObject.schemaVersion, requestObject.actions);
+                var trigger = new Trigger(requestObject.predicate, command, null);
+                trigger.triggerID = (<any>res).body.triggerID;
+                trigger.disabled = false;
+                resolve(trigger);
             }).catch((err)=>{
                 reject(err);
             });
@@ -84,16 +88,19 @@ export default class TriggerOps extends BaseOp {
                 triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
-            this.postTriggger(resuestBody).then((result)=>{
-                resolve(result);
+            this.postTrigger(resuestBody).then((res:Response)=>{
+                var trigger:Trigger = new Trigger(requestObject.predicate, null, requestObject.serverCode);
+                trigger.triggerID = (<any>res).body.triggerID;
+                trigger.disabled = false;
+                resolve(trigger);
             }).catch((err)=>{
                 reject(err);
             });
         });
     }
-    private postTriggger(requestBody: Object): Promise<Trigger> {
+    private postTrigger(requestBody: Object): Promise<Response> {
         let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers`;
-        return new Promise<Trigger>((resolve, reject)=>{
+        return new Promise<Response>((resolve, reject)=>{
             var headers: Object = this.addHeader("Content-Type", "application/json");
             var req = {
                 method: "POST",
@@ -102,11 +109,7 @@ export default class TriggerOps extends BaseOp {
                 body: requestBody
             };
             request(req).then((res: Response)=>{
-                this.getTrigger((<any>res).body.triggerID).then((trigger:Trigger)=>{
-                    resolve(trigger);
-                }).catch((err:ThingIFError)=>{
-                    reject(err);
-                })
+                resolve(res)
             }).catch((err)=>{
                 reject(err);
             });
