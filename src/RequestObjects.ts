@@ -92,15 +92,15 @@ export class CommandTriggerRequest{
     constructor(
         public schemaName: string,
         public schemaVersion: number,
-        public actions: Array<Object>,
-        public predicate: Predicate,
+        public actions?: Array<Object>,
+        public predicate?: Predicate,
         public issuerID?: TypedID
     ){}
 }
 
 export class ServerCodeTriggerRequest{
     constructor(
-        public serverCode: ServerCode,
-        public predicate: Predicate
+        public serverCode?: ServerCode,
+        public predicate?: Predicate
     ){}
 }

@@ -207,7 +207,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
             var request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             // 1. create server code trigger with ScheduleOncePredicate
             au._token = adminToken;
-            au.postServerCodeTriggger(targetID, request).then((trigger:any)=>{
+            au.postServerCodeTrigger(targetID, request).then((trigger:any)=>{
                 triggerID = trigger.triggerID;
                 expect(triggerID).to.be.not.null;
                 expect(trigger.disabled).to.be.false;

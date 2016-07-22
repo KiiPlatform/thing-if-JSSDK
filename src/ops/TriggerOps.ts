@@ -12,6 +12,7 @@ import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import {TypedID} from '../TypedID'
 import {Command} from '../Command'
 import {ServerCodeResult} from '../ServerCodeResult'
+import * as KiiUtil from '../internal/KiiUtilities'
 
 export default class TriggerOps extends BaseOp {
     constructor(
@@ -23,6 +24,29 @@ export default class TriggerOps extends BaseOp {
 
     postCommandTrigger(requestObject: CommandTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
+            if (!requestObject) {
+                reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
+                return;
+            }
+            if (!requestObject.schemaName) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaName is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(requestObject.schemaName)) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaName is not string"));
+                return;
+            }
+            if (requestObject.schemaVersion === null || requestObject.schemaVersion === undefined) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is null"));
+                return;
+            }
+            if (!requestObject.actions) {
+                reject(new ThingIFError(Errors.ArgumentError, "actions is null"));
+                return;
+            }
+            if (!requestObject.predicate) {
+                reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
+                return;
+            }
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
@@ -35,8 +59,20 @@ export default class TriggerOps extends BaseOp {
             });
         });
     }
-    postServerCodeTriggger(requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
+    postServerCodeTrigger(requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
+            if (!requestObject) {
+                reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
+                return;
+            }
+            if (!requestObject.serverCode) {
+                reject(new ThingIFError(Errors.ArgumentError, "serverCode is null"));
+                return;
+            }
+            if (!requestObject.predicate) {
+                reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
+                return;
+            }
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.SERVER_CODE,
@@ -74,6 +110,13 @@ export default class TriggerOps extends BaseOp {
     getTrigger(triggerID: string): Promise<Trigger> {
         let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}`;
         return new Promise<Trigger>((resolve, reject)=>{
+            if (!triggerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(triggerID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is not string"));
+                return;
+            }
             var headers: Object = this.getHeaders();
             var req = {
                 method: "GET",
@@ -92,6 +135,32 @@ export default class TriggerOps extends BaseOp {
         triggerID: string,
         requestObject: CommandTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
+            if (!triggerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(triggerID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is not string"));
+                return;
+            }
+            if (!requestObject) {
+                reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
+                return;
+            }
+            if (!requestObject.schemaName) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaName is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(requestObject.schemaName)) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaName is not string"));
+                return;
+            }
+            if (requestObject.schemaVersion === null || requestObject.schemaVersion === undefined) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is null"));
+                return;
+            }
+            if (!requestObject.actions && !requestObject.predicate) {
+                reject(new ThingIFError(Errors.ArgumentError, "must specify actions or predicate"));
+                return;
+            }
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
@@ -109,6 +178,21 @@ export default class TriggerOps extends BaseOp {
         triggerID: string,
         requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
+            if (!triggerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(triggerID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is not string"));
+                return;
+            }
+            if (!requestObject) {
+                reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
+                return;
+            }
+            if (!requestObject.serverCode && !requestObject.predicate) {
+                reject(new ThingIFError(Errors.ArgumentError, "must specify serverCode or predicate"));
+                return;
+            }
             var resuestBody = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.SERVER_CODE,
@@ -149,6 +233,20 @@ export default class TriggerOps extends BaseOp {
         var operation = (enable? "enable" : "disable");
         let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}/${operation}`;
         return new Promise<Trigger>((resolve, reject) => {
+            if (!triggerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(triggerID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is not string"));
+                return;
+            }
+            if (enable === null || enable === undefined) {
+                reject(new ThingIFError(Errors.ArgumentError, "enable is null"));
+                return;
+            } else if (!KiiUtil.isBoolean(enable)) {
+                reject(new ThingIFError(Errors.ArgumentError, "enable is not boolean"));
+                return;
+            }
             var headers: Object = this.getHeaders();
             var req = {
                 method: "PUT",
@@ -170,6 +268,13 @@ export default class TriggerOps extends BaseOp {
     deleteTrigger(triggerID: string): Promise<string> {
         let url = `${this.au.app.getThingIFBaseUrl()}/targets/${this.target.toString()}/triggers/${triggerID}`;
         return new Promise<string>((resolve, reject) => {
+            if (!triggerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(triggerID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is not string"));
+                return;
+            }
             var headers: Object = this.getHeaders();
             var req = {
                 method: "DELETE",
@@ -193,9 +298,9 @@ export default class TriggerOps extends BaseOp {
             }
             if (listOptions.bestEffortLimit) {
                 if (queryParams) {
-                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
-                } else {
                     queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
+                } else {
+                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
                 }
             }
         }
@@ -231,14 +336,21 @@ export default class TriggerOps extends BaseOp {
             }
             if (listOptions.bestEffortLimit) {
                 if (queryParams) {
-                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
-                } else {
                     queryParams += "&bestEffortLimit=" + listOptions.bestEffortLimit;
+                } else {
+                    queryParams = "?bestEffortLimit=" + listOptions.bestEffortLimit;
                 }
             }
         }
         url += queryParams;
         return new Promise<QueryResult<ServerCodeResult>>((resolve, reject)=>{
+            if (!triggerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(triggerID)) {
+                reject(new ThingIFError(Errors.ArgumentError, "triggerID is not string"));
+                return;
+            }
             var headers: Object = this.getHeaders();
             var req = {
                 method: "GET",
