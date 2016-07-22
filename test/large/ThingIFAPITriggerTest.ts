@@ -10,7 +10,7 @@ let thingIFSDK = require('../../../dist/thing-if-sdk.js');
 describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
 
     let user: KiiUser;
-    let au: any;
+    let api: any;
     let adminToken: string;
     let targetThingID: string;
 
@@ -20,7 +20,8 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
         // 3. onboard thing
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
             user = newUser;
-            au = new thingIFSDK.APIAuthor(newUser.token, testApp);
+            var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, newUser.userID);
+            api = new thingIFSDK.ThingIFAPI(owner, newUser.token, testApp);
             return apiHelper.getAdminToken();
         }).then((token: string) => {
             adminToken = token;
@@ -28,7 +29,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             var password = "password";
             var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
-            return au.onboardWithVendorThingID(request);
+            return api.onboardWithVendorThingID(request);
         }).then((result:any) => {
             targetThingID = result.thingID;
             done();
@@ -53,14 +54,15 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             var schemaVersion = 1;
             var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-            var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, targetThingID);
+            var targetID = api.target;
             
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "false"));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_CHANGED);
             var request = new thingIFSDK.CommandTriggerRequest(schemaName, schemaVersion, actions, statePredicate, issuerID);
 
             // 1. create command trigger with StatePredicate
-            au.postCommandTrigger(targetID, request).then((trigger:any)=>{
+            api.postCommandTrigger(request).then((trigger:any)=>{
+
                 triggerID1 = trigger.triggerID;
                 expect(triggerID1).to.be.not.null;
                 expect(trigger.disabled).to.be.false;
@@ -78,8 +80,8 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 var schedulePredicate = new thingIFSDK.SchedulePredicate("0 12 1 * *");
                 request = new thingIFSDK.CommandTriggerRequest(schemaName, schemaVersion, actions, schedulePredicate, issuerID);
                 // Admin token is needed when allowCreateTaskByPrincipal=false
-                au._token = adminToken;
-                return au.postCommandTrigger(targetID, request);
+                api._au._token = adminToken;
+                return api.postCommandTrigger(request);
             }).then((trigger:any)=>{
                 triggerID2 = trigger.triggerID;
                 expect(triggerID2).to.be.not.null;
@@ -93,7 +95,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(trigger.serverCode).to.be.null;
 
                 // 3. disable trigger
-                return au.enableTrigger(targetID, triggerID2, false);
+                return api.enableTrigger(triggerID2, false);
             }).then((trigger:any)=>{
                 expect(trigger.triggerID).to.equal(triggerID2);
                 expect(trigger.disabled).to.be.true;
@@ -106,8 +108,8 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(trigger.serverCode).to.be.null;
                 
                 // 4. list triggers
-                au._token = user.token;
-                return au.listTriggers(targetID, new thingIFSDK.ListQueryOptions());
+                api._au._token = user.token;
+                return api.listTriggers(new thingIFSDK.ListQueryOptions());
             }).then((queryResult:any)=>{
                 expect(queryResult.results.length).to.equal(2);
                 expect(queryResult.paginationKey).to.be.null;
@@ -140,7 +142,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 }
                 // 5. update trigger
                 request = new thingIFSDK.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
-                return au.patchCommandTrigger(targetID, triggerID1, request);
+                return api.patchCommandTrigger(triggerID1, request);
             }).then((trigger:any)=>{
                 expect(trigger.triggerID).to.equal(triggerID1);
                 expect(trigger.disabled).to.be.false;
@@ -154,12 +156,12 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(trigger.command.issuerID).to.deep.equal(issuerID);
                 expect(trigger.serverCode).to.be.null;
                 // 6. delete trigger
-                au._token = adminToken;
-                return au.deleteTrigger(targetID, triggerID2);
+                api._au._token = adminToken;
+                return api.deleteTrigger(triggerID2);
             }).then((deletedTriggerID:string)=>{
                 expect(deletedTriggerID).to.equal(triggerID2);
                 // 7. list triggers
-                return au.listTriggers(targetID, new thingIFSDK.ListQueryOptions());
+                return api.listTriggers(new thingIFSDK.ListQueryOptions());
             }).then((queryResult:any)=>{
                 expect(queryResult.results.length).to.equal(1);
                 expect(queryResult.paginationKey).to.be.null;
@@ -198,7 +200,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
         it("all operations", function (done) {
             var triggerID: string;
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-            var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, targetThingID);
+            var targetID = api.target;
             var serverCode = new thingIFSDK.ServerCode("server_code_for_trigger_1", adminToken, testApp.appID, {param1: "hoge"});
             var scheduleAt = new Date().getTime() + (1000 * 60 * 60); 
             var scheduleOncePredicate = new thingIFSDK.ScheduleOncePredicate(scheduleAt);
@@ -206,8 +208,8 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_TRUE);
             var request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             // 1. create server code trigger with ScheduleOncePredicate
-            au._token = adminToken;
-            au.postServerCodeTrigger(targetID, request).then((trigger:any)=>{
+            api._au._token = adminToken;
+            api.postServerCodeTrigger(request).then((trigger:any)=>{
                 triggerID = trigger.triggerID;
                 expect(triggerID).to.be.not.null;
                 expect(trigger.disabled).to.be.false;
@@ -221,7 +223,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 // 2. update server code trigger
                 serverCode = new thingIFSDK.ServerCode("server_code_for_trigger_2", adminToken, testApp.appID, {param2: "hage"});
                 request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, statePredicate);
-                return au.patchServerCodeTrigger(targetID, triggerID, request);
+                return api.patchServerCodeTrigger(triggerID, request);
             }).then((trigger:any)=>{
                 expect(trigger.triggerID).to.equals(triggerID);
                 expect(trigger.disabled).to.be.false;
@@ -243,7 +245,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 return apiHelper.sleep(3000);
             }).then(()=>{
                 // 6. get server code results
-                return au.listServerCodeExecutionResults(targetID, triggerID);
+                return api.listServerCodeExecutionResults(triggerID);
             }).then((queryResult:any)=>{
                 expect(queryResult.results.length).to.equal(1);
                 expect(queryResult.paginationKey).to.be.null;
