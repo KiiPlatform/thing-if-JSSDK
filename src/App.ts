@@ -2,6 +2,10 @@ import {Site} from './Site'
 /** Represents Kii Cloud Application */
 export class App {
 
+  public appID: string;
+  public appKey: string;
+  public site: any;
+
   /** Instantiate Kii App with App Location.
    * If you haven't created Kii Cloud App yet,
    * Please visit https://developer.kii.com and create your app.
@@ -9,23 +13,27 @@ export class App {
    * @param {stirng} appKey Key of the app.
    * @param {string|number} site Site of the app. Can be url string or [Site]{@link Site}
    */
-  constructor(public appID: string, public appKey: string, public site: any){}
+  constructor(appID: string, appKey: string, site: any) {
+    this.appID = appID;
+    this.appKey = appKey;
+    this.site = site;
+  }
 
   /** Get base url of thing-if api
    * @return {string} base url of thing-if api
    */
-  getThingIFBaseUrl(): string{
+  getThingIFBaseUrl(): string {
     return `${this.getRootPath()}/thing-if/apps/${this.appID}`;
   }
 
   /** Get base url of kii cloud api
    * @return {string} base url of kii cloud api
    */
-  getKiiCloudBaseUrl(): string{
+  getKiiCloudBaseUrl(): string {
      return `${this.getRootPath()}/api/apps/${this.appID}`;
   }
 
-  private getRootPath(): string{
+  private getRootPath(): string {
     if (typeof this.site === "string") {
       return this.site
     }else if(typeof this.site == "number"){

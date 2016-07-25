@@ -3,6 +3,11 @@ import * as KiiUtil from './internal/KiiUtilities'
 /** Represent Command */
 export class Command {
     public commandID: string;
+    public targetID: TypedID;
+    public issuerID: TypedID;
+    public schema: string;
+    public schemaVersion: number;
+    public actions: Array<Object>;
     public actionResults: Array<Object>;
     public commandState:string;
     public firedByTriggerID:string;
@@ -10,17 +15,23 @@ export class Command {
     public modified:Date;
     public title:string;
     public description:string;
-    public metadata:Object
+    public metadata:Object;
 
     constructor(
-        public targetID: TypedID,
-        public issuerID: TypedID,
-        public schema: string,
-        public schemaVersion: number,
-        public actions: Array<Object>
-    ){}
+        targetID: TypedID,
+        issuerID: TypedID,
+        schema: string,
+        schemaVersion: number,
+        actions: Array<Object>
+    ) {
+        this.targetID = targetID;
+        this.issuerID = issuerID;
+        this.schema = schema;
+        this.schemaVersion = schemaVersion;
+        this.actions = actions;
+    }
 
-    toJson(): any{
+    toJson(): any {
         var jsonObject: any ={};
         if(!!this.commandID){
             jsonObject.commandID = this.commandID
@@ -54,7 +65,7 @@ export class Command {
         }
         return jsonObject;
     }
-    static fromJson(obj: any): Command{
+    static fromJson(obj: any): Command {
         if(!obj.target || !obj.issuer || !obj.schema || !obj.schemaVersion || !obj.actions){
             return null;
         }

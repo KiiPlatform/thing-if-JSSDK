@@ -16,11 +16,16 @@ export abstract class Clause {
     }
 }
 export class Equals extends Clause {
+    public field: string;
+    public value: string|number|boolean;
+
     constructor(
-        public field: string,
-        public value: string|number|boolean
+        field: string,
+        value: string|number|boolean
     ) {
         super();
+        this.field = field;
+        this.value = value;
     }
     toJson(): any {
         return {
@@ -36,11 +41,16 @@ export class Equals extends Clause {
     }
 }
 export class NotEquals extends Clause {
+    public field: string;
+    public value: string|number|boolean;
+
     constructor(
-        public field: string,
-        public value: string|number|boolean
+        field: string,
+        value: string|number|boolean
     ) {
         super();
+        this.field = field;
+        this.value = value;
     }
     toJson(): any {
         return {
@@ -111,14 +121,25 @@ export class Or extends Clause {
     }
 }
 export class Range extends Clause {
+    public field: string;
+    public upperLimit: number;
+    public upperIncluded: boolean;
+    public lowerLimit: number;
+    public lowerIncluded: boolean;
+
     constructor(
-        public field: string,
-        public upperLimit: number,
-        public upperIncluded: boolean,
-        public lowerLimit: number,
-        public lowerIncluded: boolean
+        field: string,
+        upperLimit: number,
+        upperIncluded: boolean,
+        lowerLimit: number,
+        lowerIncluded: boolean
     ) {
         super();
+        this.field = field;
+        this.upperLimit = upperLimit;
+        this.upperIncluded = upperIncluded;
+        this.lowerLimit = lowerLimit;
+        this.lowerIncluded = lowerIncluded;
     }
     static greaterThan(field: string, lowerLimit: number): Range {
         return new Range(field, null, null, lowerLimit, false);
