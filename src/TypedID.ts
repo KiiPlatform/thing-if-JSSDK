@@ -1,25 +1,33 @@
 
-export enum Types {
-    Group,
-    User,
-    Thing
+/** Represents Types
+<ul>
+  <li> Types.Group: use group type. </li>
+  <li> Types.User: use user type. </li>
+  <li> Types.Thing: use thing type. </li>
+</ul>
+*/
+export const Types = {
+    Group: 0,
+    User: 1,
+    Thing: 2
 }
 
 /** Represents entity type and its ID. */
 export class TypedID {
-    private _type: Types;
+    private _type: number;
     private _id: string;
 
     /**
-     * @param {Types} type Type of entity.
+     * @param {Types} type Type of entity. Can be one of the constants
+      Types.Group, Types.User or Types.Thing.
      * @param {id} id ID of the specified entity. If it is a kii user, then must be id of the user.
      */
-    constructor(type: Types, id: string){
+    constructor(type: number, id: string){
         this._type = type;
         this._id = id;
     }
 
-    get type(): Types {
+    get type(): number {
         return this._type;
     }
 
@@ -65,5 +73,3 @@ export class TypedID {
         }
     }
 }
-
-
