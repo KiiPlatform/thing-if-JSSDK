@@ -57,8 +57,17 @@ $ npm test
 ### Integrate with kii-cloud-sdk
 You usally need to get user id and token from kii-cloud-sdk, you can simply integrate it with thing-if-sdk.
 
+```shell
+mkdir MyApp
+cd MyApp
+npm install kii-cloud-sdk
+```
+
+Copy thing-if-sdk.js in MyApp direcotry and create
+file named Onboarding.js in MyApp directory.
+
 ```js
-require("jquery-xhr"); // necessary for kii-cloud-sdk
+"use strict"
 var kiicloud = require("kii-cloud-sdk").create();
 
 var thingIF = require('./thing-if-sdk.js');
@@ -82,10 +91,10 @@ kiicloud.KiiUser.authenticate(username, pass).then(function (authedUser) {
         new thingIF.App(
             kiicloud.Kii.getAppID(),
             kiicloud.Kii.getAppKey(),
-            kiicloud.Kii.getBaseURL())
+            "https://api-jp.kii.com")
     );
 
-    let onboardRequest = new thingIF.OnboardWithVendorThingIDRequest("vendorthing-id", "password", ownerId);
+    let onboardRequest = new thingIF.OnboardWithVendorThingIDRequest("vendorthing-id", "password", "USER:" + ownerId);
     return apiAuthor.onboardWithVendorThingID(onboardRequest);
 }).then(function (res) {
     console.log("onboarded:"+JSON.stringify(res));
@@ -93,13 +102,35 @@ kiicloud.KiiUser.authenticate(username, pass).then(function (authedUser) {
     console.log(err);
 });
 ```
+
+Execute with node.
+
+```shell
+node Onboarding.js
+```
+
 ### onboard and send command to a thing
+
+
+Create file named Command.js in YourApp directory.
 
 ```js
 var thingIF = require('./thing-if-sdk.js');
-var app = new thingIF.App("app-id", "app-key", ThingIF.Site.JP);
-var apiAuthor = new thingIF.APIAuthor("owner-token",app);
-var onboardOptions = new thingIF.OnboardWithVendorThingIDRequest("th.myTest", "password", "owner-id");
+
+// <Replace those values>
+var appID = "appID";
+var appKey = "appKey";
+var appSite = thingIF.Site.JP;
+
+var ownerToken = "owner-token";
+var ownerID = "owner-id";
+var vendorThingID = "th.myTest";
+var thingPassword = "password";
+// <Replace those values/>
+
+var app = new thingIF.App(appID, appKey, appSite);
+var apiAuthor = new thingIF.APIAuthor(ownerToken ,app);
+var onboardOptions = new thingIF.OnboardWithVendorThingIDRequest(vendorThingID, thingPassword, ownerID);
 
 // using promise
 apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
@@ -107,7 +138,7 @@ apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     var commandOptions = new thingIF.PostCommandRequest(
         "led-schema",
         1,
-        {turnPower:{power: true}}
+        {turnPower:{power: true}},
         "issuer-id", // user id of issuer for this command
         "command-target-id" // thingID of thing to send this command
     );
@@ -130,7 +161,7 @@ apiAuthor.onboardWithVendorThingID(onboardOptions,
         var commandOptions = new thingIF.PostCommandRequest(
             "led-schema",
             1,
-            {turnPower:{power: true}}
+            {turnPower:{power: true}},
             "issuer-id", // user id of issuer for this command
             "command-target-id" // thingID of thing to send this command
         );
@@ -147,3 +178,10 @@ apiAuthor.onboardWithVendorThingID(onboardOptions,
     }
 );
 ```
+
+Execute with node.
+
+```shell
+node Command.js
+```
+
