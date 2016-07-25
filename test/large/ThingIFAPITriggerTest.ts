@@ -86,7 +86,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 triggerID2 = trigger.triggerID;
                 expect(triggerID2).to.be.not.null;
                 expect(trigger.disabled).to.be.false;
-                expect(trigger.predicate.cronExpression).to.equal("0 12 1 * *");
+                expect(trigger.predicate.schedule).to.equal("0 12 1 * *");
                 expect(trigger.command.schema).to.equal(schema);
                 expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
@@ -99,7 +99,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             }).then((trigger:any)=>{
                 expect(trigger.triggerID).to.equal(triggerID2);
                 expect(trigger.disabled).to.be.true;
-                expect(trigger.predicate.cronExpression).to.equal("0 12 1 * *");
+                expect(trigger.predicate.schedule).to.equal("0 12 1 * *");
                 expect(trigger.command.schema).to.equal(schema);
                 expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
@@ -129,7 +129,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                         expect(trigger.serverCode).to.be.null;
                     } else if (trigger.triggerID == triggerID2) {
                         expect(trigger.disabled).to.be.true;
-                        expect(trigger.predicate.cronExpression).to.equal("0 12 1 * *");
+                        expect(trigger.predicate.schedule).to.equal("0 12 1 * *");
                         expect(trigger.command.schema).to.equal(schema);
                         expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                         expect(trigger.command.actions).to.deep.equal(actions);

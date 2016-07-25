@@ -1,5 +1,10 @@
 import {Site} from './Site'
-/** Represents Kii Cloud Application */
+/**
+ * Represents Kii Cloud Application
+ * @prop {string} appID ID of the app.
+ * @prop {string} appKey Key of the app.
+ * @prop {string} site Url string
+ * */
 export class App {
 
     public appID: string;
@@ -9,6 +14,7 @@ export class App {
     /** Instantiate Kii App with App Location.
      * If you haven't created Kii Cloud App yet,
      * Please visit https://developer.kii.com and create your app.
+     * @constructor
      * @param {string} appID ID of the app.
      * @param {stirng} appKey Key of the app.
      * @param {string} site Site of the app. Can be url string or [Site]{@link Site}

@@ -226,7 +226,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
-                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
                     expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
@@ -445,7 +445,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
-                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
                     expect(trigger.command).to.be.null;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
@@ -683,7 +683,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
-                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
                     expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
@@ -935,7 +935,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
-                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
                     expect(trigger.command).to.be.null;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
@@ -1425,7 +1425,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
-                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
                     expect(trigger.command).to.be.null;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
@@ -1492,7 +1492,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
-                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
                     expect(trigger.command.schema).to.equal(schema);
                     expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
@@ -1536,7 +1536,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
-                    expect((<SchedulePredicate>trigger.predicate).cronExpression).to.equal("0 12 1 * *");
+                    expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
                     expect(trigger.command).to.be.null;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
