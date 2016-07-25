@@ -6,7 +6,7 @@
   <li> Types.Thing: use thing type. </li>
 </ul>
 */
-const Types = {
+export const Types = {
     Group: 0,
     User: 1,
     Thing: 2
@@ -73,5 +73,3 @@ export class TypedID {
         }
     }
 }
-
-export {Types}
