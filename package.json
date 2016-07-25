@@ -26,6 +26,7 @@
     "chai": "^3.5.0",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
+    "gulp-shell": "^0.5.2",
     "gulp-typedoc": "^2.0.0",
     "gulp-typescript": "^2.13.6",
     "mocha": "^2.5.3",

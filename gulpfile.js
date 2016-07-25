@@ -2,7 +2,7 @@ var gulp = require("gulp");
 var del = require('del');
 var webpack = require('webpack-stream');
 var webpackConfig = require('./webpack.config.js');
-var typedoc = require("gulp-typedoc");
+var shell = require('gulp-shell');
 var ts = require("gulp-typescript");
 var tsProject = ts.createProject("./tsconfig.json");
 
@@ -13,20 +13,19 @@ gulp.task("clean", function(){
     'dist/*'
   ])
 });
-gulp.task("doc", function() {
-  	return tsProject.src()
-		.pipe(typedoc({
+
+gulp.task("doc",['build-for-doc'],  shell.task([
+	'jsdoc built-for-doc -d jsdoc'
+]))
+gulp.task("build-for-doc", function() {
+  	return gulp.src(['./src/*.ts', "./typings/globals/node/index.d.ts"])
+		.pipe(ts({
+			noImplicitAny: true,
 			module: "commonjs",
-			target: "es5",
-			includeDeclarations: false,
-			out: "./doc",
-			name: "thing-if-sdk",
-      externalPattern: "./src/ops/*.ts",
-      excludeExternals: true,
-			ignoreCompilerErrors: false,
-			version: true,
+			target: "es6",
+			removeComments: false,
 		}))
-	;
+		.js.pipe(gulp.dest('built-for-doc'));
 })
 gulp.task("default", ['clean'], function () {
   return gulp.src(['./src/*.ts'])
