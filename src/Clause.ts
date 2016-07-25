@@ -25,17 +25,11 @@ export abstract class Clause {
 }
 /**
  * Represents the clause of equals condition.
+ * @prop {string} field Field name of comparison.
+ * @prop {(string|number|boolean)} value Value to be compared.
  */
 export class Equals extends Clause {
-    /**
-     * Field name of comparison.
-     * @type {string}
-     */
     public field: string;
-    /**
-     * Value to be compared.
-     * @type {(string|number|boolean)}
-     */
     public value: string|number|boolean;
 
     /**
@@ -76,17 +70,11 @@ export class Equals extends Clause {
 }
 /**
  * Represents the clause of not equals condition.
+ * @prop {string} field Field name of comparison.
+ * @prop {(string|number|boolean)} value Value to be compared.
  */
 export class NotEquals extends Clause {
-    /**
-     * Field name of comparison.
-     * @type {string}
-     */
     public field: string;
-    /**
-     * Value to be compared.
-     * @type {(string|number|boolean)}
-     */
     public value: string|number|boolean;
 
     /**
@@ -130,12 +118,9 @@ export class NotEquals extends Clause {
 }
 /**
  * Represents the And operator.
+ * @prop {Clause[]} clauses Clauses to be concatenated with And operator.
  */
 export class And extends Clause {
-    /**
-     * Clauses to be concatenated with And operator.
-     * @type {Clause[]}
-     */
     public clauses: Clause[];
 
     /**
@@ -178,12 +163,9 @@ export class And extends Clause {
 }
 /**
  * Represents the OR operator.
+ * @prop {Clause[]} clauses Clauses to be concatenated with Or operator.
  */
 export class Or extends Clause {
-    /**
-     * Clauses to be concatenated with Or operator.
-     * @type {Clause[]}
-     */
     public clauses: Clause[];
 
     /**
@@ -226,32 +208,17 @@ export class Or extends Clause {
 }
 /**
  * Represents the clause of range condition.
+ * @prop {string} field Field name of comparison.
+ * @prop {number} upperLimit The upper limit of the range.
+ * @prop {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
+ * @prop {number} lowerLimit The lower limit of the range.
+ * @prop {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
  */
 export class Range extends Clause {
-    /**
-     * Field name of comparison.
-     * @type {string}
-     */
     public field: string;
-    /**
-     * The upper limit of the range.
-     * @type {number}
-     */
     public upperLimit: number;
-    /**
-     * Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
-     * @type {boolean}
-     */
     public upperIncluded: boolean;
-    /**
-     * The lower limit of the range.
-     * @type {number}
-     */
     public lowerLimit: number;
-    /**
-     * Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
-     * @type {boolean}
-     */
     public lowerIncluded: boolean;
 
     /**

@@ -1,24 +1,14 @@
-/** Represent a Server Code of Kii Cloud */
+/**
+ * Represent a Server Code of Kii Cloud
+ * @prop {string} endpoint Endpoint to call on servercode.
+ * @prop {string} executorAccessToken This token will be used to call servercode endpoint. Must be non-empty if provided.
+ * @prop {string} targetAppID If provided, servercode endpoint will be called for this appid. Otherwise same appID of trigger is used.
+ * @prop {Object} parameters Parameters to pass to the servercode function.
+ */
 export class ServerCode{
-    /**
-     * Endpoint to call on servercode.
-     * @type {string}
-     */
     public endpoint: string;
-    /**
-     * This token will be used to call servercode endpoint. Must be non-empty if provided.
-     * @type {string}
-     */
     public executorAccessToken: string;
-    /**
-     * If provided, servercode endpoint will be called for this appid. Otherwise same appID of trigger is used.
-     * @type {string}
-     */
     public targetAppID: string;
-    /**
-     * Parameters to pass to the servercode function.
-     * @type {Object}
-     */
     public parameters: Object;
 
     /**

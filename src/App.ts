@@ -1,21 +1,14 @@
 import {Site} from './Site'
-/** Represents Kii Cloud Application */
+/**
+ * Represents Kii Cloud Application
+ * @prop {string} appID ID of the app.
+ * @prop {string} appKey Key of the app.
+ * @prop {string} site Url string
+ * */
 export class App {
 
-    /**
-     * ID of the app.
-     * @type {string}
-     */
     public appID: string;
-    /**
-     * Key of the app.
-     * @type {string}
-     */
     public appKey: string;
-    /**
-     * url string
-     * @type {string}
-     */
     public site: string;
 
     /** Instantiate Kii App with App Location.

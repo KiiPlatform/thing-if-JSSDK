@@ -1,14 +1,10 @@
-/** Represents Query Result */
+/**
+ * Represents Query Result
+ * @prop {Array<T>} results Array of query results.
+ * @prop {string} paginationKey Key to retrieve next page.
+ */
 export class QueryResult<T> {
-    /**
-     * Array of query results.
-     * @type {Array<T>}
-     */
     public results: Array<T>;
-    /**
-     * Key to retrieve next page.
-     * @type {string}
-     */
     public paginationKey: string;
 
     /**

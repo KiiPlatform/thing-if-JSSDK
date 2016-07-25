@@ -1,29 +1,16 @@
-/** Represents the server code execution result */
+/**
+ * Represents the server code execution result
+ * @prop {boolean} succeeded Whether the invocation succeeded.
+ * @prop {Object} returnedValue Returned value of Server Code execution.
+ * @prop {number} executedAt Timestamp of the execution.
+ * @prop {string} endpoint The endpoint used in the server code.
+ * @prop {ServerError} error Error object of the invocation if any.
+ */
 export class ServerCodeResult{
-    /**
-     * Whether the invocation succeeded.
-     * @type {boolean}
-     */
     public succeeded: boolean;
-    /**
-     * Returned value of Server Code execution.
-     * @type {Object}
-     */
     public returnedValue: Object;
-    /**
-     * Timestamp of the execution.
-     * @type {number}
-     */
     public executedAt: number;
-    /**
-     * The endpoint used in the server code.
-     * @type {string}
-     */
     public endpoint: string;
-    /**
-     * Error object of the invocation if any.
-     * @type {ServerError}
-     */
     public error: ServerError;
 
     /**
@@ -68,17 +55,17 @@ export class ServerCodeResult{
 export class ServerError {
     /**
      * Code of error.
-     * @type {string}
+     * @prop {string}
      */
     public errorCode: string;
     /**
      * Message of error.
-     * @type {string}
+     * @prop {string}
      */
     public errorMessage: string;
     /**
      * Detail message of error.
-     * @type {string}
+     * @prop {string}
      */
     public detailMessage: string;
 

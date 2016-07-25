@@ -2,12 +2,9 @@ import {Clause} from './Clause';
 
 /**
  * Represents the condition for the StatePredicate.
+ * @prop {Clause} clause Query condition to be applied.
  */
 export class Condition {
-    /**
-     * Query condition to be applied. 
-     * @type {Clause}
-     */
     public clause: Clause;
 
     /**

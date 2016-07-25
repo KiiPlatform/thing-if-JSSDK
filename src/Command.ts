@@ -1,75 +1,36 @@
 import {TypedID} from './TypedID'
 import * as KiiUtil from './internal/KiiUtilities'
-/** Represents Command */
+/**
+ * Represents Command
+ * @prop {string} commandID ID of command.
+ * @prop {TypedID} targetID ID of the target thing.
+ * @prop {TypedID} issuerID ID of the command issuer.
+ * @prop {string} schema Name of schema.
+ * @prop {number} schemaVersion Version number of schema.
+ * @prop {Object[]} actions Array of actions of the command.
+ * @prop {Object[]} actionResults Array of action results of the command.
+ * @prop {string} commandState State of the command.
+ * @prop {string} firedByTriggerID ID of the trigger if command invoked by trigger.
+ * @prop {Date} created Timestamp of the creation of the command.
+ * @prop {Date} modified Timestamp of the modification of the command.
+ * @prop {string} title Title of the command.
+ * @prop {string} description Description of the command.
+ * @prop {Object} metadata Key-value list to store within command definition.
+ */
 export class Command {
-    /**
-     * @type {string}
-     */
     public commandID: string;
-    /**
-     * ID of the target thing.
-     * @type {TypedID}
-     */
     public targetID: TypedID;
-    /**
-     * ID of the command issuer.
-     * @type {TypedID}
-     */
     public issuerID: TypedID;
-    /**
-     * Name of schema.
-     * @type {string}
-     */
     public schema: string;
-    /**
-     * Version number of schema.
-     * @type {number}
-     */
     public schemaVersion: number;
-    /**
-     * Array of actions of the command.
-     * @type {Object[]}
-     */
     public actions: Array<Object>;
-    /**
-     * Array of action results of the command.
-     * @type {Object[]}
-     */
     public actionResults: Array<Object>;
-    /**
-     * State of the command.
-     * @type {string}
-     */
     public commandState:string;
-    /**
-     * ID of the trigger if command invoked by trigger.
-     * @type {string}
-     */
     public firedByTriggerID:string;
-    /**
-     * Timestamp of the creation of the command.
-     * @type {Date}
-     */
     public created:Date;
-    /**
-     * Timestamp of the modification of the command.
-     * @type {Date}
-     */
     public modified:Date;
-    /**
-     * Title of the command.
-     * @type {string}
-     */
     public title:string;
-    /**
-     * Description of the command.
-     * @type {string}
-     */
     public description:string;
-    /**
-     * Key-value list to store within command definition.
-     * @type {Object}
-     */
     public metadata:Object;
 
     /**
