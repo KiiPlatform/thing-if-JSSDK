@@ -1,3 +1,6 @@
+/**
+ * Base Clause implementation.
+ */
 export abstract class Clause {
     abstract toJson(): any;
     static fromJson(obj:any): Clause {
@@ -15,10 +18,27 @@ export abstract class Clause {
         return null;
     }
 }
+/**
+ * Represents the clause of equals condition.
+ */
 export class Equals extends Clause {
+    /**
+     * Field name of comparison.
+     * @type {string}
+     */
     public field: string;
+    /**
+     * Value to be compared.
+     * @type {(string|number|boolean)}
+     */
     public value: string|number|boolean;
 
+    /**
+     * Create a equals condition.
+     * @constructor
+     * @param {string} field Field name of comparison.
+     * @param {string} value Value to be compared.
+     */
     constructor(
         field: string,
         value: string|number|boolean
@@ -27,6 +47,10 @@ export class Equals extends Clause {
         this.field = field;
         this.value = value;
     }
+    /**
+     * This method is for internal use only.
+     * @return {object} JSON object that represented this instance.
+     */
     toJson(): any {
         return {
             type: "eq",
@@ -34,16 +58,38 @@ export class Equals extends Clause {
             value: this.value
         };
     }
+    /**
+     * This method is for internal use only.
+     * @param obj JSON object that represented a equals condition.
+     * @return {Equals} Equals instance
+     */
     static fromJson(obj:any): Equals {
         let field = obj.field;
         let value = obj.value;
         return new Equals(field, value);
     }
 }
+/**
+ * Represents the clause of not equals condition.
+ */
 export class NotEquals extends Clause {
+    /**
+     * Field name of comparison.
+     * @type {string}
+     */
     public field: string;
+    /**
+     * Value to be compared.
+     * @type {(string|number|boolean)}
+     */
     public value: string|number|boolean;
 
+    /**
+     * Create a not equals condition.
+     * @constructor
+     * @param {string} field Field name of comparison.
+     * @param {string} value Value to be compared.
+     */
     constructor(
         field: string,
         value: string|number|boolean
@@ -52,6 +98,10 @@ export class NotEquals extends Clause {
         this.field = field;
         this.value = value;
     }
+    /**
+     * This method is for internal use only.
+     * @return {object} JSON object that represented this instance.
+     */
     toJson(): any {
         return {
             type: "not",
@@ -62,18 +112,40 @@ export class NotEquals extends Clause {
             }
         };
     }
+    /**
+     * This method is for internal use only.
+     * @param obj JSON object that represented a not equals condition.
+     * @return {NotEquals} NotEquals instance
+     */
     static fromJson(obj:any): NotEquals {
         let field = obj.clause.field;
         let value = obj.clause.value;
         return new NotEquals(field, value);
     }
 }
+/**
+ * Represents the And operator.
+ */
 export class And extends Clause {
+    /**
+     * Clauses to be concatenated with And operator.
+     * @type {Clause[]}
+     */
     public clauses: Clause[];
+
+    /**
+     * Create a AND operator.
+     * @constructor
+     * @param {Clause[]} clauses Array of clauses to be concatenated with And operator.
+     */
     constructor(...clauses: Clause[]) {
         super();
         this.clauses = clauses;
     }
+    /**
+     * This method is for internal use only.
+     * @return {object} JSON object that represented this instance.
+     */
     toJson(): any {
         var json: any = {type: "and"};
         var clauses :Array<Clause> = new Array<Clause>();
@@ -83,6 +155,11 @@ export class And extends Clause {
         json["clauses"] = clauses;
         return json;
     }
+    /**
+     * This method is for internal use only.
+     * @param obj JSON object that represented a AND operator.
+     * @return {And} And instance
+     */
     static fromJson(obj:any): And {
         let clauses: Array<Clause> = new Array<Clause>();
         let array: Array<any> = obj.clauses;
@@ -94,12 +171,29 @@ export class And extends Clause {
         return and;
     }
 }
+/**
+ * Represents the OR operator.
+ */
 export class Or extends Clause {
+    /**
+     * Clauses to be concatenated with Or operator.
+     * @type {Clause[]}
+     */
     public clauses: Clause[];
+
+    /**
+     * Create a OR operator.
+     * @constructor
+     * @param {Clause[]} clauses Array of clauses to be concatenated with Or operator.
+     */
     constructor(...clauses: Clause[]) {
         super();
         this.clauses = clauses;
     }
+    /**
+     * This method is for internal use only.
+     * @return {object} JSON object that represented this instance.
+     */
     toJson(): any {
         var json: any = {type: "or"};
         var clauses :Array<Clause> = new Array<Clause>();
@@ -109,6 +203,11 @@ export class Or extends Clause {
         json["clauses"] = clauses;
         return json;
     }
+    /**
+     * This method is for internal use only.
+     * @param obj JSON object that represented a OR operator.
+     * @return {Or} Or instance
+     */
     static fromJson(obj:any): Or {
         let clauses: Array<Clause> = new Array<Clause>();
         let array: Array<any> = obj.clauses;
@@ -120,13 +219,45 @@ export class Or extends Clause {
         return or;
     }
 }
+/**
+ * Represents the clause of range condition.
+ */
 export class Range extends Clause {
+    /**
+     * Field name of comparison.
+     * @type {string}
+     */
     public field: string;
+    /**
+     * The upper limit of the range.
+     * @type {number}
+     */
     public upperLimit: number;
+    /**
+     * Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
+     * @type {boolean}
+     */
     public upperIncluded: boolean;
+    /**
+     * The lower limit of the range.
+     * @type {number}
+     */
     public lowerLimit: number;
+    /**
+     * Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
+     * @type {boolean}
+     */
     public lowerIncluded: boolean;
 
+    /**
+     * Create a range condition.
+     * @constructor
+     * @param {string} field Field name of comparison.
+     * @param {number} upperLimit The upper limit of the range.
+     * @param {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
+     * @param {number} lowerLimit The upper lower of the range.
+     * @param {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
+     */
     constructor(
         field: string,
         upperLimit: number,
@@ -141,18 +272,42 @@ export class Range extends Clause {
         this.lowerLimit = lowerLimit;
         this.lowerIncluded = lowerIncluded;
     }
+    /**
+     * Create a Range instance of the less than.
+     * @param {string} field Field name of comparison.
+     * @param {number} lowerLimit The upper lower of the range.
+     */
     static greaterThan(field: string, lowerLimit: number): Range {
         return new Range(field, null, null, lowerLimit, false);
     }
+    /**
+     * Create a Range instance of the less than or equals.
+     * @param {string} field Field name of comparison.
+     * @param {number} lowerLimit The upper lower of the range.
+     */
     static greaterThanEquals(field: string, lowerLimit: number): Range {
         return new Range(field, null, null, lowerLimit, true);
     }
+    /**
+     * Create a Range instance of the greater than.
+     * @param {string} field Field name of comparison.
+     * @param {number} upperLimit The upper limit of the range.
+     */
     static lessThan(field: string, upperLimit: number): Range {
         return new Range(field, upperLimit, false, null, null);
     }
+    /**
+     * Create a Range instance of the greater than or equals.
+     * @param {string} field Field name of comparison.
+     * @param {number} upperLimit The upper limit of the range.
+     */
     static lessThanEquals(field: string, upperLimit: number): Range {
         return new Range(field, upperLimit, true, null, null);
     }
+    /**
+     * This method is for internal use only.
+     * @return {object} JSON object that represented this instance.
+     */
     toJson(): any {
         var json: any = {type: "range", field: this.field};
         if (this.upperLimit != null && this.upperLimit != undefined) {
@@ -169,6 +324,11 @@ export class Range extends Clause {
         }
         return json;
     }
+    /**
+     * This method is for internal use only.
+     * @param obj JSON object that represented a range condition.
+     * @return {Range} Range instance
+     */
     static fromJson(obj:any): Range {
         let field = obj.field;
         let upperLimit = obj.upperLimit ? obj.upperLimit : null;
