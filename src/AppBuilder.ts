@@ -2,7 +2,7 @@ import {Site} from './Site'
 import {App} from './App'
 
 /** Factory methods to create [App]{@link App} instance. */
-export namespace AppBuilder{
+export class AppBuilder{
 
     /** Create App instace by Site
      * @param {string} appID AppID of Kii App.
@@ -10,7 +10,7 @@ export namespace AppBuilder{
      * @param {any} site Site of the app. Can be url string or [Site]{@link Site}.
      * @return {App} App instance.
      */
-    export function buildWithSite(appID: string, appKey: string, site: any): App {
+    static buildWithSite(appID: string, appKey: string, site: any): App {
         return new App(appID, appKey, site);
     }
 
@@ -21,7 +21,7 @@ export namespace AppBuilder{
      * @param {string} urlSchema https by default.
      * @return {App} App instance.
      */
-    export function buildWithHostname(appID: string, appKey: string, hostname: string, urlSchema = "https") {
+    static buildWithHostname(appID: string, appKey: string, hostname: string, urlSchema = "https") {
         return new App(appID, appKey, `${urlSchema}://${hostname}`);
     }
 }
