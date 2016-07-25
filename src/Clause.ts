@@ -3,6 +3,11 @@
  */
 export abstract class Clause {
     abstract toJson(): any;
+    /**
+     * This method is for internal use only.
+     * @param obj JSON object that represented a clause.
+     * @return {Clause} Equals instance
+     */
     static fromJson(obj:any): Clause {
         if (obj.type == "eq") {
             return Equals.fromJson(obj);
@@ -49,7 +54,7 @@ export class Equals extends Clause {
     }
     /**
      * This method is for internal use only.
-     * @return {object} JSON object that represented this instance.
+     * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
         return {
@@ -100,7 +105,7 @@ export class NotEquals extends Clause {
     }
     /**
      * This method is for internal use only.
-     * @return {object} JSON object that represented this instance.
+     * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
         return {
@@ -144,7 +149,7 @@ export class And extends Clause {
     }
     /**
      * This method is for internal use only.
-     * @return {object} JSON object that represented this instance.
+     * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
         var json: any = {type: "and"};
@@ -192,7 +197,7 @@ export class Or extends Clause {
     }
     /**
      * This method is for internal use only.
-     * @return {object} JSON object that represented this instance.
+     * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
         var json: any = {type: "or"};
@@ -306,7 +311,7 @@ export class Range extends Clause {
     }
     /**
      * This method is for internal use only.
-     * @return {object} JSON object that represented this instance.
+     * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
         var json: any = {type: "range", field: this.field};
