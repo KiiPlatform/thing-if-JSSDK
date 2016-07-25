@@ -5,7 +5,7 @@ dependencies:
 test:
   pre:
     # generate typedoc
-    - gulp doc; cp -fr ./jsdoc $CIRCLE_ARTIFACTS/
+    - gulp doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
 
     # uglify library
     - gulp --u
