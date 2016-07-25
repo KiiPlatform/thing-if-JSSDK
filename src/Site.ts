@@ -1,15 +1,15 @@
 /**
 * This enum represents KiiCloud server location.
 */
-export enum Site {
+export const Site = {
   /** Use cloud in US. */
-  US,
+  US: "https://api.kii.com",
   /** Use cloud in Japan. */
-  JP,
+  JP: "https://api-jp.kii.com",
   /** Use cloud in cn3 site of China. */
-  CN3,
+  CN3: "https://api-cn3.kii.com",
   /** Use cloud in Singapore. */
-  SG,
+  SG: "https://api-sg.kii.com",
   /** Use cloud in EU. */
-  EU
+  EU: "https://api-eu.kii.com"
 }

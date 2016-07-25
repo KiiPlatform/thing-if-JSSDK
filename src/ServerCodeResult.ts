@@ -1,12 +1,24 @@
 /** Represent the server code execution result */
 export class ServerCodeResult{
+    public succeeded: boolean;
+    public returnedValue: Object;
+    public executedAt: number;
+    public endpoint: string;
+    public error: ServerError;
+
     constructor(
-        public succeeded: boolean,
-        public returnedValue: Object,
-        public executedAt: number,
-        public endpoint: string,
-        public error: ServerError
-    ) {}
+        succeeded: boolean,
+        returnedValue: Object,
+        executedAt: number,
+        endpoint: string,
+        error: ServerError
+    ) {
+        this.succeeded = succeeded;
+        this.returnedValue = returnedValue;
+        this.executedAt = executedAt;
+        this.endpoint = endpoint;
+        this.error = error;
+    }
     static fromJson(obj:any): ServerCodeResult {
         let succeeded = obj.succeeded;
         let returnedValue = obj.returnedValue ? obj.returnedValue : null;
@@ -17,11 +29,19 @@ export class ServerCodeResult{
     }
 }
 export class ServerError {
+    public errorCode: string;
+    public errorMessage: string;
+    public detailMessage: string;
+
     constructor(
-        public errorCode: string,
-        public errorMessage: string,
-        public detailMessage: string
-    ) {}
+        errorCode: string,
+        errorMessage: string,
+        detailMessage: string
+    ) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+        this.detailMessage = detailMessage;
+    }
     static fromJson(obj:any): ServerError {
         let errorMessage = obj.errorMessage;
         let errorCode = obj.details ? obj.details.errorCode : null;

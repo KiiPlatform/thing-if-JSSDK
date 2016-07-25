@@ -7,16 +7,25 @@ import {TypedID} from './TypedID'
  * with vendorThingID with owner
  */
 export class OnboardWithVendorThingIDRequest {
+    public vendorThingID: string;
+    public thingPassword: string;
     public owner: string;
+    public thingType: string;
+    public thingProperties: Object;
+
     constructor(
-        public vendorThingID: string,
-        public thingPassword: string,
+        vendorThingID: string,
+        thingPassword: string,
         ownerType?: TypedID,
-        public thingType?:string,
-        public thingProperties?:Object){
+        thingType?: string,
+        thingProperties?: Object) {
+            this.vendorThingID = vendorThingID;
+            this.thingPassword = thingPassword;
             if (!!ownerType) {
                 this.owner = ownerType.toString();
             }
+            this.thingType = thingType;
+            this.thingProperties = thingProperties;
         }
 }
 
@@ -24,11 +33,16 @@ export class OnboardWithVendorThingIDRequest {
  * with thingID with owner
  */
 export class OnboardWithThingIDRequest {
+    public thingID: string;
+    public thingPassword: string;
     public owner: string;
+
     constructor(
-        public thingID: string,
-        public thingPassword: string,
-        ownerType?: TypedID){
+        thingID: string,
+        thingPassword: string,
+        ownerType?: TypedID) {
+            this.thingID = thingID;
+            this.thingPassword = thingPassword;
             if (!!ownerType) {
                 this.owner = ownerType.toString();
             }
@@ -39,42 +53,72 @@ export class OnboardWithThingIDRequest {
  * endnode with gateway
  */
 export class OnboardEndnodeWithGatewayRequest {
+    public gatewayThingID: string;
+    public endNodeVendorThingID: string;
+    public endNodePassword: string;
     public owner: string;
+    public thingType: string;
+    public thingProperties: Object;
+
     constructor(
-        public gatewayThingID: string,
-        public endNodeVendorThingID: string,
-        public endNodePassword: string,
+        gatewayThingID: string,
+        endNodeVendorThingID: string,
+        endNodePassword: string,
         ownerType: TypedID,
-        public thingType?:string,
-        public thingProperties?:Object){
+        thingType?: string,
+        thingProperties?: Object) {
+            this.gatewayThingID = gatewayThingID;
+            this.endNodeVendorThingID = endNodeVendorThingID;
+            this.endNodePassword = endNodePassword;
             this.owner = ownerType.toString();
+            this.thingType = thingType;
+            this.thingProperties = thingProperties;
         }
 }
 
 /** PostCommandRequest contains necessary fields to request post new command
  */
 export class PostCommandRequest {
+    public schema: string;
+    public schemaVersion: number;
+    public actions: Array<Object>;
     public issuer: string;
+    public title: string;
+    public description: string;
+    public metaData: Object;
+
     constructor(
-        public schema: string,
-        public schemaVersion: number,
-        public actions: Array<Object>,
+        schema: string,
+        schemaVersion: number,
+        actions: Array<Object>,
         issuerID?: TypedID,
-        public title?: string,
-        public description?: string,
-        public metaData?: Object){
+        title?: string,
+        description?: string,
+        metaData?: Object) {
+            this.schema = schema;
+            this.schemaVersion = schemaVersion;
+            this.actions = actions;
             if(!!issuerID && !!issuerID.id && !!issuerID.type){
                 this.issuer = issuerID.toString();
             }
+            this.title = title;
+            this.description = description;
+            this.metaData = metaData;
         }
 }
 
 /** ListQueryOptions contains the optional parameters when request list of endpoints */
 export class ListQueryOptions {
+    public bestEffortLimit: number;
+    public paginationKey: string;
+
     constructor(
-        public bestEffortLimit?: number,
-        public paginationKey?: string
-    ){}
+        bestEffortLimit?: number,
+        paginationKey?: string
+    ) {
+        this.bestEffortLimit = bestEffortLimit;
+        this.paginationKey = paginationKey;
+    }
 
     static getQueryString(options: ListQueryOptions): string{
         let arr: Array<string> = [];
@@ -89,18 +133,36 @@ export class ListQueryOptions {
 }
 
 export class CommandTriggerRequest{
+    public schema: string;
+    public schemaVersion: number;
+    public actions: Array<Object>;
+    public predicate: Predicate;
+    public issuerID: TypedID;
+
     constructor(
-        public schema: string,
-        public schemaVersion: number,
-        public actions?: Array<Object>,
-        public predicate?: Predicate,
-        public issuerID?: TypedID
-    ){}
+        schema: string,
+        schemaVersion: number,
+        actions?: Array<Object>,
+        predicate?: Predicate,
+        issuerID?: TypedID
+    ) {
+        this.schema = schema;
+        this.schemaVersion = schemaVersion;
+        this.actions = actions;
+        this.predicate = predicate;
+        this.issuerID = issuerID;
+    }
 }
 
 export class ServerCodeTriggerRequest{
+    public serverCode: ServerCode;
+    public predicate: Predicate;
+
     constructor(
-        public serverCode?: ServerCode,
-        public predicate?: Predicate
-    ){}
+        serverCode?: ServerCode,
+        predicate?: Predicate
+    ) {
+        this.serverCode = serverCode;
+        this.predicate = predicate;
+    }
 }

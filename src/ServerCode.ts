@@ -1,11 +1,22 @@
 /** Represent a Server Code of Kii Cloud */
 export class ServerCode{
+
+    public endpoint: string;
+    public executorAccessToken: string;
+    public targetAppID: string;
+    public parameters: Object;
+
     constructor(
-        public endpoint: string,
-        public executorAccessToken?: string,
-        public targetAppID?: string,
-        public parameters?: Object
-    ){}
+        endpoint: string,
+        executorAccessToken?: string,
+        targetAppID?: string,
+        parameters?: Object
+    ) {
+        this.endpoint = endpoint;
+        this.executorAccessToken = executorAccessToken;
+        this.targetAppID = targetAppID;
+        this.parameters = parameters;
+    }
     toJson(): any {
         var json: any = {endpoint: this.endpoint};
         if (this.executorAccessToken) {

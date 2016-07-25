@@ -23,10 +23,16 @@ export const EventSource = {
 }
 /** Represent StatePredicate for a Trigger */
 export class StatePredicate implements Predicate {
+    public condition: Condition;
+    public triggersWhen: string;
+
     constructor(
-        public condition: Condition,
-        public triggersWhen: string
-    ) {}
+        condition: Condition,
+        triggersWhen: string
+    ) {
+        this.condition = condition;
+        this.triggersWhen = triggersWhen;
+    }
     getEventSource(): string {
         return EventSource.STATES;
     }
@@ -45,7 +51,11 @@ export class StatePredicate implements Predicate {
 }
 /** Represent SchedulePredicate for a Trigger */
 export class SchedulePredicate implements Predicate {
-    constructor(public cronExpression: string) {}
+    public cronExpression: string;
+
+    constructor(cronExpression: string) {
+        this.cronExpression = cronExpression;
+    }
     getEventSource(): string {
         return EventSource.SCHEDULE;
     }
@@ -62,7 +72,10 @@ export class SchedulePredicate implements Predicate {
 }
 /** Represent ScheduleOncePredicate for a Trigger */
 export class ScheduleOncePredicate implements Predicate {
-    constructor(public scheduleAt: number) {}
+    public scheduleAt: number;
+    constructor(scheduleAt: number) {
+        this.scheduleAt = scheduleAt;
+    }
     getEventSource(): string {
         return EventSource.SCHEDULE_ONCE;
     }
