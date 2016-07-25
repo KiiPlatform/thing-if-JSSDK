@@ -4,6 +4,11 @@
         "dictionaries": ["jsdoc"]
     },
     "plugins": [],
+    "templates": {
+        "default": {
+            "outputSourceFiles": false
+        }
+    },
     "opts": {
         "template": "./node_modules/minami",
         "encoding": "utf8",
