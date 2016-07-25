@@ -32,7 +32,8 @@ describe("Small Test onboarding APIs of APIAuthor", function() {
                     "163fa051-p6QcV3cP5oFJjdEAZO6d2uC",
                     "jzgbQibmANOzaLLFkmnNCICbgHFYNyUBVlMREKHDbaHvmmWcmAGQlVYuoxQZAsQG",
                     8883,
-                    1883)
+                    1883,
+                    2147483647)
                 );
 
             beforeEach(function() {
@@ -122,7 +123,8 @@ describe("Small Test onboarding APIs of APIAuthor", function() {
                     "163fa051-p6QcV3cP5oFJjdEAZO6d2uC",
                     "jzgbQibmANOzaLLFkmnNCICbgHFYNyUBVlMREKHDbaHvmmWcmAGQlVYuoxQZAsQG",
                     8883,
-                    1883)
+                    1883,
+                    2147483647)
                 );
 
             beforeEach(function() {

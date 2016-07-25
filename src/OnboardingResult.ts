@@ -71,6 +71,11 @@ export class MqttEndpoint {
      * @type {number}
      */
     public portTCP: number;
+    /**
+     * The amount of time in seconds that specifies how long the mqttTopic will be valid, after that the client needs to request new MQTT endpoint info.
+     * @type {number}
+     */
+    public ttl: number;
 
     /**
      * Create a MqttEndpoint.
@@ -82,6 +87,7 @@ export class MqttEndpoint {
      * @param {string} password The password to use for connecting to the MQTT broker.
      * @param {number} portSSL The port to connect using SSL/TLS.
      * @param {number} portTCP The port to connect using plain TCP.
+     * @param {number} ttl The amount of time in seconds that specifies how long the mqttTopic will be valid, after that the client needs to request new MQTT endpoint info.
      */
     constructor(
         installationID: string,
@@ -90,7 +96,8 @@ export class MqttEndpoint {
         username: string,
         password: string,
         portSSL: number,
-        portTCP: number
+        portTCP: number,
+        ttl: number
     ) {
         this.installationID = installationID;
         this.host = host;
@@ -99,5 +106,6 @@ export class MqttEndpoint {
         this.password = password;
         this.portSSL = portSSL;
         this.portTCP = portTCP;
+        this.ttl = ttl;
     }
 }
