@@ -15,7 +15,8 @@ gulp.task("clean", function(){
 });
 
 gulp.task("doc",['build-for-doc'],  shell.task([
-	'jsdoc built-for-doc -d jsdoc'
+	'rm -fr jsdoc/html',
+	'jsdoc built-for-doc -c jsdoc/conf.json -R README.md'
 ]))
 gulp.task("build-for-doc", function() {
   	return gulp.src(['./src/*.ts', "./typings/globals/node/index.d.ts"])
