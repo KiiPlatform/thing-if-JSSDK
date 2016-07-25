@@ -1,5 +1,9 @@
 Javascript SDK for Kii Thing Interaction Framework.
 
+## Dependecies
+- [es6-promise](https://github.com/stefanpenner/es6-promise).
+- [popsicle](https://github.com/blakeembrey/popsicle).
+
 ## Build SDK
 
 ### Install NPM packages
@@ -37,6 +41,19 @@ $ gulp --u
 ```
 
 If succeeded, uglified library file named `thing-if-sdk.min.js` is available under `./dist/` folder.
+
+#### Use built SDK in browser
+You must include the dependencies by yourself. Add them before you import thing-if-js library. Like this:
+
+```
+<script src="https://wzrd.in/standalone/popsicle@latest"></script>
+<script src="https://wzrd.in/standalone/es6-promise-polyfill@latest"></script>
+<script>
+    this["es6-promise"]=this.es6PromisePolyfill;
+</script>
+<script src="path/to/thing-if-sdk.js"></script>
+
+```
 
 ## Test
 
