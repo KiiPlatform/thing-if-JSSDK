@@ -1,4 +1,11 @@
 
+/** Represents types of error
+<ul>
+  <li>Errors.ArgumentError: error caused by invalid arguments.</li>
+  <li>Errors.HttpError: error caused when doing http request to kii server.</li>
+  <li>Errors.IlllegalStateError: error caseud of illlegal states. </li>
+</ul>
+*/
 export const Errors = {
     ArgumentError: "ArgumentError",
     HttpError: "HttpRequestError",

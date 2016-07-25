@@ -16,6 +16,14 @@ export abstract class Predicate {
         return null;
     }
 }
+
+/** Represent source to fire trigger.
+<ul>
+  <li>EventSource.STATES: fire trigger based on states.</li>
+  <li>EventSource.SCHEDULE: fire trigger based on schedule.</li>
+  <li>EventSource.SCHEDULE_ONCE: fire trigger based on schedule only once.</li>
+</ul>
+*/
 export const EventSource = {
     STATES: "STATES",
     SCHEDULE: "SCHEDULE",
@@ -90,4 +98,3 @@ export class ScheduleOncePredicate implements Predicate {
         return new ScheduleOncePredicate(scheduleAt);
     }
 }
-
