@@ -5,7 +5,6 @@ Javascript SDK for Kii Thing Interaction Framework.
 ### Install NPM packages
 
 ```
-$ cd thing-if-sdk
 $ npm install
 ```
 
