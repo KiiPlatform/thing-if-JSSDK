@@ -12,6 +12,8 @@ import * as RequestObjects from '../../src/RequestObjects';
 import OnboardingOps from '../../src/ops/OnboardingOps'
 import {OnboardingResult} from '../../src/OnboardingResult';
 import {ThingIFError, HttpRequestError, Errors} from '../../src/ThingIFError';
+import * as TestUtil from './utils/TestUtil'
+
 let scope : nock.Scope;
 let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
@@ -39,12 +41,12 @@ describe('Test OnboardingOps', function () {
         }
     }
     let reqHeaders4ThingID = {
-        "X-Kii-SDK": "0.1",
+        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
         "Authorization":"Bearer " + ownerToken,
         "Content-Type": "application/vnd.kii.OnboardingWithThingIDByOwner+json"
     }
     let reqHeaders4VendorThingID = {
-        "X-Kii-SDK": "0.1",
+        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
         "Authorization":"Bearer " + ownerToken,
         "Content-Type": "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json"
     }
