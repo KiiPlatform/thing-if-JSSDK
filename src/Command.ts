@@ -121,7 +121,7 @@ export class Command {
             command.created = new Date(obj.createdAt);
         }
         if(!!obj.modifiedAt){
-            command.modified = new Date(obj.createdAt);
+            command.modified = new Date(obj.modifiedAt);
         }
         return command;
     }
