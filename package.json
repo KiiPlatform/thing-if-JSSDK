@@ -1,14 +1,22 @@
 {
-  "name": "thingifsdk",
+  "name": "thing-if-sdk",
   "version": "0.1.0",
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
-  "main": "index.js",
+  "main": "lib/ThingIFSDK.js",
+  "files": [
+    "lib/",
+    "typings.json",
+    "LICENSE.txt"
+  ],
   "scripts": {
     "build-test": "tsc test/*/*Test.ts test/*/*/*Test.ts ./typings/globals/node/index.d.ts --target es5 --module commonjs --outDir built",
     "pretest": "npm run build-test",
     "test": "mocha 'built/test/*/*.js' 'built/test/*/*/*.js' --timeout 20000",
     "small-test": "npm run build-test; mocha 'built/test/small/*.js' 'built/test/small/*/*.js'",
-    "large-test": "npm run build-test; mocha 'built/test/large/*.js' --timeout 20000"
+    "large-test": "npm run build-test; mocha 'built/test/large/*.js' --timeout 20000",
+    "build-lib": "tsc; cp -fr built lib",
+    "prepublish": "typings install && npm run build-lib"
+
   },
   "repository": {
     "type": "git",
