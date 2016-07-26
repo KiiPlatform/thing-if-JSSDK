@@ -202,3 +202,24 @@ Execute with node.
 node Command.js
 ```
 
+## Use in Typescript Project
+
+- install thing-if-sdk with npm
+
+```
+npm install thing-if-sdk --save
+```
+
+- install typings
+
+```
+typings install npm:thing-if-sdk --save
+```
+
+- add reference to your code
+
+```
+/// <reference path="./typings/modules/thing-if-sdk/index.d.ts" />
+import * as ThingIFSDK from 'thing-if-sdk'
+
+```
