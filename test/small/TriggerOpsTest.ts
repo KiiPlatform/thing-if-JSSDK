@@ -19,6 +19,7 @@ import {ServerCode} from '../../src/ServerCode';
 import {ServerCodeResult} from '../../src/ServerCodeResult';
 import {QueryResult} from '../../src/QueryResult';
 import {ThingIFError, HttpRequestError, Errors} from '../../src/ThingIFError';
+import * as TestUtil from './utils/TestUtil'
 let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
@@ -150,7 +151,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -172,7 +173,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
@@ -200,7 +201,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -219,7 +220,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, schedulePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
@@ -246,7 +247,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -265,7 +266,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, scheduleOncePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
@@ -296,7 +297,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -318,7 +319,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 done("should fail");
@@ -372,7 +373,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -393,7 +394,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
@@ -420,7 +421,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -438,7 +439,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, schedulePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
@@ -464,7 +465,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -482,7 +483,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
@@ -512,7 +513,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -533,7 +534,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 done("should fail");
@@ -589,7 +590,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -615,12 +616,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
@@ -648,7 +649,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -671,12 +672,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithSchedule, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, schedulePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
@@ -703,7 +704,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -726,12 +727,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithScheduleOnce, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, scheduleOncePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
@@ -762,7 +763,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -784,7 +785,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
-            
+
             let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 done("should fail");
@@ -844,7 +845,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -869,12 +870,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithState, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
@@ -901,7 +902,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -923,12 +924,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithSchedule, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, schedulePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
@@ -954,7 +955,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -976,12 +977,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithScheduleOnce, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
@@ -1011,7 +1012,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -1032,7 +1033,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
-            
+
             let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 done("should fail");
@@ -1090,7 +1091,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -1100,12 +1101,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
-            
+
             triggerOps.enableTrigger(expectedTriggerID, true).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1137,7 +1138,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -1147,12 +1148,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
-            
+
             triggerOps.enableTrigger(expectedTriggerID, false).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1184,13 +1185,13 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
                 }).put(enableTriggerPath)
                 .reply(404, errResponse, {"Content-Type": "application/json"});
-            
+
             triggerOps.enableTrigger(expectedTriggerID, true).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -1240,7 +1241,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -1267,7 +1268,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
@@ -1329,12 +1330,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(getTriggerPath)
                 .reply(404, errResponse, {"Content-Type": "application/json"});
-            
+
             triggerOps.getTrigger(expectedTriggerID).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -1398,7 +1399,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listTriggersPath + "?bestEffortLimit=10")
@@ -1455,7 +1456,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listTriggersPath)
@@ -1464,12 +1465,12 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listTriggersPath + `?paginationKey=${paginationKey}`)
                 .reply(200, responseBody4ListTriggers2, {"Content-Type": "application/json"});
-            
+
             triggerOps.listTriggers().then((result:QueryResult<Trigger>)=>{
                 try {
                     expect(result.paginationKey).to.equal(paginationKey);
@@ -1570,7 +1571,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listTriggersPath + "?bestEffortLimit=10")
@@ -1602,7 +1603,7 @@ describe('Test TriggerOps', function () {
                     endpoint: "server_function2",
                     error : {
                         errorMessage:"Error found while executing the developer-defined code",
-                        details:{ 
+                        details:{
                             errorCode : "RUNTIME_ERROR",
                             message : "adminContext is not defined"
                         }
@@ -1639,7 +1640,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listServerCodeResultsPath + `?bestEffortLimit=10`)
@@ -1675,7 +1676,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listServerCodeResultsPath)
@@ -1684,7 +1685,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listServerCodeResultsPath + `?paginationKey=${paginationKey}`)
@@ -1756,7 +1757,7 @@ describe('Test TriggerOps', function () {
                 testApp.site,
                 <any>{
                     reqheaders: {
-                        "X-Kii-SDK": "0.1",
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
                         "Authorization":"Bearer " + ownerToken,
                     }
                 }).get(listServerCodeResultsPath + `?bestEffortLimit=10`)

@@ -6,7 +6,7 @@ export default class BaseOp {
         public au: APIAuthor
     ){
         let headers: any = {
-            "X-Kii-SDK": getSDKVersion()
+            "X-Kii-SDK": `sn=jsi;sv=${getSDKVersion()}`
         }
         if (!!this.au.token) {
             headers["Authorization"] = `Bearer ${this.au.token}`;
