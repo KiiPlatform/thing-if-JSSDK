@@ -118,7 +118,7 @@ describe("Test CommandOps", function() {
             })
 
             it("handle 400 response", function (done) {
-                var errResponse = {
+                var errResponse:any = {
                     "errorCode": "WRONG_COMMAND",
                     "message": "At least one action is required"
                 }
@@ -138,7 +138,9 @@ describe("Test CommandOps", function() {
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
                     done("should fail");
                 }).catch((err:HttpRequestError)=>{
-                    expect(err.body).to.deep.equal(errResponse);
+                    expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                    expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                    expect(err.body.message).to.be.equal(errResponse.message);
                     expect(err.status).to.equal(400);
                     expect(err.name).to.equal(Errors.HttpError);
                     done();
@@ -258,7 +260,7 @@ describe("Test CommandOps", function() {
 
             it("handle 404 respones", function(done) {
                 let date = new Date();
-                let responseBody:any = {
+                let errResponse:any = {
                 "errorCode": "COMMAND_NOT_FOUND",
                 "message": `Command ${commandID} not found`
                 }
@@ -267,14 +269,16 @@ describe("Test CommandOps", function() {
                     .get(path)
                     .reply(
                         404,
-                        responseBody,
+                        errResponse,
                         {"Content-Type": "application/json"}
                     );
                 cmdOp.getCommand(commandID).then(()=>{
                     done("should fail");
                 }).catch((err:HttpRequestError)=>{
                     expect(err.status).to.be.equal(404);
-                    expect(err.body).to.be.deep.equal(responseBody);
+                    expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                    expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                    expect(err.body.message).to.be.equal(errResponse.message);
                     done();
                 }).catch((err)=>{
                     done(err);
@@ -401,7 +405,7 @@ describe("Test CommandOps", function() {
             describe("handle err response", function() {
                 it("handle 404 respones", function(done) {
                     let date = new Date();
-                    let responseBody:any = {
+                    let errResponse:any = {
                         "errorCode": "TARGET_NOT_FOUND",
                         "message": `Target ${targetID.toString()} not found`
                     }
@@ -410,14 +414,16 @@ describe("Test CommandOps", function() {
                         .get(path)
                         .reply(
                             404,
-                            responseBody,
+                            errResponse,
                             {"Content-Type": "application/json"}
                         );
                     cmdOp.listCommands().then(()=>{
                         done("should fail");
                     }).catch((err:HttpRequestError)=>{
                         expect(err.status).to.be.equal(404);
-                        expect(err.body).to.be.deep.equal(responseBody);
+                        expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                        expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                        expect(err.body.message).to.be.equal(errResponse.message);
                         done();
                     }).catch((err)=>{
                         done(err);
@@ -427,4 +433,3 @@ describe("Test CommandOps", function() {
         })
     })
 })
-
