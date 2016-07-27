@@ -11,16 +11,15 @@ export const Errors = {
     IlllegalStateError: "IlllegalStateError"
 }
 
-export class ThingIFError {
+export class ThingIFError extends Error {
     public name: string;
     public message: string;
     constructor(name: string, message:string) {
-        // Error.apply(this, arguments);
+        super(message);
         this.name = name;
         this.message = message;
     }
 }
-ThingIFError.prototype = new Error();
 
 export class HttpRequestError extends ThingIFError {
     public status: number;
