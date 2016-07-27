@@ -53,9 +53,12 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             expect(cmd.schema).to.be.equal(postCommandRequest.schema);
             expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
             expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
-            expect(cmd.modified).not.null;
-            expect(cmd.created).not.null;
-            expect(!cmd.commandState).to.true;
+            // These three fields are assigned by server automatically.
+            // postNewCommand method does not get command from server, so these fields should be undefined.
+            expect(cmd.modified).to.be.undefined;
+            expect(cmd.created).to.be.undefined;
+            expect(cmd.commandState).to.be.undefined;
+
             expect(!cmd.title).to.be.true;
             expect(!cmd.description).to.true;
             expect(!cmd.metadata).to.true;
@@ -70,7 +73,9 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
             expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
             expect(cmd.modified).not.null;
+            expect(cmd.modified).not.undefined;
             expect(cmd.created).not.null;
+            expect(cmd.created).not.undefined;
             expect(cmd.commandState).to.equal(CommandState.SENDING);
             expect(!cmd.title).to.be.true;
             expect(!cmd.description).to.true;
