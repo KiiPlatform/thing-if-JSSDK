@@ -50,6 +50,19 @@ export class APIAuthor {
      * @param {Object} onboardRequest request body when request onboarding
      * @param {onCompletion} [function] callback function when completed
      * @return {Promise} promise object
+     * @example
+     * // Assume user is already exist and you have User ID and Access token.
+     * var app = new ThingIF.App("Your AppID", "Your AppKey", ThingIF.Site.US);
+     * var author = new ThingIF.APIAuthor("Your user's acess token", app);
+     * var vendorThingID = "Your thing's vendor thing ID";
+     * var password = "Your thing's password";
+     * var owner = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
+     * var request = new ThingIF.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+     * author.onboardWithVendorThingID(request).then(function(result){
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
@@ -68,22 +81,31 @@ export class APIAuthor {
         return PromiseWrapper.promise((new OnboardingOps(this)).onboardWithThingID(onboardRequest), onCompletion);
     }
 
-    /** Onboard an Endnode by vendorThingID with an already registered gateway.
-     * @param {Object} onboardRequest Necessary fields when request onboarding
-     * @param {onCompletion} [function] Callback function when completed
-     * @return {Promise} promise object
-     */
-    onboardEndnodeWithGateway(
-        onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
-        onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
-        return PromiseWrapper.promise((new OnboardingOps(this)).onboardEndnode(onboardRequest), onCompletion);
-    }
+    // /** Onboard an Endnode by vendorThingID with an already registered gateway.
+    //  * @param {Object} onboardRequest Necessary fields when request onboarding
+    //  * @param {onCompletion} [function] Callback function when completed
+    //  * @return {Promise} promise object
+    //  */
+    // onboardEndnodeWithGateway(
+    //     onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
+    //     onCompletion?: (err: Error, res:OnboardingResult)=> void): Promise<OnboardingResult>{
+    //     return PromiseWrapper.promise((new OnboardingOps(this)).onboardEndnode(onboardRequest), onCompletion);
+    // }
 
     /** Post a new command.
      * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
      * @param {Object} command Necessary fields for new command
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
+     * var request = new ThingIF.PostCommandRequest("led", 1, [{turnPower: {power:true}}], issuerID);
+     * author.postNewCommand(targetID, request).then(function(command) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     postNewCommand(
         target: TypedID,
@@ -97,6 +119,13 @@ export class APIAuthor {
      * @param {string} commandID Command ID to retrieve.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.getCommand(targetID, "CommandID").then(function(command) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getCommand(
         target: TypedID,
@@ -110,6 +139,17 @@ export class APIAuthor {
      * @param {Object} listOpitons Options to retrieve commands.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.listCommands(targetID).then(function(queryResult) {
+     *   if (queryResult.hasNext) {
+     *     // Handle more results
+     *   }
+     *   // Do something
+     *   var commands = queryResult.results;
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     listCommands(
         target: TypedID,
@@ -123,6 +163,16 @@ export class APIAuthor {
      * @param {Object} requestObject Necessary fields for new command trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate);
+     * author.postCommandTrigger(targetID, request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     postCommandTrigger(
         target: TypedID,
@@ -136,6 +186,17 @@ export class APIAuthor {
      * @param {Object} requestObject Necessary fields for new servercode trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
+     * author.postServerCodeTrigger(targetID, request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     postServerCodeTrigger(
         target: TypedID,
@@ -149,6 +210,13 @@ export class APIAuthor {
      * @param {string} triggerID ID of trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.getTrigger(targetID, "TriggerID").then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getTrigger(
         target: TypedID,
@@ -163,6 +231,14 @@ export class APIAuthor {
      * @param {Object} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}]);
+     * author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     patchCommandTrigger(
         target: TypedID,
@@ -178,6 +254,15 @@ export class APIAuthor {
      * @param {Object} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
+     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode);
+     * author.patchServerCodeTrigger(targetID, "Trigger ID", request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
    patchServerCodeTrigger(
         target: TypedID,
@@ -193,6 +278,13 @@ export class APIAuthor {
      * @param {boolean} enable True to enable, otherwise, disable the trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.enableTrigger(targetID, "Trigger ID", true).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     enableTrigger(
         target: TypedID,
@@ -207,6 +299,13 @@ export class APIAuthor {
      * @param {string} triggerID ID of trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.deleteTrigger(targetID, "Trigger ID").then(function(deletedTriggerID) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     deleteTrigger(
         target: TypedID,
@@ -219,6 +318,17 @@ export class APIAuthor {
      * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.listTriggers(targetID).then(function(queryResult) {
+     *   if (queryResult.hasNext) {
+     *     // Handle more results
+     *   }
+     *   // Do something
+     *   var triggers = queryResult.results;
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     listTriggers(
         target: TypedID,
@@ -233,6 +343,17 @@ export class APIAuthor {
      * @param {Object} listOpitons Options to retrieve.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.listServerCodeExecutionResults(targetID, "Trigger ID").then(function(queryResult) {
+     *   if (queryResult.hasNext) {
+     *     // Handle more results
+     *   }
+     *   // Do something
+     *   var executionResults = queryResult.results;
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     listServerCodeExecutionResults(
         target: TypedID,
@@ -246,6 +367,13 @@ export class APIAuthor {
      * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * author.getState(targetID).then(function(state) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getState(
         target: TypedID,
@@ -257,6 +385,12 @@ export class APIAuthor {
      * @param {string} thingID ID of thing.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * author.getVendorThingID("Thing ID for target").then(function(vendorThingID) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getVendorThingID(
         thingID: string,
@@ -270,6 +404,12 @@ export class APIAuthor {
      * @param {string} newPassword New password of target to be updated.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * author.updateVendorThingID("Thing ID for target", "New vendor thing ID", "New Password").then(function() {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     updateVendorThingID(
         thingID: string,
@@ -286,6 +426,12 @@ export class APIAuthor {
      * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
+     * @example
+     * author.installFCM("Registration ID", false).then(function(installationID) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     installFCM(
         installationRegistrationID:string,
@@ -299,6 +445,12 @@ export class APIAuthor {
      * receive the notification and check the result of Command fired by Application or registered Trigger.     * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
+     * @example
+     * author.installMqtt(false).then(function(result) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     installMqtt(
         development: boolean,
@@ -310,6 +462,12 @@ export class APIAuthor {
      * @param {string} installationID The ID of the installation issued by KiiCloud.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object.
+     * @example
+     * author.uninstallPush("Installation ID").then(function() {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     uninstallPush(
         installationID: string,

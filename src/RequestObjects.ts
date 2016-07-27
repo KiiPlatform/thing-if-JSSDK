@@ -73,48 +73,48 @@ export class OnboardWithThingIDRequest {
         }
 }
 
-/**
- * Represents the request for onboarding endnode with gateway.
- * @prop {string} gatewayThingID
- * @prop {string} endNodeVendorThingID
- * @prop {string} endNodePassword
- * @prop {string} owner
- * @prop {string} thingType
- * @prop {Object} thingProperties
- */
-export class OnboardEndnodeWithGatewayRequest {
-    public gatewayThingID: string;
-    public endNodeVendorThingID: string;
-    public endNodePassword: string;
-    public owner: string;
-    public thingType: string;
-    public thingProperties: Object;
+// /**
+//  * Represents the request for onboarding endnode with gateway.
+//  * @prop {string} gatewayThingID
+//  * @prop {string} endNodeVendorThingID
+//  * @prop {string} endNodePassword
+//  * @prop {string} owner
+//  * @prop {string} thingType
+//  * @prop {Object} thingProperties
+//  */
+// export class OnboardEndnodeWithGatewayRequest {
+//     public gatewayThingID: string;
+//     public endNodeVendorThingID: string;
+//     public endNodePassword: string;
+//     public owner: string;
+//     public thingType: string;
+//     public thingProperties: Object;
 
-    /**
-     * Create a OnboardEndnodeWithGatewayRequest.
-     * @constructor
-     * @param {string} gatewayThingID
-     * @param {string} endNodeVendorThingID
-     * @param {string} endNodePassword
-     * @param {TypedID} ownerType
-     * @param {string} [thingType]
-     * @param {Object} [thingProperties]
-     */
-    constructor(
-        gatewayThingID: string,
-        endNodeVendorThingID: string,
-        endNodePassword: string,
-        ownerType: TypedID,
-        thingType?: string,
-        thingProperties?: Object) {
-            this.gatewayThingID = gatewayThingID;
-            this.endNodeVendorThingID = endNodeVendorThingID;
-            this.endNodePassword = endNodePassword;
-            this.owner = ownerType.toString();
-            this.thingType = thingType;
-            this.thingProperties = thingProperties;
-        }
-}
+//     /**
+//      * Create a OnboardEndnodeWithGatewayRequest.
+//      * @constructor
+//      * @param {string} gatewayThingID
+//      * @param {string} endNodeVendorThingID
+//      * @param {string} endNodePassword
+//      * @param {TypedID} ownerType
+//      * @param {string} [thingType]
+//      * @param {Object} [thingProperties]
+//      */
+//     constructor(
+//         gatewayThingID: string,
+//         endNodeVendorThingID: string,
+//         endNodePassword: string,
+//         ownerType: TypedID,
+//         thingType?: string,
+//         thingProperties?: Object) {
+//             this.gatewayThingID = gatewayThingID;
+//             this.endNodeVendorThingID = endNodeVendorThingID;
+//             this.endNodePassword = endNodePassword;
+//             this.owner = ownerType.toString();
+//             this.thingType = thingType;
+//             this.thingProperties = thingProperties;
+//         }
+// }
 
 /**
  * Represents the request for creating a command.
