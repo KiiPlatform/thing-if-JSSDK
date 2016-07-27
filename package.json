@@ -16,7 +16,6 @@
     "large-test": "npm run build-test; mocha 'built/test/large/*.js' --timeout 20000",
     "build-lib": "tsc; cp -fr built lib",
     "prepublish": "typings install && npm run build-lib"
-
   },
   "repository": {
     "type": "git",
@@ -50,6 +49,7 @@
   },
   "dependencies": {
     "es6-promise": "^3.2.1",
+    "make-error-cause": "^1.2.1",
     "popsicle": "^6.2.1"
   }
 }
