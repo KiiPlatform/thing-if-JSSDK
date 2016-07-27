@@ -26,7 +26,8 @@ var config = {
   },
   externals: {
     "es6-promise": "es6-promise",
-    "popsicle": "popsicle"
+    "popsicle": "popsicle",
+    "make-error-cause": "make-error-cause"
   },
   module: {
     loaders: [
