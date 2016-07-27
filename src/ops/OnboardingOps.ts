@@ -77,12 +77,12 @@ export default class OnboardingOps extends BaseOp {
             })
         });
     }
-    onboardEndnode(onboardRequest:Object): Promise<Object> {
-        //TODO: implment me
-        return new Promise<Object>((resolve, reject)=>{
-            resolve({});
-        })
-    }
+    // onboardEndnode(onboardRequest:Object): Promise<Object> {
+    //     //TODO: implment me
+    //     return new Promise<Object>((resolve, reject)=>{
+    //         resolve({});
+    //     })
+    // }
 
     private onboard(
         contentType: string,

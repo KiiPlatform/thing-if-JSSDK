@@ -60,6 +60,19 @@ export class ThingIFAPI {
      * @param {Object} onboardRequest request body when request onboarding
      * @param {onCompletion} [function] callback function when completed
      * @return {Promise} promise object
+     * @example
+     * // Assume user is already exist and you have User ID and Access token.
+     * var owner = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
+     * var app = new ThingIF.App("Your AppID", "Your AppKey", ThingIF.Site.US);
+     * var api = new ThingIF.ThingIFAPI(owner, "Your user's acess token", app);
+     * var vendorThingID = "Your thing's vendor thing ID";
+     * var password = "Your thing's password";
+     * var request = new ThingIF.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+     * api.onboardWithVendorThingID(request).then(function(result){
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     onboardWithVendorThingID(
         onboardRequest: Options.OnboardWithVendorThingIDRequest,
@@ -83,6 +96,18 @@ export class ThingIFAPI {
      * @param {Object} onboardRequest Necessary fields when request onboarding
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var owner = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
+     * var app = new ThingIF.App("Your AppID", "Your AppKey", ThingIF.Site.US);
+     * var api = new ThingIF.ThingIFAPI(owner, "Your user's acess token", app);
+     * var thingID = "Your thing's ID";
+     * var password = "Your thing's password";
+     * var request = new ThingIF.OnboardWithThingIDRequest(thingID, password, owner);
+     * api.onboardWithThingID(request).then(function(result){
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     onboardWithThingID(
         onboardRequest: Options.OnboardWithThingIDRequest,
@@ -102,24 +127,31 @@ export class ThingIFAPI {
         return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
-    /** Onboard an Endnode by vendorThingID with an already registered gateway.
-     * @param {Object} onboardRequest Necessary fields when request onboarding
-     * @param {onCompletion} [function] Callback function when completed
-     * @return {Promise} promise object
-     */
-    onboardEndnodeWithGateway(
-        onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
-        onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
-        return this._au.onboardEndnodeWithGateway(onboardRequest, onCompletion);
-    }
+    // /**Onboard an Endnode by vendorThingID with an already registered gateway.
+    //  * @param {Object} onboardRequest Necessary fields when request onboarding
+    //  * @param {onCompletion} [function] Callback function when completed
+    //  * @return {Promise} promise object
+    //  * @example
+    //  */
+    // onboardEndnodeWithGateway(
+    //     onboardRequest: Options.OnboardEndnodeWithGatewayRequest,
+    //     onCompletion?: (err: Error, res:Object)=> void): Promise<Object>{
+    //     return this._au.onboardEndnodeWithGateway(onboardRequest, onCompletion);
+    // }
 
     /** Post a new command.
-     *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
      * @param {Object} command Necessary fields for new command
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var request = new ThingIF.PostCommandRequest("led", 1, [{turnPower: {power:true}}]);
+     * api.postNewCommand(request).then(function(command) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     postNewCommand(
         command: Options.PostCommandRequest,
@@ -149,6 +181,12 @@ export class ThingIFAPI {
      * @param {string} commandID Command ID to retrieve.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.getCommand("CommandID").then(function(command) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getCommand(
         commandID: string,
@@ -174,6 +212,16 @@ export class ThingIFAPI {
      * @param {Object} listOpitons Options to retrieve commands.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.listCommands().then(function(queryResult) {
+     *   if (queryResult.hasNext) {
+     *     // Handle more results
+     *   }
+     *   // Do something
+     *   var commands = queryResult.results;
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     listCommands(
         listOpitons?: Options.ListQueryOptions,
@@ -199,6 +247,15 @@ export class ThingIFAPI {
      * @param {Object} requestObject Necessary fields for new command trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate);
+     * api.postCommandTrigger(request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     postCommandTrigger(
         requestObject: Options.CommandTriggerRequest,
@@ -225,6 +282,16 @@ export class ThingIFAPI {
      * @param {Object} requestObject Necessary fields for new servercode trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
+     * api.postServerCodeTrigger(request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     postServerCodeTrigger(
         requestObject: Options.ServerCodeTriggerRequest,
@@ -251,6 +318,12 @@ export class ThingIFAPI {
      * @param {string} triggerID ID of trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.getTrigger("TriggerID").then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getTrigger(
         triggerID: string,
@@ -278,6 +351,13 @@ export class ThingIFAPI {
      * @param {Object} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}]);
+     * api.patchCommandTrigger("Trigger ID", request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     patchCommandTrigger(
         triggerID: string,
@@ -306,6 +386,14 @@ export class ThingIFAPI {
      * @param {Object} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
+     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode);
+     * api.patchServerCodeTrigger("Trigger ID", request).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
    patchServerCodeTrigger(
         triggerID: string,
@@ -334,6 +422,12 @@ export class ThingIFAPI {
      * @param {boolean} enable True to enable, otherwise, disable the trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.enableTrigger("Trigger ID", true).then(function(trigger) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     enableTrigger(
         triggerID: string,
@@ -361,6 +455,12 @@ export class ThingIFAPI {
      * @param {string} triggerID ID of trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.deleteTrigger("Trigger ID").then(function(deletedTriggerID) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     deleteTrigger(
         triggerID: string,
@@ -386,6 +486,16 @@ export class ThingIFAPI {
      *  Otherwise, error will be returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.listTriggers().then(function(queryResult) {
+     *   if (queryResult.hasNext) {
+     *     // Handle more results
+     *   }
+     *   // Do something
+     *   var triggers = queryResult.results;
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     listTriggers(
         listOpitons?: Options.ListQueryOptions,
@@ -413,6 +523,16 @@ export class ThingIFAPI {
      * @param {Object} listOpitons Options to retrieve.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.listServerCodeExecutionResults("Trigger ID").then(function(queryResult) {
+     *   if (queryResult.hasNext) {
+     *     // Handle more results
+     *   }
+     *   // Do something
+     *   var executionResults = queryResult.results;
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     listServerCodeExecutionResults(
         triggerID: string,
@@ -439,6 +559,12 @@ export class ThingIFAPI {
      *  Otherwise, error will be returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.getState().then(function(state) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getState(
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
@@ -462,6 +588,12 @@ export class ThingIFAPI {
      *  Otherwise, error will be returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.getVendorThingID().then(function(vendorThingID) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     getVendorThingID(
         onCompletion?: (err: Error, vendorThingID:string)=> void): Promise<string>{
@@ -487,6 +619,12 @@ export class ThingIFAPI {
      * @param {string} newPassword New password of target to be updated.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
+     * @example
+     * api.updateVendorThingID("New vendor thing ID", "New Password").then(function() {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     updateVendorThingID(
         newVendorThingID: string,
@@ -512,6 +650,12 @@ export class ThingIFAPI {
      * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
+     * @example
+     * api.installFCM("Registration ID", false).then(function(installationID) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     installFCM(
         installationRegistrationID:string,
@@ -536,6 +680,12 @@ export class ThingIFAPI {
      * @param {boolean} development Indicates if the installation is for development or production environment.
      * @param {onCompletion} [function] Callback function when completed.
      * @return {Promise} promise object.
+     * @example
+     * api.installMqtt(false).then(function(result) {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     installMqtt(
         development: boolean,
@@ -559,6 +709,12 @@ export class ThingIFAPI {
      * @param {string} installationID The ID of the installation issued by KiiCloud.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object.
+     * @example
+     * api.uninstallPush("Installation ID").then(function() {
+     *   // Do something
+     * }).catch(function(err){
+     *   // Error handling
+     * });
      */
     uninstallPush(
         installationID: string,
