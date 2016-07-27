@@ -34,7 +34,7 @@ export default function (options: Object): Promise<Response>{
         }).catch(function (err) {
             if(err instanceof popsicle.PopsicleError){
                 if(err.code == "EUNAVAILABLE"){
-                    reject(new ThingIFError(Errors.NetworkError, "network connect error"));
+                    reject(new ThingIFError(Errors.NetworkError, "Unable to connect to server, please retry it later."));
                     return;
                 }
             }
