@@ -4,7 +4,7 @@ import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
-import MqttInstallationResult from '../MqttInstallationResult'
+import {MqttInstallationResult} from '../MqttInstallationResult'
 import {Response} from './Response'
 import BaseOp from './BaseOp'
 import * as KiiUtil from '../internal/KiiUtilities'

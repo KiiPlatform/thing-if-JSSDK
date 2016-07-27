@@ -3,7 +3,7 @@
  * @prop {string} installationID ID used in IoT Cloud.
  * @prop {string} installationRegistrationID ID of registration that identifies the installation externally.
  */
-export default class MqttInstallationResult {
+export class MqttInstallationResult {
     public installationID: string;
     public installationRegistrationID: string;
 

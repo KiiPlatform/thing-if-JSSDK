@@ -9,7 +9,7 @@ import * as Options from './RequestObjects'
 import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
 import {APIAuthor} from './APIAuthor'
-import MqttInstallationResult from './MqttInstallationResult'
+import {MqttInstallationResult} from './MqttInstallationResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
 import {ThingIFError, Errors} from './ThingIFError'
 
