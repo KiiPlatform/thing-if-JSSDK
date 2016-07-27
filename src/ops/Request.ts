@@ -3,7 +3,6 @@
 import {Promise} from 'es6-promise';
 import * as popsicle from 'popsicle';
 import {RequestOptions} from '~popsicle/dist/request';
-import PopsicleError from '~popsicle/dist/error';
 
 import {Response} from './Response'
 import {HttpRequestError, ThingIFError, Errors} from '../ThingIFError'
@@ -33,7 +32,7 @@ export default function (options: Object): Promise<Response>{
                 reject(err);
             }
         }).catch(function (err) {
-            if(err instanceof PopsicleError){
+            if(err instanceof popsicle.PopsicleError){
                 if(err.code == "EUNAVAILABLE"){
                     reject(new ThingIFError(Errors.NetworkError, "network connect error"));
                     return;
