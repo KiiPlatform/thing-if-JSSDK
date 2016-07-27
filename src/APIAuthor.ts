@@ -8,7 +8,7 @@ import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
-import MqttInstallationResult from './MqttInstallationResult'
+import {MqttInstallationResult} from './MqttInstallationResult'
 
 import OnboardingOps from './ops/OnboardingOps'
 import CommandOps from './ops/CommandOps'
