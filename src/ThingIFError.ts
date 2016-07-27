@@ -1,4 +1,7 @@
+///<reference path="../typings/modules/make-error-cause/index.d.ts"/>
 import * as KiiUtil from './internal/KiiUtilities'
+import * as makeError from 'make-error-cause'
+
 /** Represents types of error
 <ul>
     <li>Errors.ArgumentError: error caused by invalid arguments.</li>
@@ -19,13 +22,12 @@ export const Errors = {
  *  If it is not one of defined error, then it is unknown error.
  * @prop {string} message Message of ThingIFError.
 */
-export class ThingIFError extends Error{
+export class ThingIFError extends makeError.BaseError {
     public name: string;
     public message: string;
-    constructor(name: string, message:string) {
-        super(message);
+    constructor(name: string, message:string, original?: Error) {
+        super(message, original);
         this.name = name;
-        this.message = message;
     }
 }
 
