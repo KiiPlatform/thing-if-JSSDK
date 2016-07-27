@@ -19,15 +19,15 @@ export const Errors = {
  *  If it is not one of defined error, then it is unknown error.
  * @prop {string} message Message of ThingIFError.
 */
-export class ThingIFError {
+export class ThingIFError extends Error{
     public name: string;
     public message: string;
     constructor(name: string, message:string) {
+        super(message);
         this.name = name;
         this.message = message;
     }
 }
-ThingIFError.prototype = new Error();
 
 /** Represent body of error response from server.
  * @prop {string} errorCode errorCode of response.
