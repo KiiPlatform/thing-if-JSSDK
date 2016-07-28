@@ -9,7 +9,6 @@ import {Response} from '../../src/ops/Response'
 import ThingOps from '../../src/ops/ThingOps'
 import {default as request} from '../../src/ops/Request'
 import {APIAuthor} from '../../src/APIAuthor'
-import {MqttInstallationResult} from '../../src/MqttInstallationResult'
 import {Errors, HttpRequestError, ThingIFError} from '../../src/ThingIFError'
 
 import * as nock from 'nock'

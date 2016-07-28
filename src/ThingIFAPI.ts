@@ -9,7 +9,6 @@ import * as Options from './RequestObjects'
 import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
 import {APIAuthor} from './APIAuthor'
-import {MqttInstallationResult} from './MqttInstallationResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
 import {ThingIFError, Errors} from './ThingIFError'
 
@@ -669,35 +668,6 @@ export class ThingIFAPI {
             (new PushOps(this._au)).installFCM(installationRegistrationID, development)
             .then((installationID)=>{
                 resolve(installationID);
-            }).catch((err)=>{
-                reject(err);
-            })
-        })
-        return PromiseWrapper.promise(orgPromise, onCompletion);
-    }
-
-    /** Register a MQTT installation to the Kii cloud for kii user.
-     * @param {boolean} development Indicates if the installation is for development or production environment.
-     * @param {onCompletion} [function] Callback function when completed.
-     * @return {Promise} promise object.
-     * @example
-     * api.installMqtt(false).then(function(result) {
-     *   // Do something
-     * }).catch(function(err){
-     *   // Error handling
-     * });
-     */
-    installMqtt(
-        development: boolean,
-        onCompletion?: (err: Error, result:MqttInstallationResult)=> void): Promise<MqttInstallationResult>{
-        let orgPromise = new Promise<MqttInstallationResult>((resolve, reject)=>{
-            if(!this._target){
-                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
-                return;
-            }
-            (new PushOps(this._au)).installMqtt(development)
-            .then((result)=>{
-                resolve(result);
             }).catch((err)=>{
                 reject(err);
             })

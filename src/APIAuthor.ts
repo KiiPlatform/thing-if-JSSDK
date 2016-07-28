@@ -8,7 +8,6 @@ import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
 import {TypedID} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
-import {MqttInstallationResult} from './MqttInstallationResult'
 
 import OnboardingOps from './ops/OnboardingOps'
 import CommandOps from './ops/CommandOps'
@@ -438,24 +437,6 @@ export class APIAuthor {
         development: boolean,
         onCompletion?: (err: Error, installationID:string)=> void): Promise<string>{
         return PromiseWrapper.promise((new PushOps(this)).installFCM(installationRegistrationID, development), onCompletion);
-    }
-
-    /** Install MQTT notification to receive notification from IoT Cloud.
-     * IoT Cloud will send notification when the Target replies to the Command. Application can
-     * receive the notification and check the result of Command fired by Application or registered Trigger.     * @param {boolean} development Indicates if the installation is for development or production environment.
-     * @param {onCompletion} [function] Callback function when completed.
-     * @return {Promise} promise object.
-     * @example
-     * author.installMqtt(false).then(function(result) {
-     *   // Do something
-     * }).catch(function(err){
-     *   // Error handling
-     * });
-     */
-    installMqtt(
-        development: boolean,
-        onCompletion?: (err: Error, result:MqttInstallationResult)=> void): Promise<MqttInstallationResult>{
-        return PromiseWrapper.promise((new PushOps(this)).installMqtt(development), onCompletion);
     }
 
     /** Unregister the push settings by the id(issued by KiiCloud) that is used for installation.

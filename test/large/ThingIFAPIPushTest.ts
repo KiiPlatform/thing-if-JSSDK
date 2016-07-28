@@ -77,43 +77,4 @@ describe("Large Tests for Push Ops(ThingIFAPI):", function () {
             })
         });
     });
-
-    describe('installMQTT with only promise:', function () {
-
-        it("handle success response", function (done) {
-            thingIFAPI.installMqtt(true).then((result)=>{
-                expect(result.installationID).to.be.a('string');
-                expect(result.installationRegistrationID).to.be.a('string');
-
-                // test uninstall
-                let callbacksCalled2 = false;
-                thingIFAPI.uninstallPush(result.installationID, (err)=>{
-                    expect(err).to.be.null;
-                    callbacksCalled2 = true;
-                }).then(()=>{
-                    expect(callbacksCalled2).to.be.true;
-                    done();
-                }).catch((err)=>{
-                    done(err);
-                })
-            }).catch((err)=>{
-                done(err);
-            })
-        });
-    });
-
-    describe('installMQTT with only callback:', function () {
-
-        it("handle success response", function (done) {
-            thingIFAPI.installMqtt(true, (err, result)=>{
-                try{
-                    expect(err).to.be.null;
-                    expect(result.installationID).to.be.a('string');
-                    done();
-                }catch(err){
-                    done(err);
-                }
-            })
-        });
-    });
 })
