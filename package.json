@@ -14,7 +14,7 @@
     "test": "mocha 'built/test/*/*.js' 'built/test/*/*/*.js' --timeout 20000",
     "small-test": "npm run build-test; mocha 'built/test/small/*.js' 'built/test/small/*/*.js'",
     "large-test": "npm run build-test; mocha 'built/test/large/*.js' --timeout 20000",
-    "build-lib": "tsc; cp -fr built lib",
+    "build-lib": "rm -fr built; rm -fr lib; tsc; cp -fr built lib",
     "prepublish": "typings install && npm run build-lib"
   },
   "repository": {
@@ -28,7 +28,7 @@
     "iot"
   ],
   "author": "kii-corp",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "devDependencies": {
     "chai": "^3.5.0",
     "del": "^2.2.0",
