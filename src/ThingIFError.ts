@@ -1,6 +1,6 @@
-///<reference path="../typings/modules/make-error-cause/index.d.ts"/>
+/// <reference path="../typings/modules/make-error-cause/index.d.ts" />
 import * as KiiUtil from './internal/KiiUtilities'
-import * as makeError from 'make-error-cause'
+import * as makeErrorCause from 'make-error-cause'
 
 /** Represents types of error
 <ul>
@@ -22,7 +22,7 @@ export const Errors = {
  *  If it is not one of defined error, then it is unknown error.
  * @prop {string} message Message of ThingIFError.
 */
-export class ThingIFError extends makeError.BaseError {
+export class ThingIFError extends makeErrorCause.BaseError {
     public name: string;
     public message: string;
     constructor(name: string, message:string, original?: Error) {
