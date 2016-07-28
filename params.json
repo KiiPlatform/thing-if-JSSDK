@@ -1,0 +1,6 @@
+{
+  "name": "thing-if-jssdk",
+  "tagline": "",
+  "body": "Javascript SDK for Kii Thing Interaction Framework.\r\n\r\n### Resources\r\n- [API Documentation](./api-doc/index.html)\r\n- [Typescript usage test](https://github.com/satoshikumano/thing-if-js-usage-test/blob/master/thing-if-test.ts)\r\n- Browser sample(coming soon)\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
