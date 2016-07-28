@@ -3,3 +3,5 @@ dist
 typings/
 built
 .vscode/
+.DS_Store
+lib/
