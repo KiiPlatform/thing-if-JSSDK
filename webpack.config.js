@@ -25,9 +25,9 @@ var config = {
     umdNamedDefine: true
   },
   externals: {
-    "es6-promise": "es6-promise",
+    "es6-promise": "es6Promise",
     "popsicle": "popsicle",
-    "make-error-cause": "make-error-cause"
+    "make-error-cause": "makeErrorCause"
   },
   module: {
     loaders: [

@@ -1,6 +1,7 @@
 Javascript SDK for Kii Thing Interaction Framework.
 
 ## Dependecies
+- [make-error-cause](https://github.com/blakeembrey/make-error-cause).
 - [es6-promise](https://github.com/stefanpenner/es6-promise).
 - [popsicle](https://github.com/blakeembrey/popsicle).
 
@@ -46,11 +47,9 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
 You must include the dependencies by yourself. Add them before you import thing-if-js library. Like this:
 
 ```
+<script src="https://wzrd.in/standalone/make-error-cause@latest"></script>
 <script src="https://wzrd.in/standalone/popsicle@6.2.1"></script>
-<script src="https://wzrd.in/standalone/es6-promise@3.2.1"></script>
-<script>
-    this["es6-promise"]=this.es6Promise;
-</script>
+<script src="https://wzrd.in/standalone/es6-promise@latest"></script>
 <script src="path/to/thing-if-sdk.js"></script>
 
 ```
