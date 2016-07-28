@@ -4,7 +4,6 @@ import request from './Request';
 import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
-import {MqttInstallationResult} from '../MqttInstallationResult'
 import {Response} from './Response'
 import BaseOp from './BaseOp'
 import * as KiiUtil from '../internal/KiiUtilities'
@@ -64,32 +63,6 @@ export default class CommandOps extends BaseOp {
                 let body = res.body
                 let installationID = (<any>body).installationID;
                 resolve(installationID);
-            }).catch((err)=>{
-                reject(err);
-            })
-        });
-    }
-
-    installMqtt(development: boolean): Promise<MqttInstallationResult> {
-        return new Promise<MqttInstallationResult>((resolve, reject) => {
-            if (!development){
-                reject(new ThingIFError(Errors.ArgumentError, "development is null"));
-                return;
-            }else if(!KiiUtil.isBoolean(development)){
-                reject(new ThingIFError(Errors.ArgumentError, "development is not boolean"));
-                return;
-            }
-
-            let requestBody = {
-                deviceType: "MQTT",
-                development: development
-            };
-            this.installPush(requestBody).then((res)=>{
-                let body = res.body;
-                    let result = new MqttInstallationResult(
-                        (<any>body).installationID,
-                        (<any>body).installationRegistrationID);
-                    resolve(result);
             }).catch((err)=>{
                 reject(err);
             })
