@@ -260,8 +260,8 @@ export class ServerCodeTriggerRequest{
      * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
      */
     constructor(
-        serverCode?: ServerCode,
-        predicate?: Predicate
+        serverCode: ServerCode,
+        predicate: Predicate
     ) {
         this.serverCode = serverCode;
         this.predicate = predicate;
