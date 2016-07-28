@@ -14,3 +14,9 @@ test:
    # build sdk
     - gulp
     - cp ./dist/* $CIRCLE_ARTIFACTS/
+deployment:
+  npm:
+    branch: master
+    commands:
+      - npm publish ./
+      - bash ./circleci_scripts/release_doc.sh
