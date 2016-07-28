@@ -70,7 +70,9 @@ describe('Test ThingOps#getVendorThingID', function () {
             expect(err).not.be.null;
             expect(err.status).to.equal(404);
             expect(err.name).to.equal(Errors.HttpError);
-            expect(err.body).to.deep.equal(errResponse);
+            expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+            expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+            expect(err.body.message).to.be.equal(errResponse.message);
             done();
         }).catch((err: Error)=>{
             done(err);
@@ -167,7 +169,9 @@ describe('Test ThingOps#updateVendorThingID', function () {
                 expect(err).not.be.null;
                 expect(err.status).to.equal(404);
                 expect(err.name).to.equal(Errors.HttpError);
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 done();
             }).catch((err: Error)=>{
                 done(err);

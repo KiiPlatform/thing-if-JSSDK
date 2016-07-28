@@ -324,7 +324,9 @@ describe('Test TriggerOps', function () {
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(400);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -539,7 +541,9 @@ describe('Test TriggerOps', function () {
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(400);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -790,7 +794,9 @@ describe('Test TriggerOps', function () {
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(400);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -1038,7 +1044,9 @@ describe('Test TriggerOps', function () {
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(400);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -1195,7 +1203,9 @@ describe('Test TriggerOps', function () {
             triggerOps.enableTrigger(expectedTriggerID, true).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(404);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -1277,7 +1287,9 @@ describe('Test TriggerOps', function () {
             triggerOps.deleteTrigger(expectedTriggerID).then((deletedTriggerID:string)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(404);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -1339,7 +1351,9 @@ describe('Test TriggerOps', function () {
             triggerOps.getTrigger(expectedTriggerID).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(404);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -1580,7 +1594,9 @@ describe('Test TriggerOps', function () {
             triggerOps.listTriggers(new ListQueryOptions(10)).then((result:QueryResult<Trigger>)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(401);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();
@@ -1765,7 +1781,9 @@ describe('Test TriggerOps', function () {
             triggerOps.listServerCodeResults(expectedTriggerID, new ListQueryOptions(10)).then((result:QueryResult<ServerCodeResult>)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
-                expect(err.body).to.deep.equal(errResponse);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
                 expect(err.status).to.equal(401);
                 expect(err.name).to.equal(Errors.HttpError);
                 done();

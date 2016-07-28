@@ -16,7 +16,6 @@
     "large-test": "npm run build-test; mocha 'built/test/large/*.js' --timeout 20000",
     "build-lib": "tsc; cp -fr built lib",
     "prepublish": "typings install && npm run build-lib"
-
   },
   "repository": {
     "type": "git",
@@ -43,13 +42,14 @@
     "simple-mock": "^0.7.0",
     "ts-loader": "^0.8.2",
     "typescript": "^1.8.10",
-    "typings": "^1.3.1",
+    "typings": "^1.3.2",
     "webpack": "^1.13.1",
     "webpack-stream": "^3.2.0",
     "yargs": "^4.7.1"
   },
   "dependencies": {
     "es6-promise": "^3.2.1",
+    "make-error-cause": "^1.0.1",
     "popsicle": "^6.2.1"
   }
 }

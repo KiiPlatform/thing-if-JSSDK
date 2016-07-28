@@ -53,7 +53,7 @@ describe("Test StateOps", function() {
             })
 
             it("handle 404 response", function (done) {
-                var errRespone = {
+                var errResponse = {
                     "errorCode": "TARGET_NOT_FOUND",
                     "message": `Target thing:${targetID.id} not found`
                 }
@@ -61,13 +61,15 @@ describe("Test StateOps", function() {
                     .get(path)
                     .reply(
                         404,
-                        errRespone,
+                        errResponse,
                         {"Content-Type": "application/json"}
                     );
                 stateOp.getState().then((state)=>{
                     done("should fail");
                 }).catch((err:HttpRequestError)=>{
-                    expect(err.body).to.deep.equal(errRespone);
+                    expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                    expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                    expect(err.body.message).to.be.equal(errResponse.message);
                     expect(err.status).to.equal(404);
                     expect(err.name).to.equal(Errors.HttpError);
                     done();
@@ -79,4 +81,3 @@ describe("Test StateOps", function() {
     })
 
 })
-
