@@ -5,8 +5,12 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "target": "es5"
+        "outDir": "built",
+        "target": "es5",
+        "declaration": true
     },
     "files": [
+        "src/ThingIFSDK.ts",
+        "typings/globals/node/index.d.ts"
     ]
 }

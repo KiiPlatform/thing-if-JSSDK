@@ -1,28 +1,35 @@
 var gulp = require("gulp");
-var ts = require("gulp-typescript");
 var del = require('del');
-var browserify = require("browserify");
-var source = require('vinyl-source-stream');
-var tsify = require("tsify");
+var webpack = require('webpack-stream');
+var webpackConfig = require('./webpack.config.js');
+var shell = require('gulp-shell');
+var ts = require("gulp-typescript");
+var tsProject = ts.createProject("./tsconfig.json");
 
-
-var tsProject = ts.createProject("tsconfig.json");
-
+console.log(tsProject);
 // clean dist folder
 gulp.task("clean", function(){
   return del([
     'dist/*'
   ])
 });
+
+gulp.task("doc",['build-for-doc'],  shell.task([
+	'rm -fr jsdoc/html',
+	'jsdoc built-for-doc -c jsdoc/conf.json -R README.md'
+]))
+gulp.task("build-for-doc", function() {
+  	return gulp.src(['./src/*.ts', "./typings/globals/node/index.d.ts", "!./src/ThingIFSDK.ts"])
+		.pipe(ts({
+			noImplicitAny: true,
+			module: "commonjs",
+			target: "es6",
+			removeComments: false,
+		}))
+		.js.pipe(gulp.dest('built-for-doc'));
+})
 gulp.task("default", ['clean'], function () {
-  return browserify({
-      basedir: '.',
-      debug: true,
-      extensions: '*.ts',
-      cache: {},
-      packageCache: {}
-  })
-  .plugin(tsify)
-  .bundle()
-  .pipe(source('thing-if-sdk.js'))
-  .pipe(gulp.dest("dist"));});
+  return gulp.src(['./src/*.ts'])
+      .pipe(webpack(webpackConfig))
+      .pipe(gulp.dest('./dist'));
+});

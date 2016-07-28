@@ -1,0 +1,22 @@
+dependencies:
+  post:
+    # install typings of dependencies
+    - typings install
+test:
+  pre:
+    # generate typedoc
+    - gulp doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
+
+    # uglify library
+    - gulp --u
+    - cp ./dist/* $CIRCLE_ARTIFACTS/
+
+   # build sdk
+    - gulp
+    - cp ./dist/* $CIRCLE_ARTIFACTS/
+deployment:
+  npm:
+    branch: master
+    commands:
+      - npm publish ./
+      - bash ./circleci_scripts/release_doc.sh
