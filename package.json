@@ -28,7 +28,7 @@
     "iot"
   ],
   "author": "kii-corp",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "devDependencies": {
     "chai": "^3.5.0",
     "del": "^2.2.0",
