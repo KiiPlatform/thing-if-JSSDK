@@ -33,6 +33,8 @@ describe("Small Test onboarding APIs of APIAuthor", function() {
                     "jzgbQibmANOzaLLFkmnNCICbgHFYNyUBVlMREKHDbaHvmmWcmAGQlVYuoxQZAsQG",
                     8883,
                     1883,
+                    12470,
+                    12473,
                     2147483647)
                 );
 
@@ -124,6 +126,8 @@ describe("Small Test onboarding APIs of APIAuthor", function() {
                     "jzgbQibmANOzaLLFkmnNCICbgHFYNyUBVlMREKHDbaHvmmWcmAGQlVYuoxQZAsQG",
                     8883,
                     1883,
+                    12470,
+                    12473,
                     2147483647)
                 );
 

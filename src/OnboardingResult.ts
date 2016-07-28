@@ -39,15 +39,6 @@ export class OnboardingResult {
  * @prop {number} ttl The Amount of time in seconds that specifies how long the mqttTopic will be valid, after that the client needs to request new MQTT endpoint info.
  */
 export class MqttEndpoint {
-    public installationID: string;
-    public host: string;
-    public mqttTopic: string;
-    public username: string;
-    public password: string;
-    public portSSL: number;
-    public portTCP: number;
-    public ttl: number;
-
     /**
      * Create a MqttEndpoint.
      * @constructor
@@ -58,25 +49,20 @@ export class MqttEndpoint {
      * @param {string} password Password to use for connecting to the MQTT broker.
      * @param {number} portSSL Port to connect using SSL/TLS.
      * @param {number} portTCP Port to connect using plain TCP.
+     * @param {number} portWS Port to connect using Web Socket.
+     * @param {number} portWSS Port to connect using Web Socket Secure connection.
      * @param {number} ttl The amount of time in seconds that specifies how long the mqttTopic will be valid, after that the client needs to request new MQTT endpoint info.
      */
     constructor(
-        installationID: string,
-        host: string,
-        mqttTopic: string,
-        username: string,
-        password: string,
-        portSSL: number,
-        portTCP: number,
-        ttl: number
-    ) {
-        this.installationID = installationID;
-        this.host = host;
-        this.mqttTopic = mqttTopic;
-        this.username = username;
-        this.password = password;
-        this.portSSL = portSSL;
-        this.portTCP = portTCP;
-        this.ttl = ttl;
-    }
+        public installationID: string,
+        public host: string,
+        public mqttTopic: string,
+        public username: string,
+        public password: string,
+        public portSSL: number,
+        public portTCP: number,
+        public portWS: number,
+        public portWSS: number,
+        public ttl: number
+    ) {}
 }
