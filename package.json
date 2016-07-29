@@ -32,6 +32,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.12",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.5.2",
