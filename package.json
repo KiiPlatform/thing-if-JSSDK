@@ -50,6 +50,6 @@
   "dependencies": {
     "es6-promise": "^3.2.1",
     "make-error-cause": "^1.0.1",
-    "popsicle": "^6.2.1"
+    "popsicle": "^8.0.4"
   }
 }
