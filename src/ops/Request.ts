@@ -6,6 +6,7 @@ import {RequestOptions} from '~popsicle/dist/request';
 
 import {Response} from './Response'
 import {HttpRequestError, ThingIFError, Errors} from '../ThingIFError'
+import * as KiiUtil from '../internal/KiiUtilities'
 
 /**
  * Perform an asynchronous HTTP request.
@@ -23,12 +24,18 @@ import {HttpRequestError, ThingIFError, Errors} from '../ThingIFError'
 export default function (options: Object): Promise<Response>{
     return new Promise<Response>((resolve, reject) => {
         popsicle.request(<RequestOptions>options)
+        .use(popsicle.plugins.parse(['json'], false))
         .then(function (res) {
             if (res.statusType() == 2) {
                 var response: Response = new Response(res.status, res.body, res.headers);
                 resolve(response);
             } else {
-                var err: Error = new HttpRequestError(res.status, res.body.message, res.body);
+                var err: Error
+                if(KiiUtil.isObject(res.body)){
+                   err = new HttpRequestError(res.status, res.body.message, res.body);
+                }else{
+                    err = new HttpRequestError(res.status, "", res.body);
+                }
                 reject(err);
             }
         }).catch(function (err) {
