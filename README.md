@@ -1,4 +1,6 @@
+[![npm version](https://badge.fury.io/js/thing-if-sdk.svg)](https://badge.fury.io/js/thing-if-sdk)
 [![CircleCI](https://circleci.com/gh/KiiPlatform/thing-if-JSSDK/tree/master.svg?style=svg)](https://circleci.com/gh/KiiPlatform/thing-if-JSSDK/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/KiiPlatform/thing-if-JSSDK/badge.svg?branch=master)](https://coveralls.io/github/KiiPlatform/thing-if-JSSDK?branch=master)
 
 Javascript SDK for Kii Thing Interaction Framework.
 

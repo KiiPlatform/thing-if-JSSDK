@@ -1,10 +1,7 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/chai/index.d.ts" />
-declare var require: any
-var thingIFSDK = require('../../../dist/thing-if-sdk.js');
-
+import {Site} from '../../src/Site'
 import {expect} from 'chai';
-var Site = thingIFSDK.Site;
 describe('Site', () => {
     describe('#check enum', () => {
         it('value of enum should be correct', () => {
