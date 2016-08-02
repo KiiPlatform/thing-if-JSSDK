@@ -1,4 +1,3 @@
-/// <reference path="../typings/modules/make-error-cause/index.d.ts" />
 import * as KiiUtil from './internal/KiiUtilities'
 import * as makeErrorCause from 'make-error-cause'
 
