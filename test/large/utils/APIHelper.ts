@@ -63,7 +63,9 @@ export class APIHelper {
                     _vendorThingID: vendorThingID,
                     _password: password
                 }
-            }).then((res:any)=>{
+            })
+            .use(request.plugins.parse(['json'], false))
+            .then((res:any)=>{
                 if(res.status == 201) {
                     resolve(new KiiThing(res.body._thingID, res.body._vendorThingID, password, res.body._accessToken));
                 } else {
@@ -88,7 +90,9 @@ export class APIHelper {
                     loginName: loginName,
                     password: password
                 }
-            }).then((res)=>{
+            })
+            .use(request.plugins.parse(['json'], false))
+            .then((res)=>{
                 if(res.status == 201){
                     return request.post(<any>{
                         url: `${this.app.site}/api/oauth2/token`,
@@ -97,7 +101,7 @@ export class APIHelper {
                             username: loginName,
                             password: password
                         }
-                    })
+                    }).use(request.plugins.parse(['json'], false))
                 }else {
                     reject(newError(res));
                 }
@@ -123,7 +127,7 @@ export class APIHelper {
                     headers: {
                         "Authorization": `Bearer ${adminToken}`
                     }
-                });
+                }).use(request.plugins.parse(['json'], false));
             }).then((res)=>{
                 if(res.status == 204) {
                     resolve();
@@ -145,7 +149,7 @@ export class APIHelper {
                     headers: {
                         "Authorization": `Bearer ${adminToken}`
                     }
-                });
+                }).use(request.plugins.parse(['json'], false));
             }).then((res)=>{
                 if(res.status == 204) {
                     resolve();
@@ -178,7 +182,9 @@ export class APIHelper {
                     client_id: TestApp.CLIENT_ID,
                     client_secret: TestApp.CLIENT_SECRET
                 }
-            }).then((res)=>{
+            })
+            .use(request.plugins.parse(['json'], false))
+            .then((res)=>{
                 if(res.status == 200){
                     APIHelper.adminTokenCache[this.app.appID] = res.body.access_token;
                     resolve(res.body.access_token);
@@ -205,7 +211,7 @@ export class APIHelper {
                         "Authorization": `Bearer ${adminToken}`
                     },
                     body: script
-                });
+                }).use(request.plugins.parse(['json'], false));
             }).then((res)=>{
                 return request.put(<any>{
                     url: `${this.kiiCloudBaseUrl}/server-code/versions/current`,
@@ -216,7 +222,7 @@ export class APIHelper {
                         "Authorization": `Bearer ${adminToken}`
                     },
                     body: res.body.versionID
-                });
+                }).use(request.plugins.parse(['json'], false));
             }).then((res)=>{
                 if(res.status == 204){
                     resolve();
@@ -239,7 +245,7 @@ export class APIHelper {
                         "Authorization": `Bearer ${adminToken}`
                     },
                     body: state
-                });
+                }).use(request.plugins.parse(['json'], false));
             }).then((res)=>{
                 if(res.status == 201 || res.status == 204){
                     resolve();
