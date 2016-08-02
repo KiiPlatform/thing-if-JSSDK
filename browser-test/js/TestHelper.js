@@ -21,7 +21,9 @@
                     "client_id": TestApp.ClientID,
                     "client_secret": TestApp.ClientSecret
                 }
-            }).then(function(res) {
+            })
+            .use(popsicle.plugins.parse(['json'], false))
+            .then(function(res) {
                 if (res.status == 200){
                     resolve(res.body.access_token);
                 } else {
@@ -49,7 +51,9 @@
                     "loginName": loginName,
                     "password": password
                 }
-            }).then(function(res) {
+            })
+            .use(popsicle.plugins.parse(['json'], false))
+            .then(function(res) {
                 if(res.status == 201){
                     resolve(res.body);
                 }else {
@@ -76,7 +80,9 @@
                     "_vendorThingID": vendorThingID,
                     "_password": password
                 }
-            }).then(function(res) {
+            })
+            .use(popsicle.plugins.parse(['json'], false))
+            .then(function(res) {
                 if(res.status == 201) {
                     resolve(res.body);
                 } else {
@@ -103,7 +109,7 @@
                         "Authorization": "Bearer " + adminToken
                     },
                     body: script
-                });
+                }).use(popsicle.plugins.parse(['json'], false));
             }).then(function(res) {
                 return popsicle.put({
                     url: `${this.kiiCloudBaseUrl}/server-code/versions/current`,
@@ -114,7 +120,7 @@
                         "Authorization": "Bearer " + adminToken
                     },
                     body: res.body.versionID
-                });
+                }).use(popsicle.plugins.parse(['json'], false));
             }).then(function(res) {
                 if(res.status == 204){
                     resolve();
@@ -137,7 +143,7 @@
                         "Authorization": "Bearer " + adminToken
                     },
                     body: state
-                });
+                }).use(popsicle.plugins.parse(['json'], false));
             }).then(function(res) {
                 if(res.status == 201 || res.status == 204){
                     resolve();
