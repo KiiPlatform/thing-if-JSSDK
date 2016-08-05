@@ -135,7 +135,7 @@ export class APIAuthor {
 
     /** Retrieve commands.
      * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
-     * @param {Object} listOpitons Options to retrieve commands.
+     * @param {Object} listOptions Options to retrieve commands.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -152,9 +152,9 @@ export class APIAuthor {
      */
     listCommands(
         target: TypedID,
-        listOpitons?: Options.ListQueryOptions,
+        listOptions?: Options.ListQueryOptions,
         onCompletion?: (err: Error, commands:QueryResult<Command>)=> void): Promise<QueryResult<Command>>{
-        return PromiseWrapper.promise((new CommandOps(this, target)).listCommands(listOpitons), onCompletion);
+        return PromiseWrapper.promise((new CommandOps(this, target)).listCommands(listOptions), onCompletion);
     }
 
     /** Post a new command trigger.
@@ -331,15 +331,15 @@ export class APIAuthor {
      */
     listTriggers(
         target: TypedID,
-        listOpitons?: Options.ListQueryOptions,
+        listOptions?: Options.ListQueryOptions,
         onCompletion?: (err: Error, triggers:QueryResult<Trigger>)=> void): Promise<QueryResult<Trigger>>{
-        return PromiseWrapper.promise((new TriggerOps(this,target)).listTriggers(listOpitons), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).listTriggers(listOptions), onCompletion);
     }
 
     /** Retrieve execution results of server code trigger.
      * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
-     * @param {Object} listOpitons Options to retrieve.
+     * @param {Object} listOptions Options to retrieve.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -357,9 +357,9 @@ export class APIAuthor {
     listServerCodeExecutionResults(
         target: TypedID,
         triggerID: string,
-        listOpitons?: Options.ListQueryOptions,
+        listOptions?: Options.ListQueryOptions,
         onCompletion?: (err: Error, results:QueryResult<ServerCodeResult>)=> void): Promise<QueryResult<ServerCodeResult>>{
-        return PromiseWrapper.promise((new TriggerOps(this,target)).listServerCodeResults(triggerID, listOpitons), onCompletion);
+        return PromiseWrapper.promise((new TriggerOps(this,target)).listServerCodeResults(triggerID, listOptions), onCompletion);
     }
 
     /** Get State of specified target.
