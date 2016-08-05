@@ -92,7 +92,7 @@ export class APIAuthor {
     // }
 
     /** Post a new command.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} command Necessary fields for new command
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
@@ -114,7 +114,7 @@ export class APIAuthor {
     }
 
     /** Retrieve command with specified ID.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} commandID Command ID to retrieve.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
@@ -134,7 +134,7 @@ export class APIAuthor {
     }
 
     /** Retrieve commands.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} listOptions Options to retrieve commands.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
@@ -158,7 +158,7 @@ export class APIAuthor {
     }
 
     /** Post a new command trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} requestObject Necessary fields for new command trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
@@ -181,7 +181,7 @@ export class APIAuthor {
     }
 
     /** Post a new servercode trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} requestObject Necessary fields for new servercode trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
@@ -205,7 +205,7 @@ export class APIAuthor {
     }
 
     /** Retrieve trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
@@ -225,7 +225,7 @@ export class APIAuthor {
     }
 
     /** Update a command trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
      * @param {Object} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
@@ -248,7 +248,7 @@ export class APIAuthor {
     }
 
     /** Update a servercode trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
      * @param {Object} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
@@ -272,7 +272,7 @@ export class APIAuthor {
     }
 
     /** Enable/Disable a specified trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
      * @param {boolean} enable True to enable, otherwise, disable the trigger.
      * @param {onCompletion} [function] Callback function when completed
@@ -294,7 +294,7 @@ export class APIAuthor {
     }
 
     /** Delete a specified trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
@@ -314,7 +314,7 @@ export class APIAuthor {
     }
 
     /** Retrive triggers.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -337,7 +337,7 @@ export class APIAuthor {
     }
 
     /** Retrieve execution results of server code trigger.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
      * @param {Object} listOptions Options to retrieve.
      * @param {onCompletion} [function] Callback function when completed
@@ -363,7 +363,7 @@ export class APIAuthor {
     }
 
     /** Get State of specified target.
-     * @param {TypedID} tareget TypedID of target, only Types.THING is supported now.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
