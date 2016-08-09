@@ -351,7 +351,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
-     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}]);
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate);
      * api.patchCommandTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -387,7 +389,9 @@ export class ThingIFAPI {
      * @return {Promise} promise object
      * @example
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode);
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * api.patchServerCodeTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){

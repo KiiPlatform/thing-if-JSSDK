@@ -164,9 +164,10 @@ export class APIAuthor {
      * @return {Promise} promise object
      * @example
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate);
+     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate, issuerID);
      * author.postCommandTrigger(targetID, request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -232,7 +233,10 @@ export class APIAuthor {
      * @return {Promise} promise object
      * @example
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
-     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}]);
+     * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
      * author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -256,7 +260,9 @@ export class APIAuthor {
      * @example
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode);
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * author.patchServerCodeTrigger(targetID, "Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
