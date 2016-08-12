@@ -341,7 +341,7 @@
 
     
 
-    <h4 class="name" id="deleteTrigger"><span class="type-signature"></span>deleteTrigger<span class="signature">(tareget, triggerID, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="deleteTrigger"><span class="type-signature"></span>deleteTrigger<span class="signature">(target, triggerID, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -386,7 +386,7 @@
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -573,7 +573,7 @@ author.deleteTrigger(targetID, "Trigger ID").then(function(deletedTriggerID) {
 
     
 
-    <h4 class="name" id="enableTrigger"><span class="type-signature"></span>enableTrigger<span class="signature">(tareget, triggerID, enable, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="enableTrigger"><span class="type-signature"></span>enableTrigger<span class="signature">(target, triggerID, enable, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -618,7 +618,7 @@ author.deleteTrigger(targetID, "Trigger ID").then(function(deletedTriggerID) {
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -836,7 +836,7 @@ author.enableTrigger(targetID, "Trigger ID", true).then(function(trigger) {
 
     
 
-    <h4 class="name" id="getCommand"><span class="type-signature"></span>getCommand<span class="signature">(tareget, commandID, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="getCommand"><span class="type-signature"></span>getCommand<span class="signature">(target, commandID, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -881,7 +881,7 @@ author.enableTrigger(targetID, "Trigger ID", true).then(function(trigger) {
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -1068,7 +1068,7 @@ author.getCommand(targetID, "CommandID").then(function(command) {
 
     
 
-    <h4 class="name" id="getState"><span class="type-signature"></span>getState<span class="signature">(tareget, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="getState"><span class="type-signature"></span>getState<span class="signature">(target, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -1113,7 +1113,7 @@ author.getCommand(targetID, "CommandID").then(function(command) {
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -1269,7 +1269,7 @@ author.getState(targetID).then(function(state) {
 
     
 
-    <h4 class="name" id="getTrigger"><span class="type-signature"></span>getTrigger<span class="signature">(tareget, triggerID, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="getTrigger"><span class="type-signature"></span>getTrigger<span class="signature">(target, triggerID, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -1314,7 +1314,7 @@ author.getState(targetID).then(function(state) {
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -1934,7 +1934,7 @@ receive the notification and check the result of Command fired by Application or
 
     
 
-    <h4 class="name" id="listCommands"><span class="type-signature"></span>listCommands<span class="signature">(tareget, listOpitons, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="listCommands"><span class="type-signature"></span>listCommands<span class="signature">(target, listOptions, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -1979,7 +1979,7 @@ receive the notification and check the result of Command fired by Application or
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -2010,7 +2010,7 @@ receive the notification and check the result of Command fired by Application or
 
         <tr>
             
-                <td class="name"><code>listOpitons</code></td>
+                <td class="name"><code>listOptions</code></td>
             
 
             <td class="type">
@@ -2170,7 +2170,7 @@ author.listCommands(targetID).then(function(queryResult) {
 
     
 
-    <h4 class="name" id="listServerCodeExecutionResults"><span class="type-signature"></span>listServerCodeExecutionResults<span class="signature">(tareget, triggerID, listOpitons, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="listServerCodeExecutionResults"><span class="type-signature"></span>listServerCodeExecutionResults<span class="signature">(target, triggerID, listOptions, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -2215,7 +2215,7 @@ author.listCommands(targetID).then(function(queryResult) {
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -2277,7 +2277,7 @@ author.listCommands(targetID).then(function(queryResult) {
 
         <tr>
             
-                <td class="name"><code>listOpitons</code></td>
+                <td class="name"><code>listOptions</code></td>
             
 
             <td class="type">
@@ -2437,7 +2437,7 @@ author.listServerCodeExecutionResults(targetID, "Trigger ID").then(function(quer
 
     
 
-    <h4 class="name" id="listTriggers"><span class="type-signature"></span>listTriggers<span class="signature">(tareget, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="listTriggers"><span class="type-signature"></span>listTriggers<span class="signature">(target, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -2482,7 +2482,7 @@ author.listServerCodeExecutionResults(targetID, "Trigger ID").then(function(quer
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -3040,7 +3040,7 @@ author.onboardWithVendorThingID(request).then(function(result){
 
     
 
-    <h4 class="name" id="patchCommandTrigger"><span class="type-signature"></span>patchCommandTrigger<span class="signature">(tareget, triggerID, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="patchCommandTrigger"><span class="type-signature"></span>patchCommandTrigger<span class="signature">(target, triggerID, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -3085,7 +3085,7 @@ author.onboardWithVendorThingID(request).then(function(result){
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -3290,7 +3290,10 @@ author.onboardWithVendorThingID(request).then(function(result){
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
-var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}]);
+var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
+var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
 author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigger) {
   // Do something
 }).catch(function(err){
@@ -3304,7 +3307,7 @@ author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigge
 
     
 
-    <h4 class="name" id="patchServerCodeTrigger"><span class="type-signature"></span>patchServerCodeTrigger<span class="signature">(tareget, triggerID, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="patchServerCodeTrigger"><span class="type-signature"></span>patchServerCodeTrigger<span class="signature">(target, triggerID, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -3349,7 +3352,7 @@ author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigge
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -3555,7 +3558,9 @@ author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigge
     
     <pre class="prettyprint"><code>var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
 var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-var request = new ThingIF.ServerCodeTriggerRequest(serverCode);
+var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
 author.patchServerCodeTrigger(targetID, "Trigger ID", request).then(function(trigger) {
   // Do something
 }).catch(function(err){
@@ -3569,7 +3574,7 @@ author.patchServerCodeTrigger(targetID, "Trigger ID", request).then(function(tri
 
     
 
-    <h4 class="name" id="postCommandTrigger"><span class="type-signature"></span>postCommandTrigger<span class="signature">(tareget, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="postCommandTrigger"><span class="type-signature"></span>postCommandTrigger<span class="signature">(target, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -3614,7 +3619,7 @@ author.patchServerCodeTrigger(targetID, "Trigger ID", request).then(function(tri
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -3788,9 +3793,10 @@ author.patchServerCodeTrigger(targetID, "Trigger ID", request).then(function(tri
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
 var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
 var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate);
+var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate, issuerID);
 author.postCommandTrigger(targetID, request).then(function(trigger) {
   // Do something
 }).catch(function(err){
@@ -3804,7 +3810,7 @@ author.postCommandTrigger(targetID, request).then(function(trigger) {
 
     
 
-    <h4 class="name" id="postNewCommand"><span class="type-signature"></span>postNewCommand<span class="signature">(tareget, command, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="postNewCommand"><span class="type-signature"></span>postNewCommand<span class="signature">(target, command, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -3849,7 +3855,7 @@ author.postCommandTrigger(targetID, request).then(function(trigger) {
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -4038,7 +4044,7 @@ author.postNewCommand(targetID, request).then(function(command) {
 
     
 
-    <h4 class="name" id="postServerCodeTrigger"><span class="type-signature"></span>postServerCodeTrigger<span class="signature">(tareget, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="postServerCodeTrigger"><span class="type-signature"></span>postServerCodeTrigger<span class="signature">(target, requestObject, function<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -4083,7 +4089,7 @@ author.postNewCommand(targetID, request).then(function(command) {
 
         <tr>
             
-                <td class="name"><code>tareget</code></td>
+                <td class="name"><code>target</code></td>
             
 
             <td class="type">
@@ -4749,7 +4755,7 @@ author.postServerCodeTrigger(targetID, request).then(function(trigger) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Aug 02 2016 07:43:16 GMT+0000 (UTC) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Aug 12 2016 05:49:12 GMT+0000 (UTC) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
