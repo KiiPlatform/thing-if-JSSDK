@@ -208,7 +208,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
-     * @param {Object} listOpitons Options to retrieve commands.
+     * @param {Object} listOptions Options to retrieve commands.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -223,14 +223,14 @@ export class ThingIFAPI {
      * });
      */
     listCommands(
-        listOpitons?: Options.ListQueryOptions,
+        listOptions?: Options.ListQueryOptions,
         onCompletion?: (err: Error, commands:QueryResult<Command>)=> void): Promise<QueryResult<Command>>{
         let orgPromise = new Promise<QueryResult<Command>>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
-            (new CommandOps(this._au, this._target)).listCommands(listOpitons).then((result)=>{
+            (new CommandOps(this._au, this._target)).listCommands(listOptions).then((result)=>{
                 resolve(result);
             }).catch((err)=>{
                 reject(err);
@@ -351,7 +351,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
-     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}]);
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate);
      * api.patchCommandTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -387,7 +389,9 @@ export class ThingIFAPI {
      * @return {Promise} promise object
      * @example
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode);
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
+     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * api.patchServerCodeTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -497,14 +501,14 @@ export class ThingIFAPI {
      * });
      */
     listTriggers(
-        listOpitons?: Options.ListQueryOptions,
+        listOptions?: Options.ListQueryOptions,
         onCompletion?: (err: Error, triggers:QueryResult<Trigger>)=> void): Promise<QueryResult<Trigger>>{
         let orgPromise = new Promise<QueryResult<Trigger>>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
-            (new TriggerOps(this._au, this._target)).listTriggers(listOpitons)
+            (new TriggerOps(this._au, this._target)).listTriggers(listOptions)
             .then((triggers)=>{
                 resolve(triggers);
             }).catch((err)=>{
@@ -519,7 +523,7 @@ export class ThingIFAPI {
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
      * @param {string} triggerID ID of trigger.
-     * @param {Object} listOpitons Options to retrieve.
+     * @param {Object} listOptions Options to retrieve.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -535,14 +539,14 @@ export class ThingIFAPI {
      */
     listServerCodeExecutionResults(
         triggerID: string,
-        listOpitons?: Options.ListQueryOptions,
+        listOptions?: Options.ListQueryOptions,
         onCompletion?: (err: Error, results:QueryResult<ServerCodeResult>)=> void): Promise<QueryResult<ServerCodeResult>>{
         let orgPromise = new Promise<QueryResult<ServerCodeResult>>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
-            (new TriggerOps(this._au, this._target)).listServerCodeResults(triggerID, listOpitons)
+            (new TriggerOps(this._au, this._target)).listServerCodeResults(triggerID, listOptions)
             .then((results)=>{
                 resolve(results);
             }).catch((err)=>{
