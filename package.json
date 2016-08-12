@@ -41,7 +41,7 @@
     "istanbul": "^0.4.4",
     "jsdoc": "^3.4.0",
     "minami": "^1.1.1",
-    "mocha": "^3.0.0",
+    "mocha": "^3.0.2",
     "nock": "^8.0.0",
     "simple-mock": "^0.7.0",
     "ts-loader": "^0.8.2",
