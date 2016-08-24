@@ -2,6 +2,8 @@
 import {Predicate} from './Predicate'
 import {ServerCode} from './ServerCode'
 import {TypedID} from './TypedID'
+import {DataGroupingInterval} from './DataGroupingInterval'
+import {LayoutPosition} from './LayoutPosition'
 
 /**
  * Represents the request for onboarding with vendorThingID with owner.
@@ -26,13 +28,20 @@ export class OnboardWithVendorThingIDRequest {
      * @param {TypedID} [ownerID] ID of the owner. UserID or GroupID.
      * @param {string} [thingType] Type of the thing. This is optional and ignored if Thing is already registered.
      * @param {Object} [thingProperties] Thing properties includes predefined and custom properties.
+     * @param {string} [firmwareVersion] Firmware version of thing.
+     * @param {string} [dataGroupingInterval] Internal used to group state history of thing. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
+     * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(
         vendorThingID: string,
         thingPassword: string,
         ownerID?: TypedID,
         thingType?: string,
-        thingProperties?: Object) {
+        thingProperties?: Object,
+        firmwareVersion?:string,
+        dataGroupingInterval?:string,
+        layoutPosition?: string
+        ) {
             this.vendorThingID = vendorThingID;
             this.thingPassword = thingPassword;
             if (!!ownerID) {
@@ -40,6 +49,7 @@ export class OnboardWithVendorThingIDRequest {
             }
             this.thingType = thingType;
             this.thingProperties = thingProperties;
+            //TODO: improve me
         }
 }
 
@@ -60,11 +70,15 @@ export class OnboardWithThingIDRequest {
      * @param {string} thingID ID of the thing given by IoT Cloud.
      * @param {string} thingPassword Password of the thing.
      * @param {TypedID} [ownerID] ID of the owner. UserID or GroupID.
+     * @param {string} [dataGroupingInterval] Internal used to group state history of thing. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
+     * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(
         thingID: string,
         thingPassword: string,
-        ownerID?: TypedID) {
+        ownerID?: TypedID,
+        dataGroupingInterval?:string,
+        layoutPosition?: string) {
             this.thingID = thingID;
             this.thingPassword = thingPassword;
             if (!!ownerID) {
