@@ -228,19 +228,22 @@ export class CommandTriggerRequest{
      * @param {Object[]} actions Array of actions of the command.
      * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
      * @param {TypedID} issuerID ID of the command issuer.
+     * @param {TypedID} target target of trigger.
      */
     constructor(
         schema: string,
         schemaVersion: number,
         actions?: Array<Object>,
         predicate?: Predicate,
-        issuerID?: TypedID
+        issuerID?: TypedID,
+        target?: TypedID
     ) {
         this.schema = schema;
         this.schemaVersion = schemaVersion;
         this.actions = actions;
         this.predicate = predicate;
         this.issuerID = issuerID;
+        //TODO: improve me
     }
 }
 
