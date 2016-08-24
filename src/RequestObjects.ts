@@ -12,6 +12,9 @@ import {LayoutPosition} from './LayoutPosition'
  * @prop {string} owner ID of the owner. UserID or GroupID.
  * @prop {string} thingType Type of the thing. This is optional and ignored if Thing is already registered.
  * @prop {Object} thingProperties Thing properties includes predefined and custom properties.
+ * @prop {string} firmwareVersion Firmware version of thing.
+ * @prop {string} dataGroupingInterval Internal used to group state history of thing.
+ * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithVendorThingIDRequest {
     public vendorThingID: string;
@@ -19,6 +22,9 @@ export class OnboardWithVendorThingIDRequest {
     public owner: string;
     public thingType: string;
     public thingProperties: Object;
+    public firmwareVersion: string;
+    public dataGroupingInterval: string;
+    public layoutPosition: string;
 
     /**
      * Create a OnboardWithVendorThingIDRequest.
@@ -49,7 +55,9 @@ export class OnboardWithVendorThingIDRequest {
             }
             this.thingType = thingType;
             this.thingProperties = thingProperties;
-            //TODO: improve me
+            this.firmwareVersion = firmwareVersion;
+            this.dataGroupingInterval = dataGroupingInterval;
+            this.layoutPosition = layoutPosition;
         }
 }
 
@@ -58,12 +66,15 @@ export class OnboardWithVendorThingIDRequest {
  * @prop {string} thingID ID of the thing given by IoT Cloud.
  * @prop {string} thingPassword Password of the thing.
  * @prop {string} owner ID of the owner. UserID or GroupID.
+ * @prop {string} dataGroupingInterval Internal used to group state history of thing.
+ * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithThingIDRequest {
     public thingID: string;
     public thingPassword: string;
     public owner: string;
-
+    public dataGroupingInterval: string;
+    public layoutPosition: string;
     /**
      * Create a OnboardWithThingIDRequest.
      * @constructor
@@ -84,6 +95,8 @@ export class OnboardWithThingIDRequest {
             if (!!ownerID) {
                 this.owner = ownerID.toString();
             }
+            this.dataGroupingInterval = dataGroupingInterval;
+            this.layoutPosition = layoutPosition;
         }
 }
 
