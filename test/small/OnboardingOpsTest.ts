@@ -28,7 +28,7 @@ let owner = new TypedID(Types.User, "userid-01234");
 let au = new APIAuthor(ownerToken, testApp.app);
 let onboardingOps = new OnboardingOps(au);
 
-describe.only('Test OnboardingOps', function () {
+describe('Test OnboardingOps', function () {
 
     let path = `/thing-if/apps/${testApp.appID}/onboardings`;
     let responseBody = {
