@@ -57,4 +57,22 @@ describe("Test KiiUtilities:", function() {
             expect(KiiUtil.isObject(true)).to.be.false;
         })
     })
+
+    describe("test KiiUtilities#isValueOfObject", function() {
+        let obj = {
+                key1: "value1",
+                key2: "value2",
+                key3: 234
+        }
+
+        it("should return true, when value is one of values of the object", function() {
+            expect(KiiUtil.isValueOfObject("value1", obj)).to.be.true;
+            expect(KiiUtil.isValueOfObject("value2", obj)).to.be.true;
+            expect(KiiUtil.isValueOfObject(234, obj)).to.be.true;
+
+        })
+        it("should return false, when value is not one of values of the object", function(){
+            expect(KiiUtil.isValueOfObject("value4", obj)).to.be.false;
+        })
+    })
 })
