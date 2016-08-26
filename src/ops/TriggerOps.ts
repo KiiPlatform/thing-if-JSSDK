@@ -47,8 +47,13 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
                 return;
             }
+
+            var commandTarget = this.target;
+            if (requestObject.commandTarget) {
+                commandTarget = requestObject.commandTarget
+            }
             var command = new Command(
-                this.target,
+                commandTarget,
                 requestObject.issuerID,
                 requestObject.schema,
                 requestObject.schemaVersion,
