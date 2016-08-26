@@ -158,8 +158,12 @@ export class APIAuthor {
     }
 
     /** Post a new command trigger.
+     * When condition described by predicate is met, a registered command sends to thing related to target.
+     * `target` property and commandTarget in requestObject must belong to same owner.
+     *
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} requestObject Necessary fields for new command trigger.
+     *  If commandTarget property is not provided, `target` parameter is used as target of the command.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
