@@ -64,7 +64,7 @@ export default class TriggerOps extends BaseOp {
                 command: command.toJson()
             }
             this.postTrigger(resuestBody).then((res:Response)=>{
-                var command = new Command(this.target, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
+                var command = new Command(commandTarget, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
                 var trigger = new Trigger(requestObject.predicate, command, null);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
