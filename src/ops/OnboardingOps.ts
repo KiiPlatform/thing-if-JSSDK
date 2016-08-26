@@ -9,6 +9,8 @@ import {OnboardingResult} from '../OnboardingResult'
 import {MqttEndpoint} from '../OnboardingResult'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import * as KiiUtil from '../internal/KiiUtilities'
+import {DataGroupingInterval} from '../DataGroupingInterval'
+import {LayoutPosition} from '../LayoutPosition'
 
 import BaseOp from './BaseOp'
 export default class OnboardingOps extends BaseOp {
@@ -35,6 +37,33 @@ export default class OnboardingOps extends BaseOp {
             if (!onboardRequest.owner) {
                 reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
                 return;
+            }
+            if (onboardRequest.dataGroupingInterval){
+                var dataGroupingInterval = onboardRequest.dataGroupingInterval;
+                if(!KiiUtil.isString(dataGroupingInterval)){
+                    reject(new ThingIFError(Errors.ArgumentError, "dataGroupingInterval is not string"));
+                    return;
+                }else{
+                    if(!KiiUtil.isValueOfObject(dataGroupingInterval, DataGroupingInterval)){
+                        reject(new ThingIFError(Errors.ArgumentError,
+                            "dataGroupingInterval is invalid, should equal to one of values of DataGroupingInterval"));
+                        return;
+                    }
+                }
+            }
+            if (onboardRequest.layoutPosition){
+
+                var layoutPosition = onboardRequest.layoutPosition;
+                if(!KiiUtil.isString(layoutPosition)){
+                    reject(new ThingIFError(Errors.ArgumentError, "layoutPosition is not string"));
+                    return;
+                }else{
+                    if(!KiiUtil.isValueOfObject(layoutPosition, LayoutPosition)){
+                        reject(new ThingIFError(Errors.ArgumentError,
+                            "layoutPosition is invalid, should equal to one of values of LayoutPosition"));
+                        return;
+                    }
+                }
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithThingIDByOwner+json",
@@ -66,6 +95,52 @@ export default class OnboardingOps extends BaseOp {
             if (!onboardRequest.owner) {
                 reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
                 return;
+            }
+            if (onboardRequest.thingType){
+                if(!KiiUtil.isString(onboardRequest.thingType)){
+                    reject(new ThingIFError(Errors.ArgumentError, "thingType is not string"));
+                    return;
+                }
+            }
+            if (onboardRequest.thingProperties){
+                if(!KiiUtil.isObject(onboardRequest.thingProperties)){
+                    reject(new ThingIFError(Errors.ArgumentError, "thingProperties is not object"));
+                    return;
+                }
+            }
+            if (onboardRequest.firmwareVersion){
+                var firmwareVersion = onboardRequest.firmwareVersion;
+                if(!KiiUtil.isString(firmwareVersion)){
+                    reject(new ThingIFError(Errors.ArgumentError, "firmwareVersion is not string"));
+                    return;
+                }
+            }
+            if (onboardRequest.dataGroupingInterval){
+                var dataGroupingInterval = onboardRequest.dataGroupingInterval;
+                if(!KiiUtil.isString(dataGroupingInterval)){
+                    reject(new ThingIFError(Errors.ArgumentError, "dataGroupingInterval is not string"));
+                    return;
+                }else{
+                    if(!KiiUtil.isValueOfObject(dataGroupingInterval, DataGroupingInterval)){
+                        reject(new ThingIFError(Errors.ArgumentError,
+                            "dataGroupingInterval is invalid, should equal to one of values of DataGroupingInterval"));
+                        return;
+                    }
+                }
+            }
+            if (onboardRequest.layoutPosition){
+
+                var layoutPosition = onboardRequest.layoutPosition;
+                if(!KiiUtil.isString(layoutPosition)){
+                    reject(new ThingIFError(Errors.ArgumentError, "layoutPosition is not string"));
+                    return;
+                }else{
+                    if(!KiiUtil.isValueOfObject(layoutPosition, LayoutPosition)){
+                        reject(new ThingIFError(Errors.ArgumentError,
+                            "layoutPosition is invalid, should equal to one of values of LayoutPosition"));
+                        return;
+                    }
+                }
             }
             this.onboard(
                 "application/vnd.kii.OnboardingWithVendorThingIDByOwner+json",

@@ -17,6 +17,15 @@ export function isArray(mayObject: any): boolean {
     return (getType(mayObject) == "[object Array]");
 }
 
+export function isValueOfObject(value: any, obj: Object){
+    for(var key in obj){
+        var objValue = (<any>obj)[key]
+        if(objValue == value){
+            return true
+        }
+    }
+    return false;
+}
 function getType(obj:any): string {
     return Object.prototype.toString.call(obj);
 }
