@@ -55,9 +55,15 @@ export class OnboardWithVendorThingIDRequest {
             }
             this.thingType = thingType;
             this.thingProperties = thingProperties;
-            this.firmwareVersion = firmwareVersion;
-            this.dataGroupingInterval = dataGroupingInterval;
-            this.layoutPosition = layoutPosition;
+            if(!!firmwareVersion){
+                this.firmwareVersion = firmwareVersion;
+            }
+            if(!!dataGroupingInterval){
+                this.dataGroupingInterval = dataGroupingInterval;
+            }
+            if(!!layoutPosition){
+                this.layoutPosition = layoutPosition;
+            }
         }
 }
 
