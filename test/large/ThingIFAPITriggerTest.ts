@@ -3,6 +3,16 @@
 import {expect} from 'chai';
 import {apiHelper, KiiUser, KiiThing} from './utils/APIHelper';
 import {testApp} from './utils/TestApp';
+import {
+    TypedID,
+    Types,
+    CommandTriggerRequest,
+    OnboardWithVendorThingIDRequest,
+    Condition,
+    Equals,
+    StatePredicate,
+    TriggersWhen
+} from '../../src/ThingIFSDK'
 
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
@@ -47,6 +57,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
     });
 
     describe("Command Trigger", function () {
+
         it("all operations", function (done) {
             var triggerID1: string;
             var triggerID2: string;
@@ -55,7 +66,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var targetID = api.target;
-            
+
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "false"));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_CHANGED);
             var request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
@@ -106,7 +117,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 expect(trigger.command.targetID).to.deep.equal(targetID);
                 expect(trigger.command.issuerID).to.deep.equal(issuerID);
                 expect(trigger.serverCode).to.be.null;
-                
+
                 // 4. list triggers
                 api._au._token = user.token;
                 return api.listTriggers(new thingIFSDK.ListQueryOptions());
@@ -183,16 +194,66 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             });
 
         });
-    });
+
+        describe("Post cross thing command trigger", function(){
+            let commandTargetID: string;
+            beforeEach(function(done) {
+                var vendorThingID = "vendor-" + new Date().getTime();
+                var password = "password";
+                var owner = new TypedID(Types.User, user.userID);
+                var request = new OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                api.onboardWithVendorThingID(request
+                ).then((result:any) => {
+                    commandTargetID = result.thingID;
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            });
+            it("should succeeded", function (done) {
+                var triggerID1: string;
+                var schema = "led";
+                var schemaVersion = 1;
+                var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
+                var issuerID = new TypedID(Types.User, user.userID);
+                var targetID = api.target;
+                var commandTarget = new TypedID(Types.Thing, commandTargetID);
+
+                var condition = new Condition(new Equals("power", "false"));
+                var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
+                var request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID, commandTarget);
+
+                // 1. create command trigger with StatePredicate
+                api.postCommandTrigger(request).then((trigger:any)=>{
+                    triggerID1 = trigger.triggerID;
+                    expect(triggerID1).to.be.not.null;
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect(trigger.predicate.condition).to.deep.equal(condition);
+                    expect(trigger.command.schema).to.equal(schema);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(commandTarget);
+                    expect(trigger.command.issuerID).to.deep.equal(issuerID);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                }).catch((err:Error)=>{
+                    done(err);
+                });
+            });
+        });
+
+   });
     describe("ServerCode Trigger", function () {
         beforeEach(function(done) {
             let script =
                 "function server_code_for_trigger_1(params, context){\n" +
                 "    return 100;\n" +
-                "}\n" + 
+                "}\n" +
                 "function server_code_for_trigger_2(params, context){\n" +
                 "    return 200;\n" +
-                "}\n"; 
+                "}\n";
                 apiHelper.deployServerCode(script).then(()=>{
                     done();
                 });
@@ -202,7 +263,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var targetID = api.target;
             var serverCode = new thingIFSDK.ServerCode("server_code_for_trigger_1", adminToken, testApp.appID, {param1: "hoge"});
-            var scheduleAt = new Date().getTime() + (1000 * 60 * 60); 
+            var scheduleAt = new Date().getTime() + (1000 * 60 * 60);
             var scheduleOncePredicate = new thingIFSDK.ScheduleOncePredicate(scheduleAt);
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", true));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_TRUE);
@@ -241,7 +302,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 // 4. update thing state in order to trigger the server code
                 return apiHelper.updateThingState(targetID.toString(), {power: true});
             }).then(()=>{
-                // 5. wait for a server code is finished 
+                // 5. wait for a server code is finished
                 return apiHelper.sleep(3000);
             }).then(()=>{
                 // 6. get server code results
