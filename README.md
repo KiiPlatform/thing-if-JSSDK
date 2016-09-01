@@ -53,7 +53,7 @@ You must include the dependencies by yourself. Add them before you import thing-
 ```
 <script src="https://wzrd.in/standalone/make-error-cause@latest"></script>
 <script>this["make-error-cause"]=this.makeErrorCause</script>
-<script src="https://wzrd.in/standalone/popsicle@6.2.1"></script>
+<script src="https://wzrd.in/standalone/popsicle@latest"></script>
 <script src="https://wzrd.in/standalone/es6-promise@latest"></script>
 <script>this["es6-promise"]=this.es6Promise;</script>
 <script src="path/to/thing-if-sdk.js"></script>
