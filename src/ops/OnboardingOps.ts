@@ -32,12 +32,10 @@ export default class OnboardingOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "thingPassword is not string"));
                 return;
             }
-            if (!onboardRequest.owner) {
-                reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
-                return;
-            }
             this.onboard(
-                "application/vnd.kii.OnboardingWithThingIDByOwner+json",
+                (onboardRequest.owner
+                    ? "application/vnd.kii.OnboardingWithThingIDByOwner+json"
+                    : "application/vnd.kii.OnboardingWithThingIDByThing+json"),
                 onboardRequest
             ).then((result)=>{
                 resolve(result);

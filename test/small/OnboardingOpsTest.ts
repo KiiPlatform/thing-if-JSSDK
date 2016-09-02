@@ -69,6 +69,7 @@ describe('Test OnboardingOps', function () {
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
             var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
+            console.log("####request:"+JSON.stringify(request));
             (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
                 expect(result.thingID).to.equals(responseBody.thingID);
                 expect(result.accessToken).to.equals(responseBody.accessToken);
@@ -181,7 +182,6 @@ describe("Test ArgumentError for OnboardingOps", function() {
             new TestCase("", "passowrd", owner, Errors.ArgumentError, "thingID is null or empty", "should handle error when thingID is empty string"),
             new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", null, owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
             new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "", owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
         ]
         tests.forEach(function(test) {
             it(test.description, function(done){
@@ -217,7 +217,6 @@ describe("Test ArgumentError for OnboardingOps", function() {
             new TestCase("", "passowrd", owner, Errors.ArgumentError, "vendorThingID is null or empty", "should handle error when vendorThingID is empty string"),
             new TestCase("01234-56789-abcdefg-hijklm", null, owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
             new TestCase("01234-56789-abcdefg-hijklm", "", owner, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
-            new TestCase("01234-56789-abcdefg-hijklm", "passowrd", null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
         ]
         tests.forEach(function(test) {
             it(test.description, function(done){
