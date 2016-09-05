@@ -13,7 +13,8 @@ import {
     Equals,
     StatePredicate,
     TriggersWhen,
-    APIAuthor
+    APIAuthor,
+    Trigger
 } from '../../src/ThingIFSDK'
 
 declare var require: any
@@ -238,6 +239,72 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     expect(trigger.serverCode).to.be.null;
                     done();
                 }).catch((err:Error)=>{
+                    done(err);
+                });
+            });
+        });
+        describe("Patch cross thing command trigger", function(){
+            let commandTargetID: string;
+            beforeEach(function(done) {
+                var vendorThingID = "vendor-" + new Date().getTime();
+                var password = "password";
+                var owner = new TypedID(Types.User, user.userID);
+                var request = new OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                au.onboardWithVendorThingID(request
+                ).then((result:any) => {
+                    commandTargetID = result.thingID;
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            });
+            it("should succeeded", function (done) {
+                var triggerID1: string;
+                var schema = "led";
+                var schemaVersion = 1;
+                var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
+                var issuerID = new TypedID(Types.User, user.userID);
+                var targetID = new TypedID(Types.Thing, targetThingID);
+                let commandTarget = new TypedID(Types.Thing, commandTargetID);
+
+                var condition = new Condition(new Equals("power", "false"));
+                var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
+                var request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
+
+                // 1. create command trigger with StatePredicate
+                au.postCommandTrigger(targetID, request).then((trigger:any)=>{
+                    triggerID1 = trigger.triggerID;
+                    expect(triggerID1).to.be.not.null;
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect(trigger.predicate.condition).to.deep.equal(condition);
+                    expect(trigger.command.schema).to.equal(schema);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(targetID);
+                    expect(trigger.command.issuerID).to.deep.equal(issuerID);
+                    expect(trigger.serverCode).to.be.null;
+                    // 2. patch command trigger as cross thing trigger
+                    request = new thingIFSDK.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID, commandTarget);
+                    return au.patchCommandTrigger(targetID, triggerID1, request);
+                }).then((updatedTrigger: Trigger) =>{
+                    let newTarget = new TypedID(Types.Thing, commandTargetID);
+                    expect(updatedTrigger.triggerID).to.be.equal(triggerID1);
+                    expect(updatedTrigger.disabled).to.be.false;
+                    var statePredicate = <StatePredicate>updatedTrigger.predicate;
+                    expect(statePredicate.getEventSource()).to.equal("STATES");
+                    expect(statePredicate.triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect(JSON.stringify(statePredicate.condition)).to.deep.equal(JSON.stringify(condition));
+                    expect(updatedTrigger.command.schema).to.equal("led2");
+                    expect(updatedTrigger.command.schemaVersion).to.equal(2);
+                    expect(updatedTrigger.command.actions).to.deep.equal([{setBrightness: {brightness:50}}]);
+                    expect(updatedTrigger.command.targetID.toString()).to.deep.equal(commandTarget.toString());
+                    expect(updatedTrigger.command.issuerID.toString()).to.deep.equal(issuerID.toString());
+                    expect(updatedTrigger.serverCode).to.be.null;
+                    done();
+                })
+                .catch((err:Error)=>{
                     done(err);
                 });
             });

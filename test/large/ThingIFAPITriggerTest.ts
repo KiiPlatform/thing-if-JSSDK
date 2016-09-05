@@ -256,6 +256,67 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 });
             });
         });
+        describe("Patch cross thing command trigger", function(){
+            let commandTargetID: string;
+            beforeEach(function(done) {
+                var vendorThingID = "vendor-" + new Date().getTime();
+                var password = "password";
+                var owner = new TypedID(Types.User, user.userID);
+                var request = new OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                api.onboardWithVendorThingID(request
+                ).then((result:any) => {
+                    commandTargetID = result.thingID;
+                    done();
+                }).catch((err:any)=>{
+                    done(err);
+                })
+            });
+            it("should succeeded", function (done) {
+                var triggerID1: string;
+                var schema = "led";
+                var schemaVersion = 1;
+                var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
+                var issuerID = new TypedID(Types.User, user.userID);
+                var targetID = api.target;
+                var commandTarget = new TypedID(Types.Thing, commandTargetID);
+                var condition = new Condition(new Equals("power", "false"));
+                var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
+                var request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
+
+                // 1. create command trigger with StatePredicate
+                api.postCommandTrigger(request).then((trigger:any)=>{
+                    triggerID1 = trigger.triggerID;
+                    expect(triggerID1).to.be.not.null;
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect(trigger.predicate.condition).to.deep.equal(condition);
+                    expect(trigger.command.schema).to.equal(schema);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(targetID);
+                    expect(trigger.command.issuerID).to.deep.equal(issuerID);
+                    expect(trigger.serverCode).to.be.null;
+                    request = new thingIFSDK.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID, commandTarget);
+                    return api.patchCommandTrigger(triggerID1, request);
+                }).then((trigger:any)=>{
+                    expect(trigger.triggerID).to.be.equal(triggerID1);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect(JSON.stringify((<StatePredicate>trigger.predicate).condition)).to.equal(JSON.stringify(condition));
+                    expect(trigger.command.schema).to.equal("led2");
+                    expect(trigger.command.schemaVersion).to.equal(2);
+                    expect(trigger.command.actions).to.deep.equal([{setBrightness: {brightness:50}}]);
+                    expect(JSON.stringify(trigger.command.targetID)).to.deep.equal(JSON.stringify(commandTarget));
+                    expect(JSON.stringify(trigger.command.issuerID)).to.deep.equal(JSON.stringify(issuerID));
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                }).catch((err:Error)=>{
+                    done(err);
+                });
+            });
+        });
 
    });
     describe("ServerCode Trigger", function () {

@@ -1065,6 +1065,92 @@ describe('Test TriggerOps', function () {
             });
         });
     });
+
+    describe('#patchCommandTrigger() with promise(cross thing command trigger)', function () {
+        // patchCommandTrigger method sends request to server twice.
+        // 1. PATCH `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+        // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
+        let patchCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+        let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+        let responseBody4CrossThingCommandTriggerWithState = {
+        "triggerID": expectedTriggerID,
+        "predicate":{
+            "triggersWhen":"CONDITION_CHANGED",
+            "condition":{
+                "type":"eq","field":"power","value":"false"
+            },
+            "eventSource":"STATES"
+        },
+        "triggersWhat":"COMMAND",
+        "command":{
+            "schema": schema,
+            "schemaVersion": schemaVersion,
+            "target": commandTarget.toString(),
+            "issuer": owner.toString(),
+            "actions": actions
+        },
+        "disabled":false
+    }
+        it("with StatePredicate", function (done) {
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).patch(patchCommandTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schema,
+                        "schemaVersion": schemaVersion,
+                        "target": commandTarget.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(204, null);
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
+                        "Authorization":"Bearer " + ownerToken,
+                    }
+                }).get(getTriggerPath)
+                .reply(200, responseBody4CrossThingCommandTriggerWithState, {"Content-Type": "application/json"});
+
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner, commandTarget);
+            triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command.schema).to.equal(schema);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(commandTarget);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
+            });
+        });
+    });
     describe('#patchServerCodeTrigger() with promise', function () {
         // patchServerCodeTrigger method sends request to server twice.
         // 1. PATCH `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
