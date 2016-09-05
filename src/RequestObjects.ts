@@ -252,6 +252,7 @@ export class CommandTriggerRequest{
     public actions: Array<Object>;
     public predicate: Predicate;
     public issuerID: TypedID;
+    public commandTarget: TypedID;
 
     /**
      * Create a CommandTriggerRequest.
@@ -261,19 +262,24 @@ export class CommandTriggerRequest{
      * @param {Object[]} actions Array of actions of the command.
      * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
      * @param {TypedID} issuerID ID of the command issuer.
+     * @param {TypedID} commandTarget target of command to be sent, when condition of predication meets.
      */
     constructor(
         schema: string,
         schemaVersion: number,
         actions?: Array<Object>,
         predicate?: Predicate,
-        issuerID?: TypedID
+        issuerID?: TypedID,
+        commandTarget?: TypedID
     ) {
         this.schema = schema;
         this.schemaVersion = schemaVersion;
         this.actions = actions;
         this.predicate = predicate;
         this.issuerID = issuerID;
+        if(commandTarget){
+            this.commandTarget = commandTarget
+        }
     }
 }
 

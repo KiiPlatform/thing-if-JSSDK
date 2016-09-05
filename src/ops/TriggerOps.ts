@@ -47,8 +47,13 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
                 return;
             }
+
+            var commandTarget = this.target;
+            if (requestObject.commandTarget) {
+                commandTarget = requestObject.commandTarget
+            }
             var command = new Command(
-                this.target,
+                commandTarget,
                 requestObject.issuerID,
                 requestObject.schema,
                 requestObject.schemaVersion,
@@ -59,7 +64,7 @@ export default class TriggerOps extends BaseOp {
                 command: command.toJson()
             }
             this.postTrigger(resuestBody).then((res:Response)=>{
-                var command = new Command(this.target, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
+                var command = new Command(commandTarget, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
                 var trigger = new Trigger(requestObject.predicate, command, null);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;

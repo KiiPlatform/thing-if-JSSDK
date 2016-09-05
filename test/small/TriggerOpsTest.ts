@@ -26,6 +26,7 @@ let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
 let au = new APIAuthor(ownerToken, testApp.app);
 let triggerOps = new TriggerOps(au, target);
+let commandTarget = new TypedID(Types.Thing, "th.2355-eftef");
 
 describe('Test TriggerOps', function () {
 
@@ -365,6 +366,59 @@ describe('Test TriggerOps', function () {
                         }
                     });
                 });
+            });
+        });
+    });
+    describe('#postCommandTrigger() with promise(cross thing command trigger)', function () {
+        let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
+        it("with StatePredicate", function (done) {
+            nock(
+                testApp.site,
+                <any>{
+                    reqheaders: {
+                        "X-Kii-SDK":`sn=jsi;sv=${TestUtil.sdkVersion()}`,
+                        "Authorization":"Bearer " + ownerToken,
+                        "Content-Type": "application/json"
+                    }
+                }).post(postCommandTriggerPath, {
+                    "predicate":{
+                        "triggersWhen":"CONDITION_CHANGED",
+                        "condition":{
+                            "type":"eq","field":"power","value":"false"
+                        },
+                        "eventSource":"STATES"
+                    },
+                    "triggersWhat":"COMMAND",
+                    "command":{
+                        "schema": schema,
+                        "schemaVersion": schemaVersion,
+                        "target": commandTarget.toString(),
+                        "issuer": owner.toString(),
+                        "actions": actions
+                    }
+                })
+                .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
+
+            let request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, owner, commandTarget);
+            triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
+                try {
+                    expect(trigger.triggerID).to.equal(expectedTriggerID);
+                    expect(trigger.disabled).to.be.false;
+                    expect(trigger.predicate.getEventSource()).to.equal("STATES");
+                    expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
+                    expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
+                    expect(trigger.command.schema).to.equal(schema);
+                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
+                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.targetID).to.deep.equal(commandTarget);
+                    expect(trigger.command.issuerID).to.deep.equal(owner);
+                    expect(trigger.serverCode).to.be.null;
+                    done();
+                } catch (err) {
+                    done(err);
+                }
+            }).catch((err:ThingIFError)=>{
+                done(err);
             });
         });
     });
