@@ -353,8 +353,14 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * When thing related to this ThingIFAPI instance meets condition described by predicate,
+     * A registered command sends to thing related to target.
+     *
+     * `target` property and commandTarget in requestObject must belong to same owner.
+     *
      * @param {string} triggerID ID of trigger.
      * @param {Object} requestObject The fields of trigger to be updated.
+     *  If commandTarget property is not provided, `target` property is used as target of the command.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example

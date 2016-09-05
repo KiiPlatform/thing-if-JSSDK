@@ -175,8 +175,13 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "must specify actions or predicate"));
                 return;
             }
+
+            var commandTarget = this.target;
+            if (requestObject.commandTarget) {
+                commandTarget = requestObject.commandTarget
+            }
             var command = new Command(
-                this.target,
+                commandTarget,
                 requestObject.issuerID,
                 requestObject.schema,
                 requestObject.schemaVersion,
