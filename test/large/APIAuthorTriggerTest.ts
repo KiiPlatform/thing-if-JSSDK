@@ -70,7 +70,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "false"));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_CHANGED);
-            var request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
+            var request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, targetID, actions, statePredicate, issuerID);
 
             // 1. create command trigger with StatePredicate
             au.postCommandTrigger(targetID, request).then((trigger:any)=>{
@@ -89,7 +89,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 // 2. create command trigger with SchedulePredicate
                 var schedulePredicate = new thingIFSDK.SchedulePredicate("0 12 1 * *");
-                request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, actions, schedulePredicate, issuerID);
+                request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, targetID, actions, schedulePredicate, issuerID);
                 // Admin token is needed when allowCreateTaskByPrincipal=false
                 (<any>au)._token = adminToken;
                 return au.postCommandTrigger(targetID, request);
@@ -152,7 +152,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     }
                 }
                 // 5. update trigger
-                request = new thingIFSDK.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
+                request = new thingIFSDK.CommandTriggerRequest("led2", 2, targetID, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
                 return au.patchCommandTrigger(targetID, triggerID1, request);
             }).then((trigger:any)=>{
                 expect(trigger.triggerID).to.equal(triggerID1);
@@ -286,7 +286,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     expect(trigger.command.issuerID).to.deep.equal(issuerID);
                     expect(trigger.serverCode).to.be.null;
                     // 2. patch command trigger as cross thing trigger
-                    request = new thingIFSDK.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID, commandTarget);
+                    request = new thingIFSDK.CommandTriggerRequest("led2", 2, commandTarget, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
                     return au.patchCommandTrigger(targetID, triggerID1, request);
                 }).then((updatedTrigger: Trigger) =>{
                     let newTarget = new TypedID(Types.Thing, commandTargetID);
