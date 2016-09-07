@@ -350,6 +350,7 @@ describe('Test TriggerOps', function () {
                 new TestCase(new CommandTriggerRequest("led", null, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
                 new TestCase(new CommandTriggerRequest("led", 1, target, null, predicate), Errors.ArgumentError, "actions is null", "should handle error when actions is null"),
                 new TestCase(new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
+                new TestCase(new CommandTriggerRequest("led", 1, null, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "commandTarget is null", "should handle error when commandTarget is null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
@@ -1046,6 +1047,7 @@ describe('Test TriggerOps', function () {
                 new TestCase("trigger-01234-abcd", new CommandTriggerRequest("", 1, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is empty"),
                 new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", null, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
                 new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", 1, target, null, null), Errors.ArgumentError, "must specify actions or predicate", "should handle error when actions and predicate are null"),
+                new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", 1, null, null, predicate), Errors.ArgumentError, "commandTarget is null", "should handle error when commandTrigger is null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
