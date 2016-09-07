@@ -221,7 +221,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 var commandTarget = new TypedID(Types.Thing, commandTargetID);
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID, commandTarget);
+                var request = new CommandTriggerRequest(schema, schemaVersion, commandTarget, actions, statePredicate, issuerID);
 
                 // 1. create command trigger with StatePredicate
                 api.postCommandTrigger(request).then((trigger:any)=>{
@@ -281,7 +281,7 @@ describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
                 var commandTarget = new TypedID(Types.Thing, commandTargetID);
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
+                var request = new CommandTriggerRequest(schema, schemaVersion, targetID, actions, statePredicate, issuerID);
 
                 // 1. create command trigger with StatePredicate
                 api.postCommandTrigger(request).then((trigger:any)=>{

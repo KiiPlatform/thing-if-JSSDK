@@ -221,7 +221,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID, commandTarget);
+                var request = new CommandTriggerRequest(schema, schemaVersion, commandTarget, actions, statePredicate, issuerID);
 
                 // 1. create command trigger with StatePredicate
                 au.postCommandTrigger(targetID, request).then((trigger:any)=>{
@@ -269,7 +269,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var request = new CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
+                var request = new CommandTriggerRequest(schema, schemaVersion, targetID, actions, statePredicate, issuerID);
 
                 // 1. create command trigger with StatePredicate
                 au.postCommandTrigger(targetID, request).then((trigger:any)=>{
