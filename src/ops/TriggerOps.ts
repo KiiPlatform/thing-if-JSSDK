@@ -48,12 +48,12 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
 
-            var commandTarget = this.target;
-            if (requestObject.commandTarget) {
-                commandTarget = requestObject.commandTarget
+            if (!requestObject.commandTarget) {
+                reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
+                return;
             }
             var command = new Command(
-                commandTarget,
+                requestObject.commandTarget,
                 requestObject.issuerID,
                 requestObject.schema,
                 requestObject.schemaVersion,
@@ -64,7 +64,7 @@ export default class TriggerOps extends BaseOp {
                 command: command.toJson()
             }
             this.postTrigger(resuestBody).then((res:Response)=>{
-                var command = new Command(commandTarget, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
+                var command = new Command(requestObject.commandTarget, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
                 var trigger = new Trigger(requestObject.predicate, command, null);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
@@ -176,12 +176,13 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
 
-            var commandTarget = this.target;
-            if (requestObject.commandTarget) {
-                commandTarget = requestObject.commandTarget
+            if (!requestObject.commandTarget) {
+                reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
+                return;
             }
+
             var command = new Command(
-                commandTarget,
+                requestObject.commandTarget,
                 requestObject.issuerID,
                 requestObject.schema,
                 requestObject.schemaVersion,

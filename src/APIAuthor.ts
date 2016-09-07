@@ -163,15 +163,16 @@ export class APIAuthor {
      *
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} requestObject Necessary fields for new command trigger.
-     *  If commandTarget property is not provided, `target` parameter is used as target of the command.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * // commandTargetID can be different with targetID.
+     * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
      * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate, issuerID);
+     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, commandTargetID, [{turnPower: {power:true}}], statePredicate, issuerID);
      * author.postCommandTrigger(targetID, request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -236,15 +237,16 @@ export class APIAuthor {
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
      * @param {Object} requestObject The fields of trigger to be updated.
-     *  If commandTarget property is not provided, `target` parameter is used as target of the command.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * // if commandTargetID can be different with targetID
+     * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
      * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
+     * var request = new ThingIF.CommandTriggerRequest("led2", 2, commandTargetID, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
      * author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
