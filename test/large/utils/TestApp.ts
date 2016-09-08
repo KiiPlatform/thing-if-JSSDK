@@ -29,7 +29,7 @@ if( SITE.toLowerCase() == "jp" ||
     SITE.toLowerCase() == "us"){
     baseUrl = `https://api-${SITE.toLowerCase()}.kii.com`
 }else {
-    baseUrl = SITE;
+    baseUrl = `https://${SITE}`;
 }
 
 export const testApp = new App(APPID, APPKEY, baseUrl);

@@ -3,6 +3,7 @@
 import {expect} from 'chai';
 import {apiHelper, KiiUser, KiiThing} from './utils/APIHelper';
 import {testApp} from './utils/TestApp';
+import {DataGroupingInterval, LayoutPosition} from '../../src/ThingIFSDK'
 
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
@@ -36,7 +37,7 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
                 var vendorThingID = "vendor-" + new Date().getTime();
                 var password = "password";
                 var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner, "LED", {power:true}, "v1.0.0", DataGroupingInterval.INTERVAL_12_HOURS, LayoutPosition.STANDALONE);
                 au.onboardWithVendorThingID(request).then((result:any)=>{
                     expect(result.thingID).to.be.not.null;
                     expect(result.accessToken).to.be.not.null;
@@ -61,7 +62,7 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
                 var vendorThingID = "vendor-" + new Date().getTime();
                 var password = "password";
                 var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+                var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner, "LED", {power:true}, null, DataGroupingInterval.INTERVAL_12_HOURS, LayoutPosition.STANDALONE);
                 au.onboardWithVendorThingID(request, (err:Error, result:any)=>{
                     try {
                         expect(err).to.be.null;
@@ -90,7 +91,7 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
             it("handle success response", function (done) {
                 apiHelper.createKiiThing().then((thing:KiiThing)=>{
                     var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
+                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner, DataGroupingInterval.INTERVAL_12_HOURS, LayoutPosition.STANDALONE);
                     return au.onboardWithThingID(request);
                 }).then((result:any)=>{
                     expect(result.thingID).to.be.not.null;
@@ -115,7 +116,7 @@ describe("Large Tests for APIAuthor#Onboarding:", function () {
             it("handle success response", function (done) {
                 apiHelper.createKiiThing().then((thing:KiiThing)=>{
                     var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
-                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner);
+                    var request = new thingIFSDK.OnboardWithThingIDRequest(thing.thingID, thing.password, owner,DataGroupingInterval.INTERVAL_12_HOURS, LayoutPosition.STANDALONE);
                     return au.onboardWithThingID(request, (err:Error, result:any)=>{
                         try {
                             expect(err).to.be.null;

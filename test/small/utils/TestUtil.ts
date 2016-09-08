@@ -2,5 +2,5 @@ export function sameDate(date1: Date, date2: Date): boolean{
     return Math.abs(date1.getTime()-date2.getTime()) < 10;
 }
 export function sdkVersion(): string {
-    return '0.1.3';
+    return '0.2.0';
 }

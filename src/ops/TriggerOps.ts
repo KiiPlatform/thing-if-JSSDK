@@ -47,8 +47,13 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
                 return;
             }
+
+            if (!requestObject.commandTarget) {
+                reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
+                return;
+            }
             var command = new Command(
-                this.target,
+                requestObject.commandTarget,
                 requestObject.issuerID,
                 requestObject.schema,
                 requestObject.schemaVersion,
@@ -59,7 +64,7 @@ export default class TriggerOps extends BaseOp {
                 command: command.toJson()
             }
             this.postTrigger(resuestBody).then((res:Response)=>{
-                var command = new Command(this.target, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
+                var command = new Command(requestObject.commandTarget, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
                 var trigger = new Trigger(requestObject.predicate, command, null);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
@@ -170,8 +175,14 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "must specify actions or predicate"));
                 return;
             }
+
+            if (!requestObject.commandTarget) {
+                reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
+                return;
+            }
+
             var command = new Command(
-                this.target,
+                requestObject.commandTarget,
                 requestObject.issuerID,
                 requestObject.schema,
                 requestObject.schemaVersion,
