@@ -31,7 +31,7 @@ let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 let triggerID = "dummy-trigger-id";
 describe("Small Test ThingIFAPI#patchCommandTrigger", function() {
-    let request = new CommandTriggerRequest(schema, schemaVersion, actions, predicate, owner);
+    let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, predicate, owner);
     describe("handle IllegalStateError", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",

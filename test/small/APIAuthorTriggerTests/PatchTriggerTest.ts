@@ -31,7 +31,7 @@ let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 let triggerID = "dummy-trigger-id";
 describe("Small Test APIAuthor#patchCommandTrigger", function() {
-    let request = new CommandTriggerRequest(schemaName, schemaVersion, actions, predicate, owner);
+    let request = new CommandTriggerRequest(schemaName, schemaVersion, target, actions, predicate, owner);
 
     describe("handle http response", function() {
         let au = new APIAuthor(ownerToken, testApp.app);

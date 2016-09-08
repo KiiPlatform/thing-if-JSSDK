@@ -250,13 +250,14 @@ export class ThingIFAPI {
      * `target` property and commandTarget in requestObject must belong to same owner.
      *
      * @param {Object} requestObject Necessary fields for new command trigger.
-     *  If commandTarget property is not provided, `target` property is used as target of the command.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * // commandTargetID can be different with api.target.
+     * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, [{turnPower: {power:true}}], statePredicate);
+     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, commandTargetID, [{turnPower: {power:true}}], statePredicate);
      * api.postCommandTrigger(request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -353,6 +354,11 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * When thing related to this ThingIFAPI instance meets condition described by predicate,
+     * A registered command sends to thing related to target.
+     *
+     * `target` property and commandTarget in requestObject must belong to same owner.
+     *
      * @param {string} triggerID ID of trigger.
      * @param {Object} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
@@ -360,7 +366,9 @@ export class ThingIFAPI {
      * @example
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("led2", 2, [{setBrightness: {brightness:50}}], statePredicate);
+     * // if commandTargetID can be different with api.target
+     * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
+     * var request = new ThingIF.CommandTriggerRequest("led2", 2, commandTargetID, [{setBrightness: {brightness:50}}], statePredicate);
      * api.patchCommandTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
