@@ -69,6 +69,15 @@ export default class CommandOps extends BaseOp {
                         requestObject.schemaVersion,
                         requestObject.actions);
                 newCommand.commandID = (<any>res.body).commandID;
+                if(!!requestObject.title){
+                    newCommand.title = requestObject.title;
+                }
+                if(!!requestObject.description){
+                    newCommand.description = requestObject.description;
+                }
+                if(!!requestObject.metadata){
+                    newCommand.metadata = requestObject.metadata;
+                }
                 resolve(newCommand);
             }).catch((err)=>{
                 reject(err);

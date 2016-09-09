@@ -157,7 +157,7 @@ export class OnboardWithThingIDRequest {
  * @prop {string} issuer ID of the command issuer.
  * @prop {string} title Title of the command.
  * @prop {string} description Description of the command.
- * @prop {Object} metaData Key-value list to store within command definition.
+ * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class PostCommandRequest {
     public schema: string;
@@ -166,7 +166,7 @@ export class PostCommandRequest {
     public issuer: string;
     public title: string;
     public description: string;
-    public metaData: Object;
+    public metadata: Object;
 
     /**
      * Create a PostCommandRequest.
@@ -177,7 +177,7 @@ export class PostCommandRequest {
      * @param {TypedID} [issuerID] ID of the command issuer.
      * @param {string} [title] Title of the command.
      * @param {string} [description] Description of the command.
-     * @param {Object} [metaData] Key-value list to store within command definition.
+     * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
         schema: string,
@@ -186,7 +186,7 @@ export class PostCommandRequest {
         issuerID?: TypedID,
         title?: string,
         description?: string,
-        metaData?: Object) {
+        metadata?: Object) {
             this.schema = schema;
             this.schemaVersion = schemaVersion;
             this.actions = actions;
@@ -195,7 +195,7 @@ export class PostCommandRequest {
             }
             this.title = title;
             this.description = description;
-            this.metaData = metaData;
+            this.metadata = metadata;
         }
 }
 
