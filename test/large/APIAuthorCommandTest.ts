@@ -46,7 +46,15 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
         it("handle success response by calling APIAuthor#postNewCommand, APIAuthor#getCommand, and APIAuthor#listCommands", function (done) {
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
-            var postCommandRequest = new thingIFSDK.PostCommandRequest("led", 1, [{turnPower: {power:true}}], issuerID)
+            var postCommandRequest =
+                new thingIFSDK.PostCommandRequest(
+                    "led",
+                    1,
+                    [{turnPower: {power:true}}],
+                    issuerID,
+                    "title of led",
+                    "represent led light",
+                    {"power": "true for power on, and false for power off"});
             au.postNewCommand(targetID, postCommandRequest).then((cmd)=>{
                 expect(cmd).not.null;
                 expect(cmd.commandID).not.equal("");
@@ -71,7 +79,15 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
         it("handle success response by calling APIAuthor#postNewCommand, APIAuthor#getCommand, and APIAuthor#listCommands", function (done) {
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
-            var postCommandRequest = new thingIFSDK.PostCommandRequest("led", 1, [{turnPower: {power:true}}], issuerID)
+            var postCommandRequest =
+                new thingIFSDK.PostCommandRequest(
+                    "led",
+                    1,
+                    [{turnPower: {power:true}}],
+                    issuerID,
+                    "title of led",
+                    "represent led light",
+                    {"power": "true for power on, and false for power off"});
             au.postNewCommand(targetID, postCommandRequest, (err, cmd)=>{
                 if(!!err){
                     done(err);

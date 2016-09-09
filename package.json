@@ -1,6 +1,6 @@
 {
   "name": "thing-if-sdk",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
   "main": "lib/ThingIFSDK.js",
   "files": [
@@ -39,7 +39,7 @@
     "gulp-shell": "^0.5.2",
     "gulp-typescript": "^2.13.6",
     "istanbul": "^0.4.5",
-    "jsdoc": "^3.4.0",
+    "jsdoc": "^3.4.1",
     "minami": "^1.1.1",
     "mocha": "^3.0.2",
     "nock": "^8.0.0",
