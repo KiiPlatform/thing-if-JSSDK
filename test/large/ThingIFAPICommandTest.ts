@@ -42,7 +42,15 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
     })
 
     it("handle success response by calling ThingIFAPI#postNewCommand, ThingIFAPI#getCommand, and ThingIFAPI#listCommands", function (done) {
-        var postCommandRequest = new thingIFSDK.PostCommandRequest("led", 1, [{turnPower: {power:true}}])
+        var postCommandRequest =
+            new thingIFSDK.PostCommandRequest(
+                "led",
+                1,
+                [{turnPower: {power:true}}],
+                null,
+                "title of led",
+                "represent led light",
+                {"power": "true for power on, and false for power off"});
         var postCommandRequest2 = new thingIFSDK.PostCommandRequest("light", 2, [{turnPower: {power:false}}])
         let command1:Command;
         let command2:Command;
@@ -59,9 +67,9 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             expect(cmd.created).to.be.undefined;
             expect(cmd.commandState).to.be.undefined;
 
-            expect(!cmd.title).to.be.true;
-            expect(!cmd.description).to.true;
-            expect(!cmd.metadata).to.true;
+            expect(cmd.title).to.equal("title of led");
+            expect(cmd.description).to.equal("represent led light");
+            expect(cmd.metadata).to.deep.equal({"power": "true for power on, and false for power off"});
             expect(!cmd.firedByTriggerID).to.true;
             return thingIFAPI.getCommand(cmd.commandID);
         }).then((cmd:Command)=>{
@@ -77,9 +85,9 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             expect(cmd.created).not.null;
             expect(cmd.created).not.undefined;
             expect(cmd.commandState).to.equal(CommandState.SENDING);
-            expect(!cmd.title).to.be.true;
-            expect(!cmd.description).to.true;
-            expect(!cmd.metadata).to.true;
+            expect(cmd.title).to.equal("title of led");
+            expect(cmd.description).to.equal("represent led light");
+            expect(cmd.metadata).to.deep.equal({"power": "true for power on, and false for power off"});
             expect(!cmd.firedByTriggerID).to.true;
             return thingIFAPI.postNewCommand(postCommandRequest2);
         }).then((cmd:Command)=>{

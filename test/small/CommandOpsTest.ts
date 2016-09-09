@@ -78,7 +78,10 @@ describe("Test CommandOps", function() {
                 schema: "led",
                 schemaVersion: 1,
                 actions: [{turnPower: {power: true}}],
-                issuer: `user:${issuerUserID}`
+                issuer: `user:${issuerUserID}`,
+                title: "title of led",
+                description: "represent led",
+                metadata: {"power": "true for power on, and false for power off"}
             }
             let expectedCommandID = "2334354545";
 
@@ -99,7 +102,10 @@ describe("Test CommandOps", function() {
                     expectedReqBody.schema,
                     expectedReqBody.schemaVersion,
                     expectedReqBody.actions,
-                    issuerID);
+                    issuerID,
+                    expectedReqBody.title,
+                    expectedReqBody.description,
+                    expectedReqBody.metadata);
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
                     expect(cmd.commandID).to.be.equal(expectedCommandID);
                     expect(cmd.schema).to.be.equal(expectedReqBody.schema);
@@ -107,9 +113,9 @@ describe("Test CommandOps", function() {
                     expect(cmd.actions).to.be.deep.equal(expectedReqBody.actions);
                     expect(cmd.actionResults).to.be.undefined;
                     expect(cmd.commandState).to.be.undefined;
-                    expect(cmd.title).to.be.undefined;
-                    expect(cmd.description).to.be.undefined;
-                    expect(cmd.metadata).to.be.undefined;
+                    expect(cmd.title).to.be.equal(expectedReqBody.title);
+                    expect(cmd.description).to.be.equal(expectedReqBody.description);
+                    expect(cmd.metadata).to.be.deep.equal(expectedReqBody.metadata);
                     done();
                 }).catch((err)=>{
                     done(err);
