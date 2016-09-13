@@ -345,12 +345,13 @@ describe('Test TriggerOps', function () {
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
                 new TestCase(null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase(new CommandTriggerRequest(null, 1, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is null"),
-                new TestCase(new CommandTriggerRequest("", 1, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is empty"),
-                new TestCase(new CommandTriggerRequest("led", null, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
-                new TestCase(new CommandTriggerRequest("led", 1, target, null, predicate), Errors.ArgumentError, "actions is null", "should handle error when actions is null"),
-                new TestCase(new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
-                new TestCase(new CommandTriggerRequest("led", 1, null, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "commandTarget is null", "should handle error when commandTarget is null"),
+                new TestCase(new CommandTriggerRequest(null, 1, target, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is null"),
+                new TestCase(new CommandTriggerRequest("", 1, target, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is empty"),
+                new TestCase(new CommandTriggerRequest("led", null, target, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
+                new TestCase(new CommandTriggerRequest("led", 1, target, null, predicate, owner), Errors.ArgumentError, "actions is null", "should handle error when actions is null"),
+                new TestCase(new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], null, owner), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
+                new TestCase(new CommandTriggerRequest("led", 1, null, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "commandTarget is null", "should handle error when commandTarget is null"),
+                new TestCase(new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], predicate, null), Errors.ArgumentError, "issuerID is null", "should handle error when issuerID is null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){

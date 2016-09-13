@@ -33,9 +33,20 @@ let triggerID = "dummy-trigger-id";
 describe("Small Test ThingIFAPI#patchCommandTrigger", function() {
     let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, predicate, owner);
     describe("handle IllegalStateError", function() {
-        let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",
             function (done) {
+            let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
+            thingIFAPI.patchCommandTrigger(triggerID,request)
+            .then((trigger: Trigger)=>{
+                done("should fail");
+            }).catch((err)=>{
+                expect(err.name).to.equal(Errors.IlllegalStateError);
+                done();
+            })
+        })
+        it("when owner is null, IllegalStateError should be returned(promise)",
+            function (done) {
+            let thingIFAPI = new ThingIFAPI(null, ownerToken, testApp.app, target);
             thingIFAPI.patchCommandTrigger(triggerID,request)
             .then((trigger: Trigger)=>{
                 done("should fail");
