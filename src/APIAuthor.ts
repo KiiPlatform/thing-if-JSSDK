@@ -163,6 +163,7 @@ export class APIAuthor {
      *
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} requestObject Necessary fields for new command trigger.
+     *   IssuerID is required in requestObject.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example

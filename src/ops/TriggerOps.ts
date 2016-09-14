@@ -52,6 +52,11 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
                 return;
             }
+
+            if (!requestObject.issuerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "issuerID is null"));
+                return;
+            }
             var command = new Command(
                 requestObject.commandTarget,
                 requestObject.issuerID,
@@ -178,6 +183,11 @@ export default class TriggerOps extends BaseOp {
 
             if (!requestObject.commandTarget) {
                 reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
+                return;
+            }
+
+            if (!requestObject.issuerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "issuerID is null"));
                 return;
             }
 
