@@ -34,7 +34,7 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
                 return;
             }
-            if(!!requestObject.command){
+            if(!requestObject.command){
                 reject(new ThingIFError(Errors.ArgumentError, "command is null"));
                 return;
             }

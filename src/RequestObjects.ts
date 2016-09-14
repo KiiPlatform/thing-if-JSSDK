@@ -265,8 +265,8 @@ export class TriggerCommandObject {
      * @param {string} schema Name of schema.
      * @param {number} schemaVersion Version number of schema.
      * @param {number[]} actions Array of actions of the command.
+     * @param {TypedID} targetID instance of TypedID to represent target of command.
      * @param {TypedID} [issuerID] instance of TypedID to represent issuer of command.
-     * @param {TypedID} [targetID] instance of TypedID to represent target of command.
      * @param {string} [title] Title of the command.
      * @param {string} [description] Description of the command.
      * @param {Object} [metadata] Key-value list to store within command definition.
@@ -275,15 +275,16 @@ export class TriggerCommandObject {
         schema: string,
         schemaVersion: number,
         actions: Array<Object>,
+        targetID: TypedID,
         issuerID?: TypedID,
-        targetID?: TypedID,
         title?: string,
         description?: string,
         metadata?: Object) {
             this.schema = schema;
             this.schemaVersion = schemaVersion;
             this.actions = actions;
-            this
+            this.targetID = targetID;
+            this.issuerID = issuerID;
             this.title = title;
             this.description = description;
             this.metadata = metadata;
