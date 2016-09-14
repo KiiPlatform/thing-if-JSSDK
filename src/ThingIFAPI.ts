@@ -265,7 +265,7 @@ export class ThingIFAPI {
      * });
      */
     postCommandTrigger(
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PostCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){
@@ -377,7 +377,7 @@ export class ThingIFAPI {
      */
     patchCommandTrigger(
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PatchCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){

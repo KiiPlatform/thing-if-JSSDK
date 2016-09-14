@@ -181,7 +181,7 @@ export class APIAuthor {
      */
     postCommandTrigger(
         target: TypedID,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PostCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return PromiseWrapper.promise((new TriggerOps(this,target)).postCommandTrigger(requestObject), onCompletion);
     }
@@ -256,7 +256,7 @@ export class APIAuthor {
     patchCommandTrigger(
         target: TypedID,
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PatchCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return PromiseWrapper.promise((new TriggerOps(this,target)).patchCommandTrigger(triggerID, requestObject), onCompletion);
     }

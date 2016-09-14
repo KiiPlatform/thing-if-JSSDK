@@ -239,45 +239,129 @@ export class ListQueryOptions {
 }
 
 /**
- * Represents the request for creating/updating a command trigger.
+ * Represents the fields to construct command for creating/updating command trigger.
  * @prop {string} schema Name of schema.
  * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
- * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
- * @prop {TypedID} issuerID ID of the command issuer.
+ * @prop {TypedID} issuerID instance of TypedID to represent issuer of command.
+ * @prop {TypedID} targetID instance of TypedID to represent target of command.
+ * @prop {string} title Title of the command.
+ * @prop {string} description Description of the command.
+ * @prop {Object} metadata Key-value list to store within command definition.
  */
-export class CommandTriggerRequest{
+export class CommandTriggerCommandObject {
     public schema: string;
     public schemaVersion: number;
     public actions: Array<Object>;
-    public predicate: Predicate;
     public issuerID: TypedID;
-    public commandTarget: TypedID;
+    public targetID: TypedID;
+    public title: string;
+    public description: string;
+    public metadata: Object;
 
     /**
-     * Create a CommandTriggerRequest.
+     * Create a PostCommandRequest.
      * @constructor
      * @param {string} schema Name of schema.
      * @param {number} schemaVersion Version number of schema.
-     * @param {TypedID} commandTarget target of command to be sent, when condition of predication meets.
-     * @param {Object[]} actions Array of actions of the command.
-     * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
-     * @param {TypedID} issuerID ID of the command issuer.
+     * @param {number[]} actions Array of actions of the command.
+     * @param {TypedID} [issuerID] instance of TypedID to represent issuer of command.
+     * @param {TypedID} [targetID] instance of TypedID to represent target of command.
+     * @param {string} [title] Title of the command.
+     * @param {string} [description] Description of the command.
+     * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
         schema: string,
         schemaVersion: number,
-        commandTarget: TypedID,
-        actions?: Array<Object>,
-        predicate?: Predicate,
-        issuerID?: TypedID
+        actions: Array<Object>,
+        issuerID?: TypedID,
+        targetID?: TypedID,
+        title?: string,
+        description?: string,
+        metadata?: Object) {
+            this.schema = schema;
+            this.schemaVersion = schemaVersion;
+            this.actions = actions;
+            this
+            this.title = title;
+            this.description = description;
+            this.metadata = metadata;
+        }
+}
+/**
+ * Represents the request for creating a command trigger.
+ * @prop {CommandTriggerCommandObject} command instance of CommandTriggerCommandObject.
+ * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
+ */
+export class PostCommandTriggerRequest{
+    public command: CommandTriggerCommandObject;
+    public predicate: Predicate;
+    public title: string;
+    public description: string;
+    public metadata: Object;
+    /**
+     * Create a PostCommandTriggerRequest.
+     * @constructor
+     * @param {PostCommandRequest} command the necessary fields to construct command.
+     * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
+     * @prop [string] title Title of the trigger.
+     * @prop [string] description Description of the trigger.
+     * @prop [Object] metadata Key-value list to store within trigger definition.
+     */
+    constructor(
+        command: CommandTriggerCommandObject,
+        predicate: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
     ) {
-        this.schema = schema;
-        this.schemaVersion = schemaVersion;
-        this.actions = actions;
+        this.command = command;
         this.predicate = predicate;
-        this.issuerID = issuerID;
-        this.commandTarget = commandTarget
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
+    }
+}
+
+/**
+ * Represents the request for updating a command trigger.
+ * @prop {CommandTriggerCommandObject} command instance of CommandTriggerCommandObject.
+ * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
+ */
+export class PatchCommandTriggerRequest{
+    public command: CommandTriggerCommandObject;
+    public predicate: Predicate;
+    public title: string;
+    public description: string;
+    public metadata: Object;
+    /**
+     * Create a PostCommandTriggerRequest.
+     * @constructor
+     * @param [CommandTriggerCommandObject] command the necessary fields to construct command.
+     * @param [Predicate] predicate Predicate of the condition met for the trigger to execute.
+     * @prop [string] title Title of the trigger.
+     * @prop [string] description Description of the trigger.
+     * @prop [Object] metadata Key-value list to store within trigger definition.
+     */
+    constructor(
+        command?: CommandTriggerCommandObject,
+        predicate?: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
+    ) {
+        this.command = command;
+        this.predicate = predicate;
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
     }
 }
 
