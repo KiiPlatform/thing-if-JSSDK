@@ -286,7 +286,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
-     * @param {Object} requestObject Necessary fields for new servercode trigger.
+     * @param {PostServerCodeTriggerRequest} requestObject Necessary fields for new servercode trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -301,7 +301,7 @@ export class ThingIFAPI {
      * });
      */
     postServerCodeTrigger(
-        requestObject: Options.ServerCodeTriggerRequest,
+        requestObject: Options.PostServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){
@@ -415,7 +415,7 @@ export class ThingIFAPI {
      */
    patchServerCodeTrigger(
         triggerID: string,
-        requestObject: Options.ServerCodeTriggerRequest,
+        requestObject: Options.PatchServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){
@@ -502,6 +502,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * @param {ListQueryOptions} listOptions instance to ListQueryOptions.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example

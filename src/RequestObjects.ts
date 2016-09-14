@@ -308,9 +308,9 @@ export class PostCommandTriggerRequest{
      * @constructor
      * @param {PostCommandRequest} command the necessary fields to construct command.
      * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
-     * @prop [string] title Title of the trigger.
-     * @prop [string] description Description of the trigger.
-     * @prop [Object] metadata Key-value list to store within trigger definition.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
      */
     constructor(
         command: CommandTriggerCommandObject,
@@ -344,11 +344,11 @@ export class PatchCommandTriggerRequest{
     /**
      * Create a PostCommandTriggerRequest.
      * @constructor
-     * @param [CommandTriggerCommandObject] command the necessary fields to construct command.
-     * @param [Predicate] predicate Predicate of the condition met for the trigger to execute.
-     * @prop [string] title Title of the trigger.
-     * @prop [string] description Description of the trigger.
-     * @prop [Object] metadata Key-value list to store within trigger definition.
+     * @param {CommandTriggerCommandObject} [command] the necessary fields to construct command.
+     * @param {Predicate} [predicate] Predicate of the condition met for the trigger to execute.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
      */
     constructor(
         command?: CommandTriggerCommandObject,
@@ -366,11 +366,11 @@ export class PatchCommandTriggerRequest{
 }
 
 /**
- * Represents the request for creating/updating a server code trigger.
+ * Represents the request for creating a server code trigger.
  * @prop {ServerCode} serverCode Details of the server code to execute.
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
  */
-export class ServerCodeTriggerRequest{
+export class PostServerCodeTriggerRequest{
     public serverCode: ServerCode;
     public predicate: Predicate;
 
@@ -383,6 +383,30 @@ export class ServerCodeTriggerRequest{
     constructor(
         serverCode: ServerCode,
         predicate: Predicate
+    ) {
+        this.serverCode = serverCode;
+        this.predicate = predicate;
+    }
+}
+
+/**
+ * Represents the request for updating a server code trigger.
+ * @prop {ServerCode} serverCode Details of the server code to execute.
+ * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ */
+export class PatchServerCodeTriggerRequest{
+    public serverCode: ServerCode;
+    public predicate: Predicate;
+
+    /**
+     * Create a ServerCodeTriggerRequest.
+     * @constructor
+     * @param {ServerCode} [serverCode] Details of the server code to execute.
+     * @param {Predicate} [predicate] Predicate of the condition met for the trigger to execute.
+     */
+    constructor(
+        serverCode?: ServerCode,
+        predicate?: Predicate
     ) {
         this.serverCode = serverCode;
         this.predicate = predicate;

@@ -7,7 +7,13 @@ import {APIAuthor} from '../APIAuthor';
 import BaseOp from './BaseOp'
 import {Trigger, TriggersWhat} from '../Trigger'
 import {QueryResult} from '../QueryResult'
-import {PostCommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions, PatchCommandTriggerRequest} from '../RequestObjects'
+import {
+        PostCommandTriggerRequest,
+        PostServerCodeTriggerRequest,
+        ListQueryOptions,
+        PatchCommandTriggerRequest,
+        PatchServerCodeTriggerRequest
+    } from '../RequestObjects'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import {TypedID} from '../TypedID'
 import {Command} from '../Command'
@@ -82,7 +88,7 @@ export default class TriggerOps extends BaseOp {
             });
         });
     }
-    postServerCodeTrigger(requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
+    postServerCodeTrigger(requestObject: PostServerCodeTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
             if (!requestObject) {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
@@ -218,7 +224,7 @@ export default class TriggerOps extends BaseOp {
 
     patchServerCodeTrigger(
         triggerID: string,
-        requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
+        requestObject: PatchServerCodeTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
             if (!triggerID) {
                 reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
