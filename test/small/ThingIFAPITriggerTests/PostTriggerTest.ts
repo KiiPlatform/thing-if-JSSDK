@@ -36,6 +36,18 @@ describe("Small Test ThingIFAPI#postCommandTrigger", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",
             function (done) {
+            let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
+            thingIFAPI.postCommandTrigger(request)
+            .then((trigger: Trigger)=>{
+                done("should fail");
+            }).catch((err)=>{
+                expect(err.name).to.equal(Errors.IlllegalStateError);
+                done();
+            })
+        })
+        it("when owner is null, IllegalStateError should be returned(promise)",
+            function (done) {
+            let thingIFAPI = new ThingIFAPI(null, ownerToken, testApp.app, target);
             thingIFAPI.postCommandTrigger(request)
             .then((trigger: Trigger)=>{
                 done("should fail");

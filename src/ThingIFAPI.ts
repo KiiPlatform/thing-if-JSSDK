@@ -250,6 +250,7 @@ export class ThingIFAPI {
      * `target` property and commandTarget in requestObject must belong to same owner.
      *
      * @param {Object} requestObject Necessary fields for new command trigger.
+     *   `_owner` property is used as IssuerID. So even if IssuerID is provided in requestObject, it will be ignored.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -272,6 +273,11 @@ export class ThingIFAPI {
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
+            if(!this._owner){
+                reject(new ThingIFError(Errors.IlllegalStateError, "_owner is null when ThingIFAPI is initialized"));
+                return;
+            }
+            requestObject.command.issuerID = this._owner;
             (new TriggerOps(this._au, this._target)).postCommandTrigger(requestObject)
             .then((trigger)=>{
                 resolve(trigger);
@@ -384,6 +390,11 @@ export class ThingIFAPI {
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
+            if(!this._owner){
+                reject(new ThingIFError(Errors.IlllegalStateError, "_owner is null when ThingIFAPI is initialized"));
+                return;
+            }
+            requestObject.command.issuerID = this._owner;
             (new TriggerOps(this._au, this._target)).patchCommandTrigger(triggerID, requestObject)
             .then((trigger)=>{
                 resolve(trigger);
