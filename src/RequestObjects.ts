@@ -249,7 +249,7 @@ export class ListQueryOptions {
  * @prop {string} description Description of the command.
  * @prop {Object} metadata Key-value list to store within command definition.
  */
-export class CommandTriggerCommandObject {
+export class TriggerCommandObject {
     public schema: string;
     public schemaVersion: number;
     public actions: Array<Object>;
@@ -291,14 +291,14 @@ export class CommandTriggerCommandObject {
 }
 /**
  * Represents the request for creating a command trigger.
- * @prop {CommandTriggerCommandObject} command instance of CommandTriggerCommandObject.
+ * @prop {TriggerCommandObject} command instance of TriggerCommandObject.
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
  * @prop {string} title Title of the trigger.
  * @prop {string} description Description of the trigger.
  * @prop {Object} metadata Key-value list to store within trigger definition.
  */
 export class PostCommandTriggerRequest{
-    public command: CommandTriggerCommandObject;
+    public command: TriggerCommandObject;
     public predicate: Predicate;
     public title: string;
     public description: string;
@@ -313,7 +313,7 @@ export class PostCommandTriggerRequest{
      * @param {Object} [metadata] Key-value list to store within trigger definition.
      */
     constructor(
-        command: CommandTriggerCommandObject,
+        command: TriggerCommandObject,
         predicate: Predicate,
         title?: string,
         description?: string,
@@ -329,14 +329,14 @@ export class PostCommandTriggerRequest{
 
 /**
  * Represents the request for updating a command trigger.
- * @prop {CommandTriggerCommandObject} command instance of CommandTriggerCommandObject.
+ * @prop {TriggerCommandObject} command instance of TriggerCommandObject.
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
  * @prop {string} title Title of the trigger.
  * @prop {string} description Description of the trigger.
  * @prop {Object} metadata Key-value list to store within trigger definition.
  */
 export class PatchCommandTriggerRequest{
-    public command: CommandTriggerCommandObject;
+    public command: TriggerCommandObject;
     public predicate: Predicate;
     public title: string;
     public description: string;
@@ -344,14 +344,14 @@ export class PatchCommandTriggerRequest{
     /**
      * Create a PostCommandTriggerRequest.
      * @constructor
-     * @param {CommandTriggerCommandObject} [command] the necessary fields to construct command.
+     * @param {TriggerCommandObject} [command] the necessary fields to construct command.
      * @param {Predicate} [predicate] Predicate of the condition met for the trigger to execute.
      * @param {string} [title] Title of the trigger.
      * @param {string} [description] Description of the trigger.
      * @param {Object} [metadata] Key-value list to store within trigger definition.
      */
     constructor(
-        command?: CommandTriggerCommandObject,
+        command?: TriggerCommandObject,
         predicate?: Predicate,
         title?: string,
         description?: string,
