@@ -305,7 +305,7 @@ export default class TriggerOps extends BaseOp {
             if(!!requestObject.metadata){
                 requestBody["metadata"] = requestObject.metadata;
             }
-            this.patchTriggger(triggerID, requestObject).then((result)=>{
+            this.patchTriggger(triggerID, requestBody).then((result)=>{
                 resolve(result);
             }).catch((err)=>{
                 reject(err);
