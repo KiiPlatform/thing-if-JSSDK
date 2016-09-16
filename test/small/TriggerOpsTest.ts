@@ -887,7 +887,6 @@ describe('Test TriggerOps', function () {
                 new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is empty"),
                 new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
                 new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target), null), Errors.ArgumentError, "actions of command is null", "should handle error when actions and predicate are null"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], null), predicate), Errors.ArgumentError, "targetID of command is null", "should handle error when commandTrigger is null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
