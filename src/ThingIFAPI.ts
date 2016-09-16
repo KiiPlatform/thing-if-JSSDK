@@ -251,6 +251,7 @@ export class ThingIFAPI {
      *
      * @param {Object} requestObject Necessary fields for new command trigger.
      *   `_owner` property is used as IssuerID. So even if IssuerID is provided in requestObject, it will be ignored.
+     *   If requestObject.command.targetID is not provide or null, `_target` property will be used by default.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example

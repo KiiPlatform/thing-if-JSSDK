@@ -68,8 +68,13 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
 
+            var commandTarget = this.target;
+            if(!!commandRequest.targetID){
+                commandTarget = commandRequest.targetID;
+            }
+
             var command = new Command(
-                commandRequest.targetID,
+                commandTarget,
                 commandRequest.issuerID,
                 commandRequest.schema,
                 commandRequest.schemaVersion,
@@ -229,10 +234,6 @@ export default class TriggerOps extends BaseOp {
                 }
                 if (!commandRequest.actions) {
                     reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
-                    return;
-                }
-                if (!commandRequest.targetID) {
-                    reject(new ThingIFError(Errors.ArgumentError, "targetID of command is null"));
                     return;
                 }
                 if (!commandRequest.issuerID) {
