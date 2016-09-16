@@ -398,6 +398,9 @@ export class PostServerCodeTriggerRequest{
     ) {
         this.serverCode = serverCode;
         this.predicate = predicate;
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
     }
 }
 
@@ -433,5 +436,8 @@ export class PatchServerCodeTriggerRequest{
     ) {
         this.serverCode = serverCode;
         this.predicate = predicate;
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
     }
 }

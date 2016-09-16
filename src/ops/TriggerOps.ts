@@ -67,6 +67,7 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "issuerID of command is null"));
                 return;
             }
+
             var command = new Command(
                 commandRequest.targetID,
                 commandRequest.issuerID,
@@ -77,15 +78,31 @@ export default class TriggerOps extends BaseOp {
             command.description = commandRequest.description;
             command.metadata = commandRequest.metadata;
 
-            var resuestBody = {
+            var requestBody: any = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
                 command: command.toJson()
             }
-            this.postTrigger(resuestBody).then((res:Response)=>{
+
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
+            }
+
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
+            }
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
+
+            this.postTrigger(requestBody).then((res:Response)=>{
                 var trigger = new Trigger(requestObject.predicate, command, null);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
+                trigger.title = requestObject.title;
+                trigger.description = requestObject.description;
+                trigger.metadata = requestObject.metadata;
                 resolve(trigger);
             }).catch((err)=>{
                 reject(err);
@@ -106,15 +123,29 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
                 return;
             }
-            var resuestBody = {
+            var requestBody:any = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
-            this.postTrigger(resuestBody).then((res:Response)=>{
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
+            }
+
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
+            }
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
+            this.postTrigger(requestObject).then((res:Response)=>{
                 var trigger:Trigger = new Trigger(requestObject.predicate, null, requestObject.serverCode);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
+                trigger.title = requestObject.title;
+                trigger.description = requestObject.description;
+                trigger.metadata = requestObject.metadata;
                 resolve(trigger);
             }).catch((err)=>{
                 reject(err);
@@ -220,6 +251,17 @@ export default class TriggerOps extends BaseOp {
                 requestBody["command"] = command.toJson();
                 requestBody["triggersWhat"] = "COMMAND";
             }
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
+            }
+
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
+            }
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
             this.patchTriggger(triggerID, requestBody).then((result)=>{
                 resolve(result);
             }).catch((err)=>{
@@ -247,12 +289,23 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "must specify serverCode or predicate"));
                 return;
             }
-            var resuestBody = {
+            var requestBody: any = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
-            this.patchTriggger(triggerID, resuestBody).then((result)=>{
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
+            }
+
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
+            }
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
+            this.patchTriggger(triggerID, requestObject).then((result)=>{
                 resolve(result);
             }).catch((err)=>{
                 reject(err);
