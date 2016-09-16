@@ -139,7 +139,7 @@ export default class TriggerOps extends BaseOp {
             if(!!requestObject.metadata){
                 requestBody["metadata"] = requestObject.metadata;
             }
-            this.postTrigger(requestObject).then((res:Response)=>{
+            this.postTrigger(requestBody).then((res:Response)=>{
                 var trigger:Trigger = new Trigger(requestObject.predicate, null, requestObject.serverCode);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
