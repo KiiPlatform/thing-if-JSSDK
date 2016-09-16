@@ -23,7 +23,7 @@ import {
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
 
-describe.only("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
+describe("Large Tests for APIAuthor Trigger APIs(ThingIFAPI):", function () {
 
     let user: KiiUser;
     let api: any;
