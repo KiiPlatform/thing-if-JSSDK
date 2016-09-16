@@ -370,20 +370,31 @@ export class PatchCommandTriggerRequest{
  * Represents the request for creating a server code trigger.
  * @prop {ServerCode} serverCode Details of the server code to execute.
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
  */
 export class PostServerCodeTriggerRequest{
     public serverCode: ServerCode;
     public predicate: Predicate;
-
+    public title: string;
+    public description: string;
+    public metadata: Object;
     /**
      * Create a ServerCodeTriggerRequest.
      * @constructor
      * @param {ServerCode} serverCode Details of the server code to execute.
      * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
      */
     constructor(
         serverCode: ServerCode,
-        predicate: Predicate
+        predicate: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
     ) {
         this.serverCode = serverCode;
         this.predicate = predicate;
@@ -394,20 +405,31 @@ export class PostServerCodeTriggerRequest{
  * Represents the request for updating a server code trigger.
  * @prop {ServerCode} serverCode Details of the server code to execute.
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
  */
 export class PatchServerCodeTriggerRequest{
     public serverCode: ServerCode;
     public predicate: Predicate;
-
+    public title: string;
+    public description: string;
+    public metadata: Object;
     /**
      * Create a ServerCodeTriggerRequest.
      * @constructor
      * @param {ServerCode} [serverCode] Details of the server code to execute.
      * @param {Predicate} [predicate] Predicate of the condition met for the trigger to execute.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
      */
     constructor(
         serverCode?: ServerCode,
-        predicate?: Predicate
+        predicate?: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
     ) {
         this.serverCode = serverCode;
         this.predicate = predicate;
