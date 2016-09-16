@@ -35,7 +35,7 @@ let au = new APIAuthor(ownerToken, testApp.app);
 let triggerOps = new TriggerOps(au, target);
 let commandTarget = new TypedID(Types.Thing, "th.2355-eftef");
 
-describe.only('Test TriggerOps', function () {
+describe('Test TriggerOps', function () {
 
     beforeEach(function() {
         nock.cleanAll();
