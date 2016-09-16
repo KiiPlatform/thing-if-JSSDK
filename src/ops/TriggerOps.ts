@@ -63,13 +63,8 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
 
-            if (!commandRequest.targetID) {
-                reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
-                return;
-            }
-
             if (!commandRequest.issuerID) {
-                reject(new ThingIFError(Errors.ArgumentError, "issuerID is null"));
+                reject(new ThingIFError(Errors.ArgumentError, "issuerID of command is null"));
                 return;
             }
             var command = new Command(
@@ -183,10 +178,9 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
                 return;
             }
-            let resuestBody:any = {}
-
+            let requestBody:any = {}
             if(!!requestObject.predicate){
-                requestObject["predicate"] = requestObject.predicate.toJson();
+                requestBody["predicate"] = requestObject.predicate.toJson();
             }
 
             if(!!requestObject.command){
@@ -223,11 +217,10 @@ export default class TriggerOps extends BaseOp {
                 command.title = commandRequest.title;
                 command.description = commandRequest.description;
                 command.metadata = commandRequest.metadata;
-                resuestBody["command"] = command.toJson();
-                resuestBody["triggersWhat"] = "COMMAND";
+                requestBody["command"] = command.toJson();
+                requestBody["triggersWhat"] = "COMMAND";
             }
-
-            this.patchTriggger(triggerID, resuestBody).then((result)=>{
+            this.patchTriggger(triggerID, requestBody).then((result)=>{
                 resolve(result);
             }).catch((err)=>{
                 reject(err);
