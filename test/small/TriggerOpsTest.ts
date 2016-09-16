@@ -8,7 +8,14 @@ import TestApp from './TestApp'
 import {APIAuthor} from '../../src/APIAuthor';
 import {TypedID} from '../../src/TypedID';
 import {Types} from '../../src/TypedID';
-import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../../src/RequestObjects';
+import {
+    PostCommandTriggerRequest,
+    PatchCommandTriggerRequest,
+    PostServerCodeTriggerRequest,
+    PatchServerCodeTriggerRequest,
+    ListQueryOptions,
+    TriggerCommandObject
+} from '../../src/RequestObjects';
 import TriggerOps from '../../src/ops/TriggerOps'
 import {Trigger, TriggersWhen, TriggersWhat} from '../../src/Trigger';
 import {Command, CommandState} from '../../src/Command';
@@ -28,7 +35,7 @@ let au = new APIAuthor(ownerToken, testApp.app);
 let triggerOps = new TriggerOps(au, target);
 let commandTarget = new TypedID(Types.Thing, "th.2355-eftef");
 
-describe('Test TriggerOps', function () {
+describe.only('Test TriggerOps', function () {
 
     beforeEach(function() {
         nock.cleanAll();
@@ -147,6 +154,7 @@ describe('Test TriggerOps', function () {
 
     describe('#postCommandTrigger() with promise', function () {
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
+        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, target, owner);
         it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
@@ -174,8 +182,7 @@ describe('Test TriggerOps', function () {
                     }
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
-
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, statePredicate, owner);
+            let request = new PostCommandTriggerRequest(commandRequest, statePredicate);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -222,7 +229,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, schedulePredicate, owner);
+            let request = new PostCommandTriggerRequest(commandRequest, schedulePredicate);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -268,7 +275,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, scheduleOncePredicate, owner);
+            let request = new PostCommandTriggerRequest(commandRequest, scheduleOncePredicate);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -321,7 +328,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, statePredicate, owner);
+            let request = new PostCommandTriggerRequest(commandRequest, statePredicate);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -336,7 +343,7 @@ describe('Test TriggerOps', function () {
         describe("Argument Test", function() {
             class TestCase {
                 constructor(
-                    public request: CommandTriggerRequest,
+                    public request: PostCommandTriggerRequest,
                     public expectedError: string,
                     public expectedErrorMsg: string,
                     public description: string
@@ -345,13 +352,13 @@ describe('Test TriggerOps', function () {
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
                 new TestCase(null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase(new CommandTriggerRequest(null, 1, target, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is null"),
-                new TestCase(new CommandTriggerRequest("", 1, target, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is empty"),
-                new TestCase(new CommandTriggerRequest("led", null, target, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
-                new TestCase(new CommandTriggerRequest("led", 1, target, null, predicate, owner), Errors.ArgumentError, "actions is null", "should handle error when actions is null"),
-                new TestCase(new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], null, owner), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
-                new TestCase(new CommandTriggerRequest("led", 1, null, [{turnPower: {power:true}}], predicate, owner), Errors.ArgumentError, "commandTarget is null", "should handle error when commandTarget is null"),
-                new TestCase(new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], predicate, null), Errors.ArgumentError, "issuerID is null", "should handle error when issuerID is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject(null, 1, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("", 1, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is empty"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target, owner), predicate), Errors.ArgumentError, "actions of command is null", "should handle error when actions is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, owner), null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], null, owner), predicate), Errors.ArgumentError, "targetID of command is null", "should handle error when commandTarget is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, null), predicate), Errors.ArgumentError, "issuerID of command is null", "should handle error when issuerID is null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
@@ -373,6 +380,8 @@ describe('Test TriggerOps', function () {
     });
     describe('#postCommandTrigger() with promise(cross thing command trigger)', function () {
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
+        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, owner);
+
         it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
@@ -401,7 +410,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, commandTarget, actions, statePredicate, owner);
+            let request = new PostCommandTriggerRequest(commandRequest, statePredicate);
             triggerOps.postCommandTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -453,7 +462,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            let request = new PostServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -498,7 +507,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, schedulePredicate);
+            let request = new PostServerCodeTriggerRequest(serverCode, schedulePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -542,7 +551,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
+            let request = new PostServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -593,7 +602,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            let request = new PostServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.postServerCodeTrigger(request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -608,7 +617,7 @@ describe('Test TriggerOps', function () {
         describe("Argument Test", function() {
             class TestCase {
                 constructor(
-                    public request: ServerCodeTriggerRequest,
+                    public request: PostServerCodeTriggerRequest,
                     public expectedError: string,
                     public expectedErrorMsg: string,
                     public description: string
@@ -618,8 +627,8 @@ describe('Test TriggerOps', function () {
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
                 new TestCase(null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase(new ServerCodeTriggerRequest(null, predicate), Errors.ArgumentError, "serverCode is null", "should handle error when serverCode is null"),
-                new TestCase(new ServerCodeTriggerRequest(serverCode, null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
+                new TestCase(new PostServerCodeTriggerRequest(null, predicate), Errors.ArgumentError, "serverCode is null", "should handle error when serverCode is null"),
+                new TestCase(new PostServerCodeTriggerRequest(serverCode, null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
@@ -645,6 +654,7 @@ describe('Test TriggerOps', function () {
         // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         let patchCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
+        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, target, owner);
         it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
@@ -682,7 +692,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithState, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, statePredicate, owner);
+            let request = new PatchCommandTriggerRequest(commandRequest, statePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -738,7 +748,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithSchedule, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, schedulePredicate, owner);
+            let request = new PatchCommandTriggerRequest(commandRequest, schedulePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -793,7 +803,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CommandTriggerWithScheduleOnce, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, scheduleOncePredicate, owner);
+            let request = new PatchCommandTriggerRequest(commandRequest, scheduleOncePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -846,7 +856,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, statePredicate, owner);
+            let request = new PatchCommandTriggerRequest(commandRequest, statePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -862,7 +872,7 @@ describe('Test TriggerOps', function () {
             class TestCase {
                 constructor(
                     public triggerID: string,
-                    public request: CommandTriggerRequest,
+                    public request: PatchCommandTriggerRequest,
                     public expectedError: string,
                     public expectedErrorMsg: string,
                     public description: string
@@ -870,14 +880,14 @@ describe('Test TriggerOps', function () {
             }
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
-                new TestCase(null, new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
-                new TestCase("", new CommandTriggerRequest("led", 1, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
+                new TestCase(null, new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
+                new TestCase("", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
                 new TestCase("trigger-01234-abcd", null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase("trigger-01234-abcd", new CommandTriggerRequest(null, 1, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is null"),
-                new TestCase("trigger-01234-abcd", new CommandTriggerRequest("", 1, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schema is null or empty", "should handle error when schema is empty"),
-                new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", null, target, [{turnPower: {power:true}}], predicate), Errors.ArgumentError, "schemaVersion is null", "should handle error when schemaVersion is null"),
-                new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", 1, target, null, null), Errors.ArgumentError, "must specify actions or predicate", "should handle error when actions and predicate are null"),
-                new TestCase("trigger-01234-abcd", new CommandTriggerRequest("led", 1, null, null, predicate), Errors.ArgumentError, "commandTarget is null", "should handle error when commandTrigger is null"),
+                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject(null, 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is null"),
+                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is empty"),
+                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
+                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target), null), Errors.ArgumentError, "actions of command is null", "should handle error when actions and predicate are null"),
+                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], null), predicate), Errors.ArgumentError, "targetID of command is null", "should handle error when commandTrigger is null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
@@ -960,7 +970,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CrossThingCommandTriggerWithState, {"Content-Type": "application/json"});
 
-            let request = new CommandTriggerRequest(schema, schemaVersion, commandTarget, actions, statePredicate, owner);
+            let request = new PatchCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, owner), statePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1025,7 +1035,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithState, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            let request = new PatchServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1079,7 +1089,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithSchedule, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, schedulePredicate);
+            let request = new PatchServerCodeTriggerRequest(serverCode, schedulePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1132,7 +1142,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4ServerCodeTriggerWithScheduleOnce, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
+            let request = new PatchServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1183,7 +1193,7 @@ describe('Test TriggerOps', function () {
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
-            let request = new ServerCodeTriggerRequest(serverCode, statePredicate);
+            let request = new PatchServerCodeTriggerRequest(serverCode, statePredicate);
             triggerOps.patchServerCodeTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 done("should fail");
             }).catch((err:HttpRequestError)=>{
@@ -1199,7 +1209,7 @@ describe('Test TriggerOps', function () {
             class TestCase {
                 constructor(
                     public triggerID: string,
-                    public request: ServerCodeTriggerRequest,
+                    public request: PatchServerCodeTriggerRequest,
                     public expectedError: string,
                     public expectedErrorMsg: string,
                     public description: string
@@ -1208,10 +1218,10 @@ describe('Test TriggerOps', function () {
             let serverCode = new ServerCode("servercode_func");
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
-                new TestCase(null, new ServerCodeTriggerRequest(null, predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
-                new TestCase("", new ServerCodeTriggerRequest(serverCode, null), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
+                new TestCase(null, new PatchServerCodeTriggerRequest(null, predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
+                new TestCase("", new PatchServerCodeTriggerRequest(serverCode, null), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
                 new TestCase("trigger-01234-abcd", null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase("trigger-01234-abcd", new ServerCodeTriggerRequest(null, null), Errors.ArgumentError, "must specify serverCode or predicate", "should handle error when serverCode and predicate are null"),
+                new TestCase("trigger-01234-abcd", new PatchServerCodeTriggerRequest(null, null), Errors.ArgumentError, "must specify serverCode or predicate", "should handle error when serverCode and predicate are null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){

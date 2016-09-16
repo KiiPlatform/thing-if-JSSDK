@@ -8,7 +8,6 @@ import TestApp from '../TestApp'
 import {APIAuthor} from '../../../src/APIAuthor';
 import {TypedID} from '../../../src/TypedID';
 import {Types} from '../../../src/TypedID';
-import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../../../src/RequestObjects';
 import TriggerOps from '../../../src/ops/TriggerOps'
 import {Trigger, TriggersWhen, TriggersWhat} from '../../../src/Trigger';
 import {Command, CommandState} from '../../../src/Command';

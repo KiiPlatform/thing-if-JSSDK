@@ -8,7 +8,7 @@ import TestApp from '../TestApp'
 import {APIAuthor} from '../../../src/APIAuthor';
 import {TypedID} from '../../../src/TypedID';
 import {Types} from '../../../src/TypedID';
-import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../../../src/RequestObjects';
+import {PatchCommandTriggerRequest, PatchServerCodeTriggerRequest, ListQueryOptions, TriggerCommandObject} from '../../../src/RequestObjects';
 import TriggerOps from '../../../src/ops/TriggerOps'
 import {Trigger, TriggersWhen, TriggersWhat} from '../../../src/Trigger';
 import {Command, CommandState} from '../../../src/Command';
@@ -31,7 +31,7 @@ let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 let triggerID = "dummy-trigger-id";
 describe("Small Test APIAuthor#patchCommandTrigger", function() {
-    let request = new CommandTriggerRequest(schemaName, schemaVersion, target, actions, predicate, owner);
+    let request = new PatchCommandTriggerRequest(new TriggerCommandObject(schemaName, schemaVersion, actions, target, owner), predicate);
 
     describe("handle http response", function() {
         let au = new APIAuthor(ownerToken, testApp.app);
@@ -122,7 +122,7 @@ describe("Small Test APIAuthor#patchCommandTrigger", function() {
 })
 
 describe("Small Test APIAuthor#patchServerCodeTrigger", function() {
-    let request = new ServerCodeTriggerRequest(serverCode, predicate);
+    let request = new PatchServerCodeTriggerRequest(serverCode, predicate);
 
     describe("handle http response", function() {
         let au = new APIAuthor(ownerToken, testApp.app);
