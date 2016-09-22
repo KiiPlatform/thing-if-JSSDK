@@ -37,7 +37,7 @@
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.5.2",
-    "gulp-typescript": "^2.13.6",
+    "gulp-typescript": "^3.0.0",
     "istanbul": "^0.4.5",
     "jsdoc": "^3.4.1",
     "minami": "^1.1.1",
