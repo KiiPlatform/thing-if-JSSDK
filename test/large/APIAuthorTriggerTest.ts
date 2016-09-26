@@ -7,14 +7,18 @@ import {testApp} from './utils/TestApp';
 import {
     TypedID,
     Types,
-    CommandTriggerRequest,
+    PostCommandTriggerRequest,
     OnboardWithVendorThingIDRequest,
     Condition,
     Equals,
     StatePredicate,
     TriggersWhen,
     APIAuthor,
-    Trigger
+    Trigger,
+    PatchCommandTriggerRequest,
+    PostServerCodeTriggerRequest,
+    PatchServerCodeTriggerRequest,
+    TriggerCommandObject
 } from '../../src/ThingIFSDK'
 
 declare var require: any
@@ -70,7 +74,8 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "false"));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_CHANGED);
-            var request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, targetID, actions, statePredicate, issuerID);
+            var commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, targetID, issuerID);
+            var request = new PostCommandTriggerRequest(commandRequest, statePredicate);
 
             // 1. create command trigger with StatePredicate
             au.postCommandTrigger(targetID, request).then((trigger:any)=>{
@@ -89,7 +94,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 // 2. create command trigger with SchedulePredicate
                 var schedulePredicate = new thingIFSDK.SchedulePredicate("0 12 1 * *");
-                request = new thingIFSDK.CommandTriggerRequest(schema, schemaVersion, targetID, actions, schedulePredicate, issuerID);
+                request = new PostCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, targetID, issuerID), schedulePredicate);
                 // Admin token is needed when allowCreateTaskByPrincipal=false
                 (<any>au)._token = adminToken;
                 return au.postCommandTrigger(targetID, request);
@@ -152,7 +157,8 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     }
                 }
                 // 5. update trigger
-                request = new thingIFSDK.CommandTriggerRequest("led2", 2, targetID, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
+                var commandRequest = new TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], targetID, issuerID);
+                request = new PatchCommandTriggerRequest(commandRequest, statePredicate);
                 return au.patchCommandTrigger(targetID, triggerID1, request);
             }).then((trigger:any)=>{
                 expect(trigger.triggerID).to.equal(triggerID1);
@@ -221,7 +227,8 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var request = new CommandTriggerRequest(schema, schemaVersion, commandTarget, actions, statePredicate, issuerID);
+                var commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, issuerID);
+                var request = new PostCommandTriggerRequest(commandRequest, statePredicate);
 
                 // 1. create command trigger with StatePredicate
                 au.postCommandTrigger(targetID, request).then((trigger:any)=>{
@@ -269,7 +276,8 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var request = new CommandTriggerRequest(schema, schemaVersion, targetID, actions, statePredicate, issuerID);
+                var commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, targetID, issuerID);
+                var request = new PostCommandTriggerRequest(commandRequest, statePredicate);
 
                 // 1. create command trigger with StatePredicate
                 au.postCommandTrigger(targetID, request).then((trigger:any)=>{
@@ -286,7 +294,8 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     expect(trigger.command.issuerID).to.deep.equal(issuerID);
                     expect(trigger.serverCode).to.be.null;
                     // 2. patch command trigger as cross thing trigger
-                    request = new thingIFSDK.CommandTriggerRequest("led2", 2, commandTarget, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
+                    var commandRequest = new TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], commandTarget, issuerID);
+                    request = new PatchCommandTriggerRequest(commandRequest, statePredicate);
                     return au.patchCommandTrigger(targetID, triggerID1, request);
                 }).then((updatedTrigger: Trigger) =>{
                     let newTarget = new TypedID(Types.Thing, commandTargetID);
@@ -332,7 +341,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
             var scheduleOncePredicate = new thingIFSDK.ScheduleOncePredicate(scheduleAt);
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", true));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_TRUE);
-            var request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
+            var request = new PostServerCodeTriggerRequest(serverCode, scheduleOncePredicate);
             // 1. create server code trigger with ScheduleOncePredicate
             (<any>au)._token = adminToken;
             au.postServerCodeTrigger(targetID, request).then((trigger:any)=>{
@@ -348,7 +357,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 expect(trigger.serverCode.parameters).to.deep.equal({param1: "hoge"});
                 // 2. update server code trigger
                 serverCode = new thingIFSDK.ServerCode("server_code_for_trigger_2", adminToken, testApp.appID, {param2: "hage"});
-                request = new thingIFSDK.ServerCodeTriggerRequest(serverCode, statePredicate);
+                request = new PatchServerCodeTriggerRequest(serverCode, statePredicate);
                 return au.patchServerCodeTrigger(targetID, triggerID, request);
             }).then((trigger:any)=>{
                 expect(trigger.triggerID).to.equals(triggerID);

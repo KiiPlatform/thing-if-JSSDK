@@ -239,68 +239,205 @@ export class ListQueryOptions {
 }
 
 /**
- * Represents the request for creating/updating a command trigger.
+ * Represents the fields to construct command for creating/updating command trigger.
  * @prop {string} schema Name of schema.
  * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
- * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
- * @prop {TypedID} issuerID ID of the command issuer.
+ * @prop {TypedID} issuerID instance of TypedID to represent issuer of command.
+ * @prop {TypedID} targetID instance of TypedID to represent target of command.
+ * @prop {string} title Title of the command.
+ * @prop {string} description Description of the command.
+ * @prop {Object} metadata Key-value list to store within command definition.
  */
-export class CommandTriggerRequest{
+export class TriggerCommandObject {
     public schema: string;
     public schemaVersion: number;
     public actions: Array<Object>;
-    public predicate: Predicate;
     public issuerID: TypedID;
-    public commandTarget: TypedID;
+    public targetID: TypedID;
+    public title: string;
+    public description: string;
+    public metadata: Object;
 
     /**
-     * Create a CommandTriggerRequest.
+     * Create a PostCommandRequest.
      * @constructor
      * @param {string} schema Name of schema.
      * @param {number} schemaVersion Version number of schema.
-     * @param {TypedID} commandTarget target of command to be sent, when condition of predication meets.
-     * @param {Object[]} actions Array of actions of the command.
-     * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
-     * @param {TypedID} issuerID ID of the command issuer.
+     * @param {number[]} actions Array of actions of the command.
+     * @param {TypedID} targetID instance of TypedID to represent target of command.
+     * @param {TypedID} [issuerID] instance of TypedID to represent issuer of command.
+     * @param {string} [title] Title of the command.
+     * @param {string} [description] Description of the command.
+     * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
         schema: string,
         schemaVersion: number,
-        commandTarget: TypedID,
-        actions?: Array<Object>,
-        predicate?: Predicate,
-        issuerID?: TypedID
+        actions: Array<Object>,
+        targetID: TypedID,
+        issuerID?: TypedID,
+        title?: string,
+        description?: string,
+        metadata?: Object) {
+            this.schema = schema;
+            this.schemaVersion = schemaVersion;
+            this.actions = actions;
+            this.targetID = targetID;
+            this.issuerID = issuerID;
+            this.title = title;
+            this.description = description;
+            this.metadata = metadata;
+        }
+}
+/**
+ * Represents the request for creating a command trigger.
+ * @prop {TriggerCommandObject} command instance of TriggerCommandObject.
+ * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
+ */
+export class PostCommandTriggerRequest{
+    public command: TriggerCommandObject;
+    public predicate: Predicate;
+    public title: string;
+    public description: string;
+    public metadata: Object;
+    /**
+     * Create a PostCommandTriggerRequest.
+     * @constructor
+     * @param {PostCommandRequest} command the necessary fields to construct command.
+     * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
+     */
+    constructor(
+        command: TriggerCommandObject,
+        predicate: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
     ) {
-        this.schema = schema;
-        this.schemaVersion = schemaVersion;
-        this.actions = actions;
+        this.command = command;
         this.predicate = predicate;
-        this.issuerID = issuerID;
-        this.commandTarget = commandTarget
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
     }
 }
 
 /**
- * Represents the request for creating/updating a server code trigger.
+ * Represents the request for updating a command trigger.
+ * @prop {TriggerCommandObject} command instance of TriggerCommandObject.
+ * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
+ */
+export class PatchCommandTriggerRequest{
+    public command: TriggerCommandObject;
+    public predicate: Predicate;
+    public title: string;
+    public description: string;
+    public metadata: Object;
+    /**
+     * Create a PostCommandTriggerRequest.
+     * @constructor
+     * @param {TriggerCommandObject} [command] the necessary fields to construct command.
+     * @param {Predicate} [predicate] Predicate of the condition met for the trigger to execute.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
+     */
+    constructor(
+        command?: TriggerCommandObject,
+        predicate?: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
+    ) {
+        this.command = command;
+        this.predicate = predicate;
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
+    }
+}
+
+/**
+ * Represents the request for creating a server code trigger.
  * @prop {ServerCode} serverCode Details of the server code to execute.
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
  */
-export class ServerCodeTriggerRequest{
+export class PostServerCodeTriggerRequest{
     public serverCode: ServerCode;
     public predicate: Predicate;
-
+    public title: string;
+    public description: string;
+    public metadata: Object;
     /**
      * Create a ServerCodeTriggerRequest.
      * @constructor
      * @param {ServerCode} serverCode Details of the server code to execute.
      * @param {Predicate} predicate Predicate of the condition met for the trigger to execute.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
      */
     constructor(
         serverCode: ServerCode,
-        predicate: Predicate
+        predicate: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
     ) {
         this.serverCode = serverCode;
         this.predicate = predicate;
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
+    }
+}
+
+/**
+ * Represents the request for updating a server code trigger.
+ * @prop {ServerCode} serverCode Details of the server code to execute.
+ * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
+ * @prop {string} title Title of the trigger.
+ * @prop {string} description Description of the trigger.
+ * @prop {Object} metadata Key-value list to store within trigger definition.
+ */
+export class PatchServerCodeTriggerRequest{
+    public serverCode: ServerCode;
+    public predicate: Predicate;
+    public title: string;
+    public description: string;
+    public metadata: Object;
+    /**
+     * Create a ServerCodeTriggerRequest.
+     * @constructor
+     * @param {ServerCode} [serverCode] Details of the server code to execute.
+     * @param {Predicate} [predicate] Predicate of the condition met for the trigger to execute.
+     * @param {string} [title] Title of the trigger.
+     * @param {string} [description] Description of the trigger.
+     * @param {Object} [metadata] Key-value list to store within trigger definition.
+     */
+    constructor(
+        serverCode?: ServerCode,
+        predicate?: Predicate,
+        title?: string,
+        description?: string,
+        metadata?: Object
+    ) {
+        this.serverCode = serverCode;
+        this.predicate = predicate;
+        this.title = title;
+        this.description = description;
+        this.metadata = metadata;
     }
 }

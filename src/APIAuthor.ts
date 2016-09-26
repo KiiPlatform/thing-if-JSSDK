@@ -163,7 +163,7 @@ export class APIAuthor {
      *
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {Object} requestObject Necessary fields for new command trigger.
-     *   IssuerID is required in requestObject.
+     *   IssuerID is required in requestObject. If requestObject.command.targetID is not provide or null, `target` parameter will be used.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -182,14 +182,14 @@ export class APIAuthor {
      */
     postCommandTrigger(
         target: TypedID,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PostCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return PromiseWrapper.promise((new TriggerOps(this,target)).postCommandTrigger(requestObject), onCompletion);
     }
 
     /** Post a new servercode trigger.
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
-     * @param {Object} requestObject Necessary fields for new servercode trigger.
+     * @param {PostServerCodeTriggerRequest} requestObject Necessary fields for new servercode trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -206,7 +206,7 @@ export class APIAuthor {
      */
     postServerCodeTrigger(
         target: TypedID,
-        requestObject: Options.ServerCodeTriggerRequest,
+        requestObject: Options.PostServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return PromiseWrapper.promise((new TriggerOps(this,target)).postServerCodeTrigger(requestObject), onCompletion);
     }
@@ -257,7 +257,7 @@ export class APIAuthor {
     patchCommandTrigger(
         target: TypedID,
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PatchCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return PromiseWrapper.promise((new TriggerOps(this,target)).patchCommandTrigger(triggerID, requestObject), onCompletion);
     }
@@ -265,7 +265,7 @@ export class APIAuthor {
     /** Update a servercode trigger.
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
      * @param {string} triggerID ID of trigger.
-     * @param {Object} requestObject The fields of trigger to be updated.
+     * @param {PatchServerCodeTriggerRequest} requestObject The fields of trigger to be updated.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -283,7 +283,7 @@ export class APIAuthor {
    patchServerCodeTrigger(
         target: TypedID,
         triggerID: string,
-        requestObject: Options.ServerCodeTriggerRequest,
+        requestObject: Options.PatchServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         return PromiseWrapper.promise((new TriggerOps(this,target)).patchServerCodeTrigger(triggerID, requestObject), onCompletion);
     }

@@ -8,7 +8,7 @@ import TestApp from '../TestApp'
 import {ThingIFAPI} from '../../../src/ThingIFAPI';
 import {TypedID} from '../../../src/TypedID';
 import {Types} from '../../../src/TypedID';
-import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../../../src/RequestObjects';
+import {PatchCommandTriggerRequest, PatchServerCodeTriggerRequest, ListQueryOptions, TriggerCommandObject} from '../../../src/RequestObjects';
 import TriggerOps from '../../../src/ops/TriggerOps'
 import {Trigger, TriggersWhen, TriggersWhat} from '../../../src/Trigger';
 import {Command, CommandState} from '../../../src/Command';
@@ -31,7 +31,7 @@ let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 let triggerID = "dummy-trigger-id";
 describe("Small Test ThingIFAPI#patchCommandTrigger", function() {
-    let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, predicate, owner);
+    let request = new PatchCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, target, owner), predicate);
     describe("handle IllegalStateError", function() {
         it("when targe is null, IllegalStateError should be returned(promise)",
             function (done) {
@@ -146,7 +146,7 @@ describe("Small Test ThingIFAPI#patchCommandTrigger", function() {
 })
 
 describe("Small Test ThingIFAPI#patchServerCodeTrigger", function() {
-    let request = new ServerCodeTriggerRequest(serverCode, predicate);
+    let request = new PatchServerCodeTriggerRequest(serverCode, predicate);
     describe("handle IllegalStateError", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",
