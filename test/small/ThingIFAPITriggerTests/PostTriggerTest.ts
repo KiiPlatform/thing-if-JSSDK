@@ -8,7 +8,7 @@ import TestApp from '../TestApp'
 import {ThingIFAPI} from '../../../src/ThingIFAPI';
 import {TypedID} from '../../../src/TypedID';
 import {Types} from '../../../src/TypedID';
-import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../../../src/RequestObjects';
+import {PostCommandTriggerRequest, PostServerCodeTriggerRequest, ListQueryOptions, TriggerCommandObject} from '../../../src/RequestObjects';
 import TriggerOps from '../../../src/ops/TriggerOps'
 import {Trigger, TriggersWhen, TriggersWhat} from '../../../src/Trigger';
 import {Command, CommandState} from '../../../src/Command';
@@ -31,11 +31,23 @@ let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 
 describe("Small Test ThingIFAPI#postCommandTrigger", function() {
-    let request = new CommandTriggerRequest(schema, schemaVersion, target, actions, predicate, owner);
+    let request = new PostCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, target, owner), predicate);
     describe("handle IllegalStateError", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",
             function (done) {
+            let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
+            thingIFAPI.postCommandTrigger(request)
+            .then((trigger: Trigger)=>{
+                done("should fail");
+            }).catch((err)=>{
+                expect(err.name).to.equal(Errors.IlllegalStateError);
+                done();
+            })
+        })
+        it("when owner is null, IllegalStateError should be returned(promise)",
+            function (done) {
+            let thingIFAPI = new ThingIFAPI(null, ownerToken, testApp.app, target);
             thingIFAPI.postCommandTrigger(request)
             .then((trigger: Trigger)=>{
                 done("should fail");
@@ -135,7 +147,7 @@ describe("Small Test ThingIFAPI#postCommandTrigger", function() {
 })
 
 describe("Small Test ThingIFAPI#postServerCodeTrigger", function() {
-    let request = new ServerCodeTriggerRequest(serverCode, predicate);
+    let request = new PostServerCodeTriggerRequest(serverCode, predicate);
     describe("handle IllegalStateError", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",

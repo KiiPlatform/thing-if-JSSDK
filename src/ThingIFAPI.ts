@@ -250,6 +250,8 @@ export class ThingIFAPI {
      * `target` property and commandTarget in requestObject must belong to same owner.
      *
      * @param {Object} requestObject Necessary fields for new command trigger.
+     *   `_owner` property is used as IssuerID. So even if IssuerID is provided in requestObject, it will be ignored.
+     *   If requestObject.command.targetID is not provide or null, `_target` property will be used by default.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -265,13 +267,18 @@ export class ThingIFAPI {
      * });
      */
     postCommandTrigger(
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PostCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
+            if(!this._owner){
+                reject(new ThingIFError(Errors.IlllegalStateError, "_owner is null when ThingIFAPI is initialized"));
+                return;
+            }
+            requestObject.command.issuerID = this._owner;
             (new TriggerOps(this._au, this._target)).postCommandTrigger(requestObject)
             .then((trigger)=>{
                 resolve(trigger);
@@ -286,7 +293,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
-     * @param {Object} requestObject Necessary fields for new servercode trigger.
+     * @param {PostServerCodeTriggerRequest} requestObject Necessary fields for new servercode trigger.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -301,7 +308,7 @@ export class ThingIFAPI {
      * });
      */
     postServerCodeTrigger(
-        requestObject: Options.ServerCodeTriggerRequest,
+        requestObject: Options.PostServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){
@@ -377,13 +384,18 @@ export class ThingIFAPI {
      */
     patchCommandTrigger(
         triggerID: string,
-        requestObject: Options.CommandTriggerRequest,
+        requestObject: Options.PatchCommandTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
+            if(!this._owner){
+                reject(new ThingIFError(Errors.IlllegalStateError, "_owner is null when ThingIFAPI is initialized"));
+                return;
+            }
+            requestObject.command.issuerID = this._owner;
             (new TriggerOps(this._au, this._target)).patchCommandTrigger(triggerID, requestObject)
             .then((trigger)=>{
                 resolve(trigger);
@@ -415,7 +427,7 @@ export class ThingIFAPI {
      */
    patchServerCodeTrigger(
         triggerID: string,
-        requestObject: Options.ServerCodeTriggerRequest,
+        requestObject: Options.PatchServerCodeTriggerRequest,
         onCompletion?: (err: Error, trigger:Trigger)=> void): Promise<Trigger>{
         let orgPromise = new Promise<Trigger>((resolve, reject)=>{
             if(!this._target){
@@ -502,6 +514,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * @param {ListQueryOptions} listOptions instance to ListQueryOptions.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example

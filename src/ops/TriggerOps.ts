@@ -7,7 +7,13 @@ import {APIAuthor} from '../APIAuthor';
 import BaseOp from './BaseOp'
 import {Trigger, TriggersWhat} from '../Trigger'
 import {QueryResult} from '../QueryResult'
-import {CommandTriggerRequest, ServerCodeTriggerRequest, ListQueryOptions} from '../RequestObjects'
+import {
+        PostCommandTriggerRequest,
+        PostServerCodeTriggerRequest,
+        ListQueryOptions,
+        PatchCommandTriggerRequest,
+        PatchServerCodeTriggerRequest
+    } from '../RequestObjects'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import {TypedID} from '../TypedID'
 import {Command} from '../Command'
@@ -22,25 +28,34 @@ export default class TriggerOps extends BaseOp {
         super(au);
     }
 
-    postCommandTrigger(requestObject: CommandTriggerRequest): Promise<Trigger> {
+    postCommandTrigger(requestObject: PostCommandTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
             if (!requestObject) {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
                 return;
             }
-            if (!requestObject.schema) {
-                reject(new ThingIFError(Errors.ArgumentError, "schema is null or empty"));
-                return;
-            } else if (!KiiUtil.isString(requestObject.schema)) {
-                reject(new ThingIFError(Errors.ArgumentError, "schema is not string"));
+            if(!requestObject.command){
+                reject(new ThingIFError(Errors.ArgumentError, "command is null"));
                 return;
             }
-            if (requestObject.schemaVersion === null || requestObject.schemaVersion === undefined) {
-                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is null"));
+            var commandRequest = requestObject.command;
+            if (!commandRequest.schema) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema of command is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(commandRequest.schema)) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema of command is not string"));
                 return;
             }
-            if (!requestObject.actions) {
-                reject(new ThingIFError(Errors.ArgumentError, "actions is null"));
+            if (commandRequest.schemaVersion === null || commandRequest.schemaVersion === undefined) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion of command is null"));
+                return;
+            }
+            if (!commandRequest.actions) {
+                reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
+                return;
+            }
+            if (!commandRequest.targetID) {
+                reject(new ThingIFError(Errors.ArgumentError, "targetID of command is null"));
                 return;
             }
             if (!requestObject.predicate) {
@@ -48,33 +63,58 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
 
-            if (!requestObject.commandTarget) {
-                reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
+            if (!commandRequest.issuerID) {
+                reject(new ThingIFError(Errors.ArgumentError, "issuerID of command is null"));
                 return;
             }
+
+            var commandTarget = this.target;
+            if(!!commandRequest.targetID){
+                commandTarget = commandRequest.targetID;
+            }
+
             var command = new Command(
-                requestObject.commandTarget,
-                requestObject.issuerID,
-                requestObject.schema,
-                requestObject.schemaVersion,
-                requestObject.actions);
-            var resuestBody = {
+                commandTarget,
+                commandRequest.issuerID,
+                commandRequest.schema,
+                commandRequest.schemaVersion,
+                commandRequest.actions);
+            command.title = commandRequest.title;
+            command.description = commandRequest.description;
+            command.metadata = commandRequest.metadata;
+
+            var requestBody: any = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
                 command: command.toJson()
             }
-            this.postTrigger(resuestBody).then((res:Response)=>{
-                var command = new Command(requestObject.commandTarget, requestObject.issuerID, requestObject.schema, requestObject.schemaVersion, requestObject.actions);
+
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
+            }
+
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
+            }
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
+
+            this.postTrigger(requestBody).then((res:Response)=>{
                 var trigger = new Trigger(requestObject.predicate, command, null);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
+                trigger.title = requestObject.title;
+                trigger.description = requestObject.description;
+                trigger.metadata = requestObject.metadata;
                 resolve(trigger);
             }).catch((err)=>{
                 reject(err);
             });
         });
     }
-    postServerCodeTrigger(requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
+    postServerCodeTrigger(requestObject: PostServerCodeTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
             if (!requestObject) {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
@@ -88,15 +128,29 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "predicate is null"));
                 return;
             }
-            var resuestBody = {
+            var requestBody:any = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
-            this.postTrigger(resuestBody).then((res:Response)=>{
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
+            }
+
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
+            }
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
+            this.postTrigger(requestBody).then((res:Response)=>{
                 var trigger:Trigger = new Trigger(requestObject.predicate, null, requestObject.serverCode);
                 trigger.triggerID = (<any>res).body.triggerID;
                 trigger.disabled = false;
+                trigger.title = requestObject.title;
+                trigger.description = requestObject.description;
+                trigger.metadata = requestObject.metadata;
                 resolve(trigger);
             }).catch((err)=>{
                 reject(err);
@@ -147,7 +201,7 @@ export default class TriggerOps extends BaseOp {
 
     patchCommandTrigger(
         triggerID: string,
-        requestObject: CommandTriggerRequest): Promise<Trigger> {
+        requestObject: PatchCommandTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
             if (!triggerID) {
                 reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
@@ -160,39 +214,56 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "requestObject is null"));
                 return;
             }
-            if (!requestObject.schema) {
-                reject(new ThingIFError(Errors.ArgumentError, "schema is null or empty"));
-                return;
-            } else if (!KiiUtil.isString(requestObject.schema)) {
-                reject(new ThingIFError(Errors.ArgumentError, "schema is not string"));
-                return;
-            }
-            if (requestObject.schemaVersion === null || requestObject.schemaVersion === undefined) {
-                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is null"));
-                return;
-            }
-            if (!requestObject.actions && !requestObject.predicate) {
-                reject(new ThingIFError(Errors.ArgumentError, "must specify actions or predicate"));
-                return;
+            let requestBody:any = {}
+            if(!!requestObject.predicate){
+                requestBody["predicate"] = requestObject.predicate.toJson();
             }
 
-            if (!requestObject.commandTarget) {
-                reject(new ThingIFError(Errors.ArgumentError, "commandTarget is null"));
-                return;
+            if(!!requestObject.command){
+                var commandRequest = requestObject.command;
+                if (!commandRequest.schema) {
+                    reject(new ThingIFError(Errors.ArgumentError, "schema of command is null or empty"));
+                    return;
+                } else if (!KiiUtil.isString(commandRequest.schema)) {
+                    reject(new ThingIFError(Errors.ArgumentError, "schema of command is not string"));
+                    return;
+                }
+                if (commandRequest.schemaVersion === null || commandRequest.schemaVersion === undefined) {
+                    reject(new ThingIFError(Errors.ArgumentError, "schemaVersion of command is null"));
+                    return;
+                }
+                if (!commandRequest.actions) {
+                    reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
+                    return;
+                }
+                if (!commandRequest.issuerID) {
+                    reject(new ThingIFError(Errors.ArgumentError, "issuerID is null"));
+                    return;
+                }
+                var command = new Command(
+                    commandRequest.targetID,
+                    commandRequest.issuerID,
+                    commandRequest.schema,
+                    commandRequest.schemaVersion,
+                    commandRequest.actions);
+                command.title = commandRequest.title;
+                command.description = commandRequest.description;
+                command.metadata = commandRequest.metadata;
+                requestBody["command"] = command.toJson();
+                requestBody["triggersWhat"] = "COMMAND";
+            }
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
             }
 
-            var command = new Command(
-                requestObject.commandTarget,
-                requestObject.issuerID,
-                requestObject.schema,
-                requestObject.schemaVersion,
-                requestObject.actions);
-            var resuestBody = {
-                predicate: requestObject.predicate.toJson(),
-                triggersWhat: TriggersWhat.COMMAND,
-                command: command.toJson()
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
             }
-            this.patchTriggger(triggerID, resuestBody).then((result)=>{
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
+            this.patchTriggger(triggerID, requestBody).then((result)=>{
                 resolve(result);
             }).catch((err)=>{
                 reject(err);
@@ -202,7 +273,7 @@ export default class TriggerOps extends BaseOp {
 
     patchServerCodeTrigger(
         triggerID: string,
-        requestObject: ServerCodeTriggerRequest): Promise<Trigger> {
+        requestObject: PatchServerCodeTriggerRequest): Promise<Trigger> {
         return new Promise<Trigger>((resolve, reject)=>{
             if (!triggerID) {
                 reject(new ThingIFError(Errors.ArgumentError, "triggerID is null or empty"));
@@ -219,12 +290,23 @@ export default class TriggerOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "must specify serverCode or predicate"));
                 return;
             }
-            var resuestBody = {
+            var requestBody: any = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.SERVER_CODE,
                 serverCode: requestObject.serverCode.toJson()
             }
-            this.patchTriggger(triggerID, resuestBody).then((result)=>{
+            if(!!requestObject.title){
+                requestBody["title"]= requestObject.title;
+            }
+
+            if(!!requestObject.description){
+                requestBody["description"] = requestObject.description;
+            }
+
+            if(!!requestObject.metadata){
+                requestBody["metadata"] = requestObject.metadata;
+            }
+            this.patchTriggger(triggerID, requestBody).then((result)=>{
                 resolve(result);
             }).catch((err)=>{
                 reject(err);
