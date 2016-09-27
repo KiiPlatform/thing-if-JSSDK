@@ -52,7 +52,7 @@
     "yargs": "^5.0.0"
   },
   "dependencies": {
-    "es6-promise": "^3.3.1",
+    "es6-promise": "^4.0.2",
     "make-error-cause": "^1.2.1",
     "popsicle": "^8.2.0"
   }
