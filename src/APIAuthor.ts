@@ -173,7 +173,8 @@ export class APIAuthor {
      * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, commandTargetID, [{turnPower: {power:true}}], statePredicate, issuerID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject("Schema name", 1, [{turnPower: {power:true}}], commandTargetID, issuerID);
+     * var request = new ThingIF.PostCommandTriggerRequest(triggerCommandObject, statePredicate);
      * author.postCommandTrigger(targetID, request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -247,7 +248,8 @@ export class APIAuthor {
      * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("led2", 2, commandTargetID, [{setBrightness: {brightness:50}}], statePredicate, issuerID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], commandTargetID, issuerID);
+     * var request = new ThingIF.PatchCommandTriggerRequest(triggerCommandObject, statePredicate);
      * author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
