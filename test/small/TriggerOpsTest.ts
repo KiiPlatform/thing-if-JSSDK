@@ -357,7 +357,6 @@ describe('Test TriggerOps', function () {
                 new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
                 new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target, owner), predicate), Errors.ArgumentError, "actions of command is null", "should handle error when actions is null"),
                 new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, owner), null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], null, owner), predicate), Errors.ArgumentError, "targetID of command is null", "should handle error when commandTarget is null"),
                 new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, null), predicate), Errors.ArgumentError, "issuerID of command is null", "should handle error when issuerID is null"),
             ]
             tests.forEach(function(test) {
