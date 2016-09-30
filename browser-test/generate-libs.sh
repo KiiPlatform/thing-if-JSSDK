@@ -1,3 +1,4 @@
+if [ -d "lib" ]; then  rm -fr lib; fi
 mkdir lib
 cd ..
 npm install browserify
