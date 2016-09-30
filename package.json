@@ -33,7 +33,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^3.5.0",
-    "coveralls": "^2.11.12",
+    "coveralls": "^2.11.14",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.5.2",
@@ -52,7 +52,7 @@
     "yargs": "^5.0.0"
   },
   "dependencies": {
-    "es6-promise": "^3.3.1",
+    "es6-promise": "^4.0.3",
     "make-error-cause": "^1.2.1",
     "popsicle": "^8.2.0"
   }
