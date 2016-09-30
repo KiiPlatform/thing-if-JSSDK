@@ -46,7 +46,8 @@ QUnit.test("Large Tests for Command Trigger on the Web Browser", function(assert
     var targetID = api.target;
     var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
     var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-    var request = new ThingIF.CommandTriggerRequest(schema, schemaVersion, actions, statePredicate, issuerID);
+    var commandObject = new ThingIF.TriggerCommandObject(schema, schemaVersion, actions, null, issuerID);
+    var request = new ThingIF.PostCommandTriggerRequest(commandObject, statePredicate);
 
     // 1. create command trigger with StatePredicate
     api.postCommandTrigger(request).then(function(trigger) {
@@ -66,7 +67,7 @@ QUnit.test("Large Tests for Command Trigger on the Web Browser", function(assert
 
         // 2. create command trigger with SchedulePredicate
         var schedulePredicate = new ThingIF.SchedulePredicate("0 12 1 * *");
-        request = new ThingIF.CommandTriggerRequest(schema, schemaVersion, actions, schedulePredicate, issuerID);
+        request = new ThingIF.CommandTriggerRequest(commandObject, schedulePredicate);
         // Admin token is needed when allowCreateTaskByPrincipal=false
         api._au._token = adminToken;
         return api.postCommandTrigger(request);
@@ -94,7 +95,7 @@ QUnit.test("Large Tests for Command Trigger on the Web Browser", function(assert
         assert.deepEqual(trigger.command.targetID, targetID);
         assert.deepEqual(trigger.command.issuerID, issuerID);
         assert.notOk(trigger.serverCode);
-        
+
         // 4. list triggers
         api._au._token = user._accessToken;
         return api.listTriggers(new ThingIF.ListQueryOptions());
