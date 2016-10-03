@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OnboardWithVendorThingIDRequest - Documentation</title>
+    <title>PatchCommandTriggerRequest - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">OnboardWithVendorThingIDRequest</h1>
+    <h1 class="page-title">PatchCommandTriggerRequest</h1>
     
 
     
@@ -41,10 +41,10 @@
 <header>
     
         <h2>
-        OnboardWithVendorThingIDRequest
+        PatchCommandTriggerRequest
         </h2>
         
-            <div class="class-description">Represents the request for onboarding with vendorThingID with owner.</div>
+            <div class="class-description">Represents the request for updating a command trigger.</div>
         
     
 </header>
@@ -58,14 +58,14 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="OnboardWithVendorThingIDRequest"><span class="type-signature"></span>new OnboardWithVendorThingIDRequest<span class="signature">(vendorThingID, thingPassword, ownerID<span class="signature-attributes">opt</span>, thingType<span class="signature-attributes">opt</span>, thingProperties<span class="signature-attributes">opt</span>, firmwareVersion<span class="signature-attributes">opt</span>, dataGroupingInterval<span class="signature-attributes">opt</span>, layoutPosition<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="PatchCommandTriggerRequest"><span class="type-signature"></span>new PatchCommandTriggerRequest<span class="signature">(command<span class="signature-attributes">opt</span>, predicate<span class="signature-attributes">opt</span>, title<span class="signature-attributes">opt</span>, description<span class="signature-attributes">opt</span>, metadata<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Create a OnboardWithVendorThingIDRequest.
+    Create a PostCommandTriggerRequest.
 </div>
 
 
@@ -103,75 +103,13 @@
 
         <tr>
             
-                <td class="name"><code>vendorThingID</code></td>
+                <td class="name"><code>command</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">ID of the thing given by the thing vendor.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>thingPassword</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Password of the thing.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ownerID</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="TypedID.html">TypedID</a></span>
+<span class="param-type"><a href="TriggerCommandObject.html">TriggerCommandObject</a></span>
 
 
             
@@ -191,14 +129,47 @@
 
             
 
-            <td class="description last">ID of the owner. UserID or GroupID.</td>
+            <td class="description last">the necessary fields to construct command.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>thingType</code></td>
+                <td class="name"><code>predicate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Predicate.html">Predicate</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Predicate of the condition met for the trigger to execute.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
             
 
             <td class="type">
@@ -224,14 +195,47 @@
 
             
 
-            <td class="description last">Type of the thing. This is optional and ignored if Thing is already registered.</td>
+            <td class="description last">Title of the trigger.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>thingProperties</code></td>
+                <td class="name"><code>description</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Description of the trigger.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>metadata</code></td>
             
 
             <td class="type">
@@ -257,106 +261,7 @@
 
             
 
-            <td class="description last">Thing properties includes predefined and custom properties.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>firmwareVersion</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Firmware version of thing.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>dataGroupingInterval</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Internal used to group state history of thing. Only the values of <a href="global.html#DataGroupingInterval">DataGroupingInterval</a> should be used.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>layoutPosition</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Layout position of thing. Only the values of <a href="global.html#LayoutPosition">LayoutPosition</a> should be used.</td>
+            <td class="description last">Key-value list to store within trigger definition.</td>
         </tr>
 
     
@@ -394,7 +299,53 @@
 
         <tr>
             
-                <td class="name"><code>vendorThingID</code></td>
+                <td class="name"><code>command</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="TriggerCommandObject.html">TriggerCommandObject</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">instance of TriggerCommandObject.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>predicate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Predicate.html">Predicate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Predicate of the condition met for the trigger to execute.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
             
 
             <td class="type">
@@ -410,14 +361,14 @@
 
             
 
-            <td class="description last">ID of the thing given by the thing vendor.</td>
+            <td class="description last">Title of the trigger.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>thingPassword</code></td>
+                <td class="name"><code>description</code></td>
             
 
             <td class="type">
@@ -433,60 +384,14 @@
 
             
 
-            <td class="description last">Password of the thing.</td>
+            <td class="description last">Description of the trigger.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>owner</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">ID of the owner. UserID or GroupID.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>thingType</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Type of the thing. This is optional and ignored if Thing is already registered.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>thingProperties</code></td>
+                <td class="name"><code>metadata</code></td>
             
 
             <td class="type">
@@ -502,76 +407,7 @@
 
             
 
-            <td class="description last">Thing properties includes predefined and custom properties.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>firmwareVersion</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Firmware version of thing.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>dataGroupingInterval</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Internal used to group state history of thing.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>layoutPosition</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Layout position of thing.</td>
+            <td class="description last">Key-value list to store within trigger definition.</td>
         </tr>
 
     
