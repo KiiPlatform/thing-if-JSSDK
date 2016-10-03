@@ -54,7 +54,7 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
 $ git clone https://github.com/KiiPlatform/thing-if-JSSDK.git
 ```
 
-1. Bundle library using browserify.
+2. Bundle library using browserify.
 
  browserify bundles all the dependencies into a single file.
 ```
@@ -64,7 +64,7 @@ $ npm run build-lib
 $ browserify . -s ThingIF > thing-if-sdk.js
 ```
 
-1. Include the bundle file in your browser app
+3. Include the bundle file in your browser app
 ```
 <script src="path/to/thing-if-sdk.js"></script>
 ```
