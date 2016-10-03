@@ -1,7 +1,9 @@
 ## Browserify dependencies
 - sh generate-libs.sh
+
 ## Configure Kii app for test
 Modify js/TestApp.js for Kii App for testing
+
 ## Open test html file on browser
 - ThingIFAPICommandTest.html is for checking Command relative APIs of ThingIFAPI
 - ThingIFAPITriggerTest.html is for checking Triggers relative APIs of ThingIFAPI
