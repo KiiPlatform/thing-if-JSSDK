@@ -259,7 +259,8 @@ export class ThingIFAPI {
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.CommandTriggerRequest("Schema name", 1, commandTargetID, [{turnPower: {power:true}}], statePredicate);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject("Schema name", 1, [{turnPower: {power:true}}], commandTargetID);
+     * var request = new ThingIF.PostCommandTriggerRequest(triggerCommandObject, statePredicate);
      * api.postCommandTrigger(request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
@@ -375,7 +376,8 @@ export class ThingIFAPI {
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * // if commandTargetID can be different with api.target
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
-     * var request = new ThingIF.CommandTriggerRequest("led2", 2, commandTargetID, [{setBrightness: {brightness:50}}], statePredicate);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], commandTargetID);
+     * var request = new ThingIF.PatchCommandTriggerRequest(triggerCommandObject, statePredicate);
      * api.patchCommandTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){

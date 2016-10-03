@@ -47,18 +47,29 @@ $ gulp --u
 
 If succeeded, uglified library file named `thing-if-sdk.min.js` is available under `./dist/` folder.
 
-#### Use built SDK in browser
-You must include the dependencies by yourself. Add them before you import thing-if-js library. Like this:
+## Use thing-if-sdk in browser app
 
-```
-<script src="https://wzrd.in/standalone/make-error-cause@latest"></script>
-<script>this["make-error-cause"]=this.makeErrorCause</script>
-<script src="https://wzrd.in/standalone/popsicle@latest"></script>
-<script src="https://wzrd.in/standalone/es6-promise@latest"></script>
-<script>this["es6-promise"]=this.es6Promise;</script>
-<script src="path/to/thing-if-sdk.js"></script>
+1. Clone this repository
 
-```
+  ```
+  $ git clone https://github.com/KiiPlatform/thing-if-JSSDK.git
+  ```
+
+2. Bundle library using browserify.
+
+  browserify bundles all the dependencies into a single file.
+  ```
+  $ cd thing-if-JSSDK
+  $ npm install browserify -g
+  $ npm run build-lib
+  $ browserify . -s ThingIF > thing-if-sdk.js
+  ```
+
+3. Include the bundle file in your browser app
+
+  ```
+  <script src="path/to/thing-if-sdk.js"></script>
+  ```
 
 ## Test
 

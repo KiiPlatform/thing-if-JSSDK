@@ -1,6 +1,6 @@
 {
   "name": "thing-if-sdk",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
   "main": "lib/ThingIFSDK.js",
   "files": [
@@ -33,7 +33,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^3.5.0",
-    "coveralls": "^2.11.12",
+    "coveralls": "^2.11.14",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.5.2",
@@ -49,10 +49,10 @@
     "typings": "^1.3.3",
     "webpack": "^1.13.2",
     "webpack-stream": "^3.2.0",
-    "yargs": "^5.0.0"
+    "yargs": "^6.0.0"
   },
   "dependencies": {
-    "es6-promise": "^3.3.1",
+    "es6-promise": "^4.0.4",
     "make-error-cause": "^1.2.1",
     "popsicle": "^8.2.0"
   }
