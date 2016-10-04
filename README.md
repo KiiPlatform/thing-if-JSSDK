@@ -60,8 +60,8 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
   browserify bundles all the dependencies into a single file.
   ```
   $ cd thing-if-JSSDK
+  $ npm install
   $ npm install browserify -g
-  $ npm run build-lib
   $ browserify . -s ThingIF > thing-if-sdk.js
   ```
 
