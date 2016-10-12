@@ -49,6 +49,10 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
 
 ## Use thing-if-sdk in browser app
 
+**Note**: thing-if-sdk uses global Promise, so if the browser doesn't support Promise( like Mircrosoft IE11), it needs to polyfill promise to the browser app.
+
+Basic operations of thing-if-sdk are tested and passed on the following browsers: Mozilla Firefox 49.0.1, Safari 9.1.3, Chrome 53.0, and Microsoft Edge 38.
+
 1. Clone this repository
 
   ```
@@ -68,6 +72,9 @@ If succeeded, uglified library file named `thing-if-sdk.min.js` is available und
 3. Include the bundle file in your browser app
 
   ```
+  <!-- if the browser does not support promise, need to polyfill promise like the following importing script -->
+  <script src="https://raw.githubusercontent.com/taylorhakes/promise-polyfill/master/promise.js"></script>
+
   <script src="path/to/thing-if-sdk.js"></script>
   ```
 
@@ -239,3 +246,7 @@ typings install npm:thing-if-sdk --save
 import * as ThingIFSDK from 'thing-if-sdk'
 
 ```
+
+## License
+
+thing-if-JSSDK is released under the Apache 2.0 license. See LICENSE for details.
