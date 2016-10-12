@@ -72,8 +72,8 @@ Basic operations of thing-if-sdk are tested and passed on the following browsers
 3. Include the bundle file in your browser app
 
   ```
-  <!-- if the browser does not support promise, need to polyfill promise like the following importing script -->
-  <script src="https://raw.githubusercontent.com/taylorhakes/promise-polyfill/master/promise.js"></script>
+  <!-- if the browser does not support promise, need to download polyfill promise library(i.e. https://raw.githubusercontent.com/taylorhakes/promise-polyfill/master/promise.js) and import like the following script -->
+  <script src="path/to/promise.js"></script>
 
   <script src="path/to/thing-if-sdk.js"></script>
   ```
