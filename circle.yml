@@ -9,11 +9,11 @@ test:
 
     # uglify library
     - gulp --u
-    - cp ./dist/* $CIRCLE_ARTIFACTS/
+    - cp ./dist/thing-if-sdk* $CIRCLE_ARTIFACTS/
 
    # build sdk
     - gulp
-    - cp ./dist/* $CIRCLE_ARTIFACTS/
+    - cp ./dist/thing-if-sdk* $CIRCLE_ARTIFACTS/
   post:
     - npm run test-cov
 deployment:
