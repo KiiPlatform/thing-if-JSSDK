@@ -20,6 +20,9 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 
+import {TraitAlias} from './TraitAlias'
+import {State} from './State'
+
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
     private _owner: TypedID;
@@ -600,7 +603,7 @@ export class ThingIFAPI {
      * });
      */
     getState(
-        onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
+        onCompletion?: (err: Error, state:State)=> void): Promise<State>{
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
@@ -736,5 +739,24 @@ export class ThingIFAPI {
             })
         })
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
+    }
+
+    updateFirmwareVersion(
+        newFwVersion: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    listTraitAlias(
+        fwVersion: string,
+        listOptions?: Options.ListQueryOptions,
+        onCompletion?: (err: Error, results:QueryResult<TraitAlias>)=> void): Promise<QueryResult<TraitAlias>>{
+        //TODO: implement me
+        return new Promise<QueryResult<TraitAlias>>((resolve, reject)=>{
+            resolve(new QueryResult<TraitAlias>([]))
+        })
     }
 }

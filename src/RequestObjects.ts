@@ -4,6 +4,7 @@ import {ServerCode} from './ServerCode'
 import {TypedID} from './TypedID'
 import {DataGroupingInterval} from './DataGroupingInterval'
 import {LayoutPosition} from './LayoutPosition'
+import {Action} from './Action'
 
 /**
  * Represents the request for onboarding with vendorThingID with owner.
@@ -151,18 +152,14 @@ export class OnboardWithThingIDRequest {
 
 /**
  * Represents the request for creating a command.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
- * @prop {Object[]} actions Array of actions of the command.
+ * @prop {Action[]} actions Array of actions of the command.
  * @prop {string} issuer ID of the command issuer.
  * @prop {string} title Title of the command.
  * @prop {string} description Description of the command.
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class PostCommandRequest {
-    public schema: string;
-    public schemaVersion: number;
-    public actions: Array<Object>;
+    public actions: Array<Action>;
     public issuer: string;
     public title: string;
     public description: string;
@@ -171,24 +168,18 @@ export class PostCommandRequest {
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
-     * @param {number[]} actions Array of actions of the command.
+     * @param {Action[]} actions Array of actions of the command.
      * @param {TypedID} [issuerID] ID of the command issuer.
      * @param {string} [title] Title of the command.
      * @param {string} [description] Description of the command.
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        schema: string,
-        schemaVersion: number,
-        actions: Array<Object>,
+        actions: Array<Action>,
         issuerID?: TypedID,
         title?: string,
         description?: string,
         metadata?: Object) {
-            this.schema = schema;
-            this.schemaVersion = schemaVersion;
             this.actions = actions;
             if(!!issuerID && !!issuerID.id && !!issuerID.type){
                 this.issuer = issuerID.toString();
@@ -240,9 +231,7 @@ export class ListQueryOptions {
 
 /**
  * Represents the fields to construct command for creating/updating command trigger.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
- * @prop {Object[]} actions Array of actions of the command.
+ * @prop {Action[]} actions Array of actions of the command.
  * @prop {TypedID} issuerID instance of TypedID to represent issuer of command.
  * @prop {TypedID} targetID instance of TypedID to represent target of command.
  * @prop {string} title Title of the command.
@@ -250,9 +239,7 @@ export class ListQueryOptions {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class TriggerCommandObject {
-    public schema: string;
-    public schemaVersion: number;
-    public actions: Array<Object>;
+    public actions: Array<Action>;
     public issuerID: TypedID;
     public targetID: TypedID;
     public title: string;
@@ -262,8 +249,6 @@ export class TriggerCommandObject {
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
      * @param {number[]} actions Array of actions of the command.
      * @param {TypedID} [targetID] instance of TypedID to represent target of command.
      * @param {TypedID} [issuerID] instance of TypedID to represent issuer of command.
@@ -272,16 +257,12 @@ export class TriggerCommandObject {
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        schema: string,
-        schemaVersion: number,
-        actions: Array<Object>,
+        actions: Array<Action>,
         targetID?: TypedID,
         issuerID?: TypedID,
         title?: string,
         description?: string,
         metadata?: Object) {
-            this.schema = schema;
-            this.schemaVersion = schemaVersion;
             this.actions = actions;
             this.targetID = targetID;
             this.issuerID = issuerID;
