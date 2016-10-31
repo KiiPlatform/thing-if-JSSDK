@@ -741,22 +741,15 @@ export class ThingIFAPI {
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
-    updateFirmwareVersion(
-        newFwVersion: string,
-        onCompletion?: (err: Error)=> void): Promise<void>{
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
-    }
-
+    /** List finalized TraitAlias for specifed firmware version of current Thing.
+     * @param {string} fwVersion Firmware version.
+    */
     listTraitAlias(
         fwVersion: string,
-        listOptions?: Options.ListQueryOptions,
-        onCompletion?: (err: Error, results:QueryResult<TraitAlias>)=> void): Promise<QueryResult<TraitAlias>>{
+        onCompletion?: (err: Error, results:Array<TraitAlias>)=> void): Promise<Array<TraitAlias>>{
         //TODO: implement me
-        return new Promise<QueryResult<TraitAlias>>((resolve, reject)=>{
-            resolve(new QueryResult<TraitAlias>([]))
+        return new Promise<Array<TraitAlias>>((resolve, reject)=>{
+            resolve([])
         })
     }
 }
