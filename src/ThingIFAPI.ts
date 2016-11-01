@@ -20,8 +20,6 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 
-import {State} from './State'
-
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
     private _owner: TypedID;
@@ -610,7 +608,7 @@ export class ThingIFAPI {
      * });
      */
     getState(
-        onCompletion?: (err: Error, state:State)=> void): Promise<State>{
+        onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
