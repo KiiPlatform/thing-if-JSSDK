@@ -20,7 +20,6 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 
-import {TraitAlias} from './TraitAlias'
 import {State} from './State'
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
@@ -148,7 +147,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
-     * var request = new ThingIF.PostCommandRequest("led", 1, [{turnPower: {power:true}}]);
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias: [{"turnPower": true}]}];
+     * var request = new ThingIF.PostCommandRequest(actions);
      * api.postNewCommand(request).then(function(command) {
      *   // Do something
      * }).catch(function(err){
@@ -259,10 +260,12 @@ export class ThingIFAPI {
      * @return {Promise} promise object
      * @example
      * // commandTargetID can be different with api.target.
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias: [{"turnPower": true}]}];
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var triggerCommandObject = new ThingIF.TriggerCommandObject("Schema name", 1, [{turnPower: {power:true}}], commandTargetID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject(actions, commandTargetID);
      * var request = new ThingIF.PostCommandTriggerRequest(triggerCommandObject, statePredicate);
      * api.postCommandTrigger(request).then(function(trigger) {
      *   // Do something
@@ -301,8 +304,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * api.postServerCodeTrigger(request).then(function(trigger) {
@@ -375,11 +379,13 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias:[{"turnPower": true}]}];
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * // if commandTargetID can be different with api.target
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
-     * var triggerCommandObject = new ThingIF.TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], commandTargetID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject(actions, commandTargetID);
      * var request = new ThingIF.PatchCommandTriggerRequest(triggerCommandObject, statePredicate);
      * api.patchCommandTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
@@ -420,8 +426,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * api.patchServerCodeTrigger("Trigger ID", request).then(function(trigger) {
@@ -739,17 +746,5 @@ export class ThingIFAPI {
             })
         })
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
-    }
-
-    /** List finalized TraitAlias for specifed firmware version of current Thing.
-     * @param {string} fwVersion Firmware version.
-    */
-    listTraitAlias(
-        fwVersion: string,
-        onCompletion?: (err: Error, results:Array<TraitAlias>)=> void): Promise<Array<TraitAlias>>{
-        //TODO: implement me
-        return new Promise<Array<TraitAlias>>((resolve, reject)=>{
-            resolve([])
-        })
     }
 }

@@ -4,7 +4,6 @@ import {ServerCode} from './ServerCode'
 import {TypedID} from './TypedID'
 import {DataGroupingInterval} from './DataGroupingInterval'
 import {LayoutPosition} from './LayoutPosition'
-import {AliasActions} from './Action'
 
 /**
  * Represents the request for onboarding with vendorThingID with owner.
@@ -152,14 +151,14 @@ export class OnboardWithThingIDRequest {
 
 /**
  * Represents the request for creating a command.
- * @prop {AliasActions[]} actions Array of actions of the command.
+ * @prop {Object[]} actions Array of actions of the command.
  * @prop {string} issuer ID of the command issuer.
  * @prop {string} title Title of the command.
  * @prop {string} description Description of the command.
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class PostCommandRequest {
-    public actions: Array<AliasActions>;
+    public actions: Array<Object>;
     public issuer: string;
     public title: string;
     public description: string;
@@ -168,14 +167,14 @@ export class PostCommandRequest {
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {AliasActions[]} actions Array of actions of the command.
+     * @param {Object[]} actions Array of actions of the command.
      * @param {TypedID} [issuerID] ID of the command issuer.
      * @param {string} [title] Title of the command.
      * @param {string} [description] Description of the command.
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        actions: Array<AliasActions>,
+        actions: Array<Object>,
         issuerID?: TypedID,
         title?: string,
         description?: string,
@@ -231,7 +230,7 @@ export class ListQueryOptions {
 
 /**
  * Represents the fields to construct command for creating/updating command trigger.
- * @prop {AliasActions[]} actions Array of actions of the command.
+ * @prop {Object[]} actions Array of actions of the command.
  * @prop {TypedID} issuerID instance of TypedID to represent issuer of command.
  * @prop {TypedID} targetID instance of TypedID to represent target of command.
  * @prop {string} title Title of the command.
@@ -239,7 +238,7 @@ export class ListQueryOptions {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class TriggerCommandObject {
-    public actions: Array<AliasActions>;
+    public actions: Array<Object>;
     public issuerID: TypedID;
     public targetID: TypedID;
     public title: string;
@@ -249,7 +248,7 @@ export class TriggerCommandObject {
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {AliasActions[]} actions Array of actions of the command.
+     * @param {Object[]} actions Array of actions of the command.
      * @param {TypedID} [targetID] instance of TypedID to represent target of command.
      * @param {TypedID} [issuerID] instance of TypedID to represent issuer of command.
      * @param {string} [title] Title of the command.
@@ -257,7 +256,7 @@ export class TriggerCommandObject {
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        actions: Array<AliasActions>,
+        actions: Array<Object>,
         targetID?: TypedID,
         issuerID?: TypedID,
         title?: string,
