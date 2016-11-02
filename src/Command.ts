@@ -5,8 +5,6 @@ import * as KiiUtil from './internal/KiiUtilities'
  * @prop {string} commandID ID of command.
  * @prop {TypedID} targetID ID of the target thing.
  * @prop {TypedID} issuerID ID of the command issuer.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
  * @prop {Object[]} actionResults Array of action results of the command.
  * @prop {string} commandState State of the command.
@@ -21,8 +19,6 @@ export class Command {
     public commandID: string;
     public targetID: TypedID;
     public issuerID: TypedID;
-    public schema: string;
-    public schemaVersion: number;
     public actions: Array<Object>;
     public actionResults: Array<Object>;
     public commandState:string;
@@ -71,12 +67,6 @@ export class Command {
         if(!!this.issuerID){
             jsonObject.issuer = this.issuerID.toString();
         }
-        if(!!this.schema){
-            jsonObject.schema = this.schema;
-        }
-        if(!!this.schemaVersion){
-            jsonObject.schemaVersion = this.schemaVersion;
-        }
         if(!!this.actions){
             jsonObject.actions = this.actions;
         }
@@ -100,7 +90,7 @@ export class Command {
      * @return {Command} Command instance
      */
     static fromJson(obj: any): Command {
-        if(!obj.target || !obj.issuer || !obj.schema || !obj.schemaVersion || !obj.actions){
+        if(!obj.target || !obj.issuer || !obj.actions){
             return null;
         }
         let command = new Command(
