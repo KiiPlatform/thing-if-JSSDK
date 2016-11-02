@@ -745,4 +745,18 @@ export class ThingIFAPI {
         })
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
+
+    /** Update firmware version of the thing
+     * @param {string} newFwVersion New firmware version.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateFirmwareVersion(
+        newFwVersion: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
 }

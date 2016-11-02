@@ -97,9 +97,11 @@ export class APIAuthor {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias: [{"turnPower": true}]}];
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
      * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
-     * var request = new ThingIF.PostCommandRequest("led", 1, [{turnPower: {power:true}}], issuerID);
+     * var request = new ThingIF.PostCommandRequest(actions, issuerID);
      * author.postNewCommand(targetID, request).then(function(command) {
      *   // Do something
      * }).catch(function(err){
@@ -168,12 +170,14 @@ export class APIAuthor {
      * @return {Promise} promise object
      * @example
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias: [{"turnPower": true}]}];
      * // commandTargetID can be different with targetID.
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
      * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var triggerCommandObject = new ThingIF.TriggerCommandObject("Schema name", 1, [{turnPower: {power:true}}], commandTargetID, issuerID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject(actions, commandTargetID, issuerID);
      * var request = new ThingIF.PostCommandTriggerRequest(triggerCommandObject, statePredicate);
      * author.postCommandTrigger(targetID, request).then(function(trigger) {
      *   // Do something
@@ -194,9 +198,10 @@ export class APIAuthor {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * author.postServerCodeTrigger(targetID, request).then(function(trigger) {
@@ -242,13 +247,15 @@ export class APIAuthor {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias: [{"turnPower": true}]}];
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
      * // if commandTargetID can be different with targetID
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
      * var issuerID = new ThingIF.TypedID(ThingIF.Types.User, "Your UserID");
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var triggerCommandObject = new ThingIF.TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], commandTargetID, issuerID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject("led2", 2, actions, commandTargetID, issuerID);
      * var request = new ThingIF.PatchCommandTriggerRequest(triggerCommandObject, statePredicate);
      * author.patchCommandTrigger(targetID, "Trigger ID", request).then(function(trigger) {
      *   // Do something
@@ -271,9 +278,10 @@ export class APIAuthor {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
      * var targetID = new ThingIF.TypedID(ThingIF.Types.Thing, "Thing ID for target");
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * author.patchServerCodeTrigger(targetID, "Trigger ID", request).then(function(trigger) {
@@ -473,5 +481,21 @@ export class APIAuthor {
         installationID: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
         return PromiseWrapper.voidPromise((new PushOps(this)).uninstall(installationID), onCompletion);
+    }
+
+    /** Update firmware version of a thing
+     * @param {string} thingID ThingID of thing to be updated.
+     * @param {string} newFwVersion New firmware version.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+    */
+    updateFirmwareVersion(
+        thingID: string,
+        newFwVersion: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
     }
 }
