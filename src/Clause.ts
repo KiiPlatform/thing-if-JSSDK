@@ -38,12 +38,12 @@ export class Equals extends Clause {
      * @constructor
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
-     * @param {string} alias Name of TraitAlias.
+     * @param [string] alias Name of TraitAlias.
      */
     constructor(
         field: string,
         value: string|number|boolean,
-        alias: string
+        alias?: string
     ) {
         super();
         this.field = field;
@@ -55,12 +55,15 @@ export class Equals extends Clause {
      * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
-        return {
+        var jsonObject: any = {
             type: "eq",
             field: this.field,
-            value: this.value,
-            alias: this.alias
+            value: this.value
         };
+        if(!!this.alias) {
+            jsonObject["alias"] = this.alias;
+        }
+        return jsonObject;
     }
     /**
      * This method is for internal use only.
@@ -91,12 +94,12 @@ export class NotEquals extends Clause {
      * @constructor
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
-     * @param {string} alias Name of TraitAlias.
+     * @param [string] alias Name of TraitAlias.
      */
     constructor(
         field: string,
         value: string|number|boolean,
-        alias: string
+        alias?: string
     ) {
         super();
         this.field = field;
@@ -108,14 +111,10 @@ export class NotEquals extends Clause {
      * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
+        let equals: Equals = new Equals(this.field, this.value, this.alias);
         return {
             type: "not",
-            clause: {
-                type: "eq",
-                field: this.field,
-                value: this.value,
-                alias: this.alias
-            }
+            clause: equals.toJson()
         };
     }
     /**
@@ -245,7 +244,7 @@ export class Range extends Clause {
      * @param {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
      * @param {number} lowerLimit The upper lower of the range.
      * @param {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
-     * @param {string} alias Name of TraitAlias.
+     * @param [string] alias Name of TraitAlias.
      */
     constructor(
         field: string,
@@ -253,7 +252,7 @@ export class Range extends Clause {
         upperIncluded: boolean,
         lowerLimit: number,
         lowerIncluded: boolean,
-        alias: string
+        alias?: string
     ) {
         super();
         this.field = field;
@@ -267,36 +266,36 @@ export class Range extends Clause {
      * Create a Range instance of the less than.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
-     * @param {string} alias Name of TraitAlias.
+     * @param [string] alias Name of TraitAlias.
      */
-    static greaterThan(field: string, lowerLimit: number, alias: string): Range {
+    static greaterThan(field: string, lowerLimit: number, alias?: string): Range {
         return new Range(field, null, null, lowerLimit, false, alias);
     }
     /**
      * Create a Range instance of the less than or equals.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
-     * @param {string} alias Name of TraitAlias.
+     * @param [string] alias Name of TraitAlias.
      */
-    static greaterThanEquals(field: string, lowerLimit: number, alias: string): Range {
+    static greaterThanEquals(field: string, lowerLimit: number, alias?: string): Range {
         return new Range(field, null, null, lowerLimit, true, alias);
     }
     /**
      * Create a Range instance of the greater than.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
-     * @param {string} alias Name of TraitAlias.
+     * @param [string] alias Name of TraitAlias.
      */
-    static lessThan(field: string, upperLimit: number, alias: string): Range {
+    static lessThan(field: string, upperLimit: number, alias?: string): Range {
         return new Range(field, upperLimit, false, null, null, alias);
     }
     /**
      * Create a Range instance of the greater than or equals.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
-     * @param {string} alias Name of TraitAlias.
+     * @param [string] alias Name of TraitAlias.
      */
-    static lessThanEquals(field: string, upperLimit: number, alias: string): Range {
+    static lessThanEquals(field: string, upperLimit: number, alias?: string): Range {
         return new Range(field, upperLimit, true, null, null, alias);
     }
     /**
@@ -304,7 +303,10 @@ export class Range extends Clause {
      * @return {Object} JSON object that represented this instance.
      */
     toJson(): any {
-        var json: any = {type: "range", field: this.field, alias: this.alias};
+        var json: any = {type: "range", field: this.field};
+        if (!!this.alias) {
+            json["alias"] = this.alias;
+        }
         if (this.upperLimit != null && this.upperLimit != undefined) {
             json["upperLimit"] = this.upperLimit;
         }
