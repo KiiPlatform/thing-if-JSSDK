@@ -17,6 +17,10 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
+import {Clause} from './Clause'
+import {HistoryStateResults} from './HistoryStateResults'
+import {Aggregation} from './Aggregation'
+
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -496,6 +500,27 @@ export class APIAuthor {
         //TODO: implement me
         return new Promise<void>((resolve, reject)=>{
             resolve();
+        })
+    }
+
+    /** Query History state of the thing.
+     * @param {string} thingID ThingID of thing to query.
+     * @param {Clause} clause Instance of clause to query history state.
+     * @param {boolean} grouped If true is passed, the result will be grouped based on the DataGroupingIntervals of Trait.
+     * @param {Aggregation[]} Aggregation Array of Aggregation instance for querying.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+    */
+    queryStates(
+        thingID: string,
+        clause: Clause,
+        grouped: boolean,
+        aggregations?: Array<Aggregation>,
+        onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
+
+        //TODO: implement me
+        return new Promise<HistoryStateResults>((resolve, reject)=>{
+            resolve(new HistoryStateResults("", grouped));
         })
     }
 }

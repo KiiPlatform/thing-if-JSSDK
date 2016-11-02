@@ -19,6 +19,8 @@ export abstract class Clause {
             return Or.fromJson(obj);
         } else if (obj.type == "range") {
             return Range.fromJson(obj);
+        } else if (obj.type == "withTimeRange") {
+            return TimeRange.fromJson(obj);
         }
         return null;
     }
@@ -334,5 +336,30 @@ export class Range extends Clause {
         let lowerIncluded = obj.lowerIncluded ? obj.lowerIncluded : null;
         let alias = obj.alias ? obj.alias : null;
         return new Range(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded, alias);
+    }
+}
+
+/**
+ * Represent time range clause when querying state history.
+ */
+export class TimeRange extends Clause {
+    constructor(
+        public lowerLimit: Date,
+        public upperLimit: Date,
+    ){
+        super();
+    }
+
+    toJson(): any {
+        return {
+            type: "withTimeRange",
+            lowerLimit: this.lowerLimit.getMilliseconds(),
+            upperLimit: this.upperLimit.getMilliseconds()
+        }
+    }
+
+    static fromJson(obj:any): TimeRange {
+        //TODO: implement me
+        return new TimeRange(new Date(), new Date());
     }
 }
