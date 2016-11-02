@@ -19,7 +19,9 @@ import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
-
+import {Aggregation} from './Aggregation'
+import {Clause} from './Clause'
+import {HistoryStateResults} from './HistoryStateResults'
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
     private _owner: TypedID;
@@ -757,6 +759,25 @@ export class ThingIFAPI {
         //TODO: implement me
         return new Promise<void>((resolve, reject)=>{
             resolve();
+        })
+    }
+
+    /** Query History state of the thing.
+     * @param {Clause} clause Instance of clause to query history state.
+     * @param {boolean} grouped If true is passed, the result will be grouped based on the DataGroupingIntervals of Trait.
+     * @param {Aggregation[]} Aggregation Array of Aggregation instance for querying.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+    */
+    queryStates(
+        clause: Clause,
+        grouped: boolean,
+        aggregations?: Array<Aggregation>,
+        onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
+
+        //TODO: implement me
+        return new Promise<HistoryStateResults>((resolve, reject)=>{
+            resolve(new HistoryStateResults("", grouped));
         })
     }
 }
