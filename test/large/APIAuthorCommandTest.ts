@@ -48,8 +48,6 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
             var postCommandRequest =
                 new thingIFSDK.PostCommandRequest(
-                    "led",
-                    1,
                     [{turnPower: {power:true}}],
                     issuerID,
                     "title of led",
@@ -81,8 +79,6 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
             var postCommandRequest =
                 new thingIFSDK.PostCommandRequest(
-                    "led",
-                    1,
                     [{turnPower: {power:true}}],
                     issuerID,
                     "title of led",

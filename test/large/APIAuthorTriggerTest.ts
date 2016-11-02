@@ -66,15 +66,13 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
         it("all operations", function (done) {
             var triggerID1: string;
             var triggerID2: string;
-            var schema = "led";
-            var schemaVersion = 1;
             var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
             var issuerID = new thingIFSDK.TypedID(thingIFSDK.Types.User, user.userID);
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, targetThingID);
 
             var condition = new thingIFSDK.Condition(new thingIFSDK.Equals("power", "false"));
             var statePredicate = new thingIFSDK.StatePredicate(condition, thingIFSDK.TriggersWhen.CONDITION_CHANGED);
-            var commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, targetID, issuerID);
+            var commandRequest = new TriggerCommandObject(actions, targetID, issuerID);
             var request = new PostCommandTriggerRequest(commandRequest, statePredicate);
 
             // 1. create command trigger with StatePredicate
@@ -85,8 +83,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 expect(trigger.predicate.getEventSource()).to.equal("STATES");
                 expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                 expect(trigger.predicate.condition).to.deep.equal(condition);
-                expect(trigger.command.schema).to.equal(schema);
-                expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
                 expect(trigger.command.issuerID).to.deep.equal(issuerID);
@@ -94,7 +90,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 // 2. create command trigger with SchedulePredicate
                 var schedulePredicate = new thingIFSDK.SchedulePredicate("0 12 1 * *");
-                request = new PostCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, targetID, issuerID), schedulePredicate);
+                request = new PostCommandTriggerRequest(new TriggerCommandObject(actions, targetID, issuerID), schedulePredicate);
                 // Admin token is needed when allowCreateTaskByPrincipal=false
                 (<any>au)._token = adminToken;
                 return au.postCommandTrigger(targetID, request);
@@ -103,8 +99,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 expect(triggerID2).to.be.not.null;
                 expect(trigger.disabled).to.be.false;
                 expect(trigger.predicate.schedule).to.equal("0 12 1 * *");
-                expect(trigger.command.schema).to.equal(schema);
-                expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
                 expect(trigger.command.issuerID).to.deep.equal(issuerID);
@@ -116,8 +110,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 expect(trigger.triggerID).to.equal(triggerID2);
                 expect(trigger.disabled).to.be.true;
                 expect(trigger.predicate.schedule).to.equal("0 12 1 * *");
-                expect(trigger.command.schema).to.equal(schema);
-                expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                 expect(trigger.command.actions).to.deep.equal(actions);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
                 expect(trigger.command.issuerID).to.deep.equal(issuerID);
@@ -137,8 +129,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                         expect(trigger.predicate.getEventSource()).to.equal("STATES");
                         expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                         expect(trigger.predicate.condition).to.deep.equal(condition);
-                        expect(trigger.command.schema).to.equal(schema);
-                        expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                         expect(trigger.command.actions).to.deep.equal(actions);
                         expect(trigger.command.targetID).to.deep.equal(targetID);
                         expect(trigger.command.issuerID).to.deep.equal(issuerID);
@@ -146,8 +136,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     } else if (trigger.triggerID == triggerID2) {
                         expect(trigger.disabled).to.be.true;
                         expect(trigger.predicate.schedule).to.equal("0 12 1 * *");
-                        expect(trigger.command.schema).to.equal(schema);
-                        expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                         expect(trigger.command.actions).to.deep.equal(actions);
                         expect(trigger.command.targetID).to.deep.equal(targetID);
                         expect(trigger.command.issuerID).to.deep.equal(issuerID);
@@ -157,7 +145,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     }
                 }
                 // 5. update trigger
-                var commandRequest = new TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], targetID, issuerID);
+                var commandRequest = new TriggerCommandObject([{setBrightness: {brightness:50}}], targetID, issuerID);
                 request = new PatchCommandTriggerRequest(commandRequest, statePredicate);
                 return au.patchCommandTrigger(targetID, triggerID1, request);
             }).then((trigger:any)=>{
@@ -166,8 +154,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 expect(trigger.predicate.getEventSource()).to.equal("STATES");
                 expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                 expect(trigger.predicate.condition).to.deep.equal(condition);
-                expect(trigger.command.schema).to.equal("led2");
-                expect(trigger.command.schemaVersion).to.equal(2);
                 expect(trigger.command.actions).to.deep.equal([{setBrightness: {brightness:50}}]);
                 expect(trigger.command.targetID).to.deep.equal(targetID);
                 expect(trigger.command.issuerID).to.deep.equal(issuerID);
@@ -188,8 +174,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                 expect(queryResult.results[0].predicate.getEventSource()).to.equal("STATES");
                 expect(queryResult.results[0].predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                 expect(queryResult.results[0].predicate.condition).to.deep.equal(condition);
-                expect(queryResult.results[0].command.schema).to.equal("led2");
-                expect(queryResult.results[0].command.schemaVersion).to.equal(2);
                 expect(queryResult.results[0].command.actions).to.deep.equal([{setBrightness: {brightness:50}}]);
                 expect(queryResult.results[0].command.targetID).to.deep.equal(targetID);
                 expect(queryResult.results[0].command.issuerID).to.deep.equal(issuerID);
@@ -218,8 +202,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
             });
             it("should succeeded", function (done) {
                 var triggerID1: string;
-                var schema = "led";
-                var schemaVersion = 1;
                 var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
                 var issuerID = new TypedID(Types.User, user.userID);
                 var targetID = new TypedID(Types.Thing, targetThingID);
@@ -227,7 +209,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, issuerID);
+                var commandRequest = new TriggerCommandObject(actions, commandTarget, issuerID);
                 var request = new PostCommandTriggerRequest(commandRequest, statePredicate);
 
                 // 1. create command trigger with StatePredicate
@@ -238,8 +220,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                     expect(trigger.predicate.condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(commandTarget);
                     expect(trigger.command.issuerID).to.deep.equal(issuerID);
@@ -267,8 +247,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
             });
             it("should succeeded", function (done) {
                 var triggerID1: string;
-                var schema = "led";
-                var schemaVersion = 1;
                 var actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
                 var issuerID = new TypedID(Types.User, user.userID);
                 var targetID = new TypedID(Types.Thing, targetThingID);
@@ -276,7 +254,7 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
 
                 var condition = new Condition(new Equals("power", "false"));
                 var statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
-                var commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, targetID, issuerID);
+                var commandRequest = new TriggerCommandObject(actions, targetID, issuerID);
                 var request = new PostCommandTriggerRequest(commandRequest, statePredicate);
 
                 // 1. create command trigger with StatePredicate
@@ -287,14 +265,12 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect(trigger.predicate.triggersWhen).to.equal("CONDITION_CHANGED");
                     expect(trigger.predicate.condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(targetID);
                     expect(trigger.command.issuerID).to.deep.equal(issuerID);
                     expect(trigger.serverCode).to.be.null;
                     // 2. patch command trigger as cross thing trigger
-                    var commandRequest = new TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], commandTarget, issuerID);
+                    var commandRequest = new TriggerCommandObject([{setBrightness: {brightness:50}}], commandTarget, issuerID);
                     request = new PatchCommandTriggerRequest(commandRequest, statePredicate);
                     return au.patchCommandTrigger(targetID, triggerID1, request);
                 }).then((updatedTrigger: Trigger) =>{
@@ -305,8 +281,6 @@ describe("Large Tests for APIAuthor Trigger APIs:", function () {
                     expect(statePredicate.getEventSource()).to.equal("STATES");
                     expect(statePredicate.triggersWhen).to.equal("CONDITION_CHANGED");
                     expect(JSON.stringify(statePredicate.condition)).to.deep.equal(JSON.stringify(condition));
-                    expect(updatedTrigger.command.schema).to.equal("led2");
-                    expect(updatedTrigger.command.schemaVersion).to.equal(2);
                     expect(updatedTrigger.command.actions).to.deep.equal([{setBrightness: {brightness:50}}]);
                     expect(updatedTrigger.command.targetID.toString()).to.deep.equal(commandTarget.toString());
                     expect(updatedTrigger.command.issuerID.toString()).to.deep.equal(issuerID.toString());

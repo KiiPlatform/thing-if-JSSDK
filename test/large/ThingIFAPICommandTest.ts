@@ -44,22 +44,18 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
     it("handle success response by calling ThingIFAPI#postNewCommand, ThingIFAPI#getCommand, and ThingIFAPI#listCommands", function (done) {
         var postCommandRequest =
             new thingIFSDK.PostCommandRequest(
-                "led",
-                1,
                 [{turnPower: {power:true}}],
                 null,
                 "title of led",
                 "represent led light",
                 {"power": "true for power on, and false for power off"});
-        var postCommandRequest2 = new thingIFSDK.PostCommandRequest("light", 2, [{turnPower: {power:false}}])
+        var postCommandRequest2 = new thingIFSDK.PostCommandRequest([{turnPower: {power:false}}])
         let command1:Command;
         let command2:Command;
         thingIFAPI.postNewCommand(postCommandRequest).then((cmd:Command)=>{
             // test postNewCommand
             expect(cmd).not.null;
             expect(cmd.commandID).not.null;
-            expect(cmd.schema).to.be.equal(postCommandRequest.schema);
-            expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
             expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
             // These three fields are assigned by server automatically.
             // postNewCommand method does not get command from server, so these fields should be undefined.
@@ -77,8 +73,6 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             // tet getCommand
             expect(cmd).not.null;
             expect(cmd.commandID).not.null;
-            expect(cmd.schema).to.be.equal(postCommandRequest.schema);
-            expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
             expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
             expect(cmd.modified).not.null;
             expect(cmd.modified).not.undefined;

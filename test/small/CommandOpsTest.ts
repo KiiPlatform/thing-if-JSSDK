@@ -75,8 +75,6 @@ describe("Test CommandOps", function() {
             };
             let issuerUserID = "123456"
             let expectedReqBody:any = {
-                schema: "led",
-                schemaVersion: 1,
                 actions: [{turnPower: {power: true}}],
                 issuer: `user:${issuerUserID}`,
                 title: "title of led",
@@ -99,8 +97,6 @@ describe("Test CommandOps", function() {
                     );
                 var issuerID = new TypedID(Types.User, issuerUserID);
                 var cmdRequest = new Options.PostCommandRequest(
-                    expectedReqBody.schema,
-                    expectedReqBody.schemaVersion,
                     expectedReqBody.actions,
                     issuerID,
                     expectedReqBody.title,
@@ -108,8 +104,6 @@ describe("Test CommandOps", function() {
                     expectedReqBody.metadata);
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
                     expect(cmd.commandID).to.be.equal(expectedCommandID);
-                    expect(cmd.schema).to.be.equal(expectedReqBody.schema);
-                    expect(cmd.schemaVersion).to.be.equal(expectedReqBody.schemaVersion);
                     expect(cmd.actions).to.be.deep.equal(expectedReqBody.actions);
                     expect(cmd.actionResults).to.be.undefined;
                     expect(cmd.commandState).to.be.undefined;
@@ -136,8 +130,6 @@ describe("Test CommandOps", function() {
                     );
                 var issuerID = new TypedID(Types.User, issuerUserID);
                 var cmdRequest = new Options.PostCommandRequest(
-                    expectedReqBody.schema,
-                    expectedReqBody.schemaVersion,
                     [],
                     issuerID);
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
@@ -200,8 +192,6 @@ describe("Test CommandOps", function() {
             it("handle success respones", function(done) {
                 let date = new Date();
                 let responseBody:any = {
-                    "schema": "LED",
-                    "schemaVersion": 1,
                     "target": "thing:"+targetID.id,
                     "commandState": "SENDING",
                     "issuer": "user:"+issuerUserID,
@@ -246,8 +236,6 @@ describe("Test CommandOps", function() {
                     );
                 cmdOp.getCommand(commandID).then((cmd)=>{
                     expect(cmd.commandID).to.be.equal(commandID);
-                    expect(cmd.schema).to.be.equal(responseBody.schema);
-                    expect(cmd.schemaVersion).to.be.equal(responseBody.schemaVersion);
                     expect(cmd.actions).to.be.deep.equal(responseBody.actions);
                     expect(cmd.actionResults).to.be.deep.equal(responseBody.actionResults);
                     expect(cmd.commandState).to.be.equal(CommandState.SENDING);
@@ -329,8 +317,6 @@ describe("Test CommandOps", function() {
                         let responseBody:any = {
                             "commands":[
                                 {
-                                    "schema": "LED",
-                                    "schemaVersion": 1,
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
@@ -340,8 +326,6 @@ describe("Test CommandOps", function() {
                                     "modifiedAt": (new Date()).getTime(),
                                 },
                                 {
-                                    "schema": "LED",
-                                    "schemaVersion": 1,
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
@@ -371,8 +355,6 @@ describe("Test CommandOps", function() {
                             var cmd1 = result.results[0];
                             var expectedCmd1 = responseBody.commands[0];
                             expect(cmd1.commandID).to.be.equal(expectedCmd1.commandID);
-                            expect(cmd1.schema).to.be.equal(expectedCmd1.schema);
-                            expect(cmd1.schemaVersion).to.be.equal(expectedCmd1.schemaVersion);
                             expect(cmd1.actions).to.be.deep.equal(expectedCmd1.actions);
                             expect(cmd1.actionResults).to.be.deep.equal(expectedCmd1.actionResults);
                             expect(cmd1.commandState).to.be.equal(CommandState.SENDING);
@@ -387,8 +369,6 @@ describe("Test CommandOps", function() {
                             var cmd2 = result.results[1];
                             var expectedCmd2 = responseBody.commands[1];
                             expect(cmd2.commandID).to.be.equal(expectedCmd2.commandID);
-                            expect(cmd2.schema).to.be.equal(expectedCmd2.schema);
-                            expect(cmd2.schemaVersion).to.be.equal(expectedCmd2.schemaVersion);
                             expect(cmd2.actions).to.be.deep.equal(expectedCmd2.actions);
                             expect(cmd2.actionResults).to.be.deep.equal(expectedCmd2.actionResults);
                             expect(cmd2.commandState).to.be.equal(CommandState.SENDING);

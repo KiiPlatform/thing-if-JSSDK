@@ -22,8 +22,6 @@ let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-let schemaName = "LED";
-let schemaVersion = 1;
 let condition = new Condition(new Equals("power", "false"));
 let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
 let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
@@ -37,8 +35,6 @@ describe("Small Test APIAuthor#enableTrigger", function() {
             let command = new Command(
                 target,
                 owner,
-                "LED",
-                1,
                 [{"turnPower": {"power": true}}]);
             command.commandID = "dummy-command-id";
 
