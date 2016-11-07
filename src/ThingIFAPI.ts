@@ -766,14 +766,16 @@ export class ThingIFAPI {
      * @param {string} alias Name of trait alias.
      * @param {Clause} clause Instance of clause to query history state.
      * @param {boolean} grouped If true is passed, the result will be grouped based on the DataGroupingIntervals of Trait.
-     * @param {Aggregation[]} Aggregation Array of Aggregation instance for querying.
-     * @param {onCompletion} [function] Callback function when completed
+     * @param [string] firmwareVersion Firmware version to query history states of the thing
+     * @param [Aggregation[]] aggregations Aggregation Array of Aggregation instance for querying.
+     * @param [function] onCompletion Callback function when completed
      * @return {Promise} promise object.
     */
     queryStates(
         alias: string,
         clause: Clause,
         grouped: boolean,
+        firmwareVersion?: string,
         aggregations?: Array<Aggregation>,
         onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
 
