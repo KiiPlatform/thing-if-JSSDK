@@ -762,7 +762,8 @@ export class ThingIFAPI {
         })
     }
 
-    /** Query History state of the thing.
+    /** Query History state of the thing with specified trait alias.
+     * @param {string} alias Name of trait alias.
      * @param {Clause} clause Instance of clause to query history state.
      * @param {boolean} grouped If true is passed, the result will be grouped based on the DataGroupingIntervals of Trait.
      * @param {Aggregation[]} Aggregation Array of Aggregation instance for querying.
@@ -770,6 +771,7 @@ export class ThingIFAPI {
      * @return {Promise} promise object.
     */
     queryStates(
+        alias: string,
         clause: Clause,
         grouped: boolean,
         aggregations?: Array<Aggregation>,
