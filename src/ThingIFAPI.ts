@@ -788,38 +788,15 @@ export class ThingIFAPI {
         })
     }
 
-    /** Check whether trait is enabled for the thing.
-     * @param [function] onCompletion Callback function when completed
-     * @return {Promise} promise object.
-     * @example
-     * api.isTraitEnabled().then(function(err, enabled){
-     *     if(!eanbled){
-     *       return api.enableTrait();
-     *     }
-     * }).then(function(){
-     *    // Do something after trait enabled
-     * }).catch(function(err){
-     *    // Handling error
-     * })
-     */
-    isTraitEnabled(
-        onCompletion?: (err: Error, result: boolean)=> void): Promise<boolean>{
-
-        //TODO: implement me, checking thingType and firmwareVersion, if both of them are null, then not enabled.
-        return new Promise<boolean>((resolve, reject)=>{
-            resolve(true);
-        })
-    }
-
-    /** Enable trait for the thing.
+    /** Update thingType to use trait for the thing.
      * @param {string} thingType Name of ThingType, which should be already defined.
-     * @param {string} firmwareVersion Firmware version, which should be already defined.
+     * @param [string] firmwareVersion Firmware version, which should be already defined.
      * @param [function] onCompletion Callback function when completed
      * @return {Promise} promise object.
      */
-    enableTrait(
+    updateThing(
         thingType: string,
-        firmwareVersion: string,
+        firmwareVersion?: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
 
         //TODO: implement me
