@@ -13,7 +13,7 @@ import {LayoutPosition} from './LayoutPosition'
  * @prop {string} thingType Type of the thing. This is optional and ignored if Thing is already registered.
  * @prop {Object} thingProperties Thing properties includes predefined and custom properties.
  * @prop {string} firmwareVersion Firmware version of thing.
- * @prop {string} dataGroupingInterval Internal used to group state history of thing.
+ * @prop {string} dataGroupingInterval Internal used to group state history of thing, when the thing is not using trait.
  * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithVendorThingIDRequest {
@@ -35,7 +35,7 @@ export class OnboardWithVendorThingIDRequest {
      * @param {string} [thingType] Type of the thing. This is optional and ignored if Thing is already registered.
      * @param {Object} [thingProperties] Thing properties includes predefined and custom properties.
      * @param {string} [firmwareVersion] Firmware version of thing.
-     * @param {string} [dataGroupingInterval] Internal used to group state history of thing. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
+     * @param {string} [dataGroupingInterval] Internal used to group state history of thing, when the thing is not using trait. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
      * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(
@@ -72,7 +72,7 @@ export class OnboardWithVendorThingIDRequest {
  * @prop {string} thingID ID of the thing given by IoT Cloud.
  * @prop {string} thingPassword Password of the thing.
  * @prop {string} owner ID of the owner. UserID or GroupID.
- * @prop {string} dataGroupingInterval Internal used to group state history of thing.
+ * @prop {string} dataGroupingInterval Internal used to group state history of thing, when the thing is not using trait.
  * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithThingIDRequest {
@@ -87,7 +87,7 @@ export class OnboardWithThingIDRequest {
      * @param {string} thingID ID of the thing given by IoT Cloud.
      * @param {string} thingPassword Password of the thing.
      * @param {TypedID} [ownerID] ID of the owner. UserID or GroupID.
-     * @param {string} [dataGroupingInterval] Internal used to group state history of thing. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
+     * @param {string} [dataGroupingInterval] Internal used to group state history of thing, when the thing is not using trait. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
      * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(

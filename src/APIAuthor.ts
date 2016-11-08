@@ -504,11 +504,16 @@ export class APIAuthor {
     }
 
     /** Query History state of the thing.
+     * **Note**: Regarding trait was not enabled when onboarding thing and then eanbled later.
+     *  If alias is null, this API will only query the states before trait enabled.
+     *  If alias is provided with non null value, this API will query the state after trait enabled with the specified alias.
      * @param {string} thingID ThingID of thing to query.
      * @param {Clause} clause Instance of clause to query history state.
-     * @param {boolean} grouped If true is passed, the result will be grouped based on the DataGroupingIntervals of Trait.
-     * @param {Aggregation[]} Aggregation Array of Aggregation instance for querying.
-     * @param {onCompletion} [function] Callback function when completed
+     * @param {boolean} grouped If true is passed, the result will be grouped based on the DataGroupingIntervals.
+     * @param [Aggregation[]] aggregations Aggregation Array of Aggregation instance for querying.
+     * @param [string] alias Name of trait alias.
+     * @param [string] firmwareVersion Firmware version to query history states of the thing. Only for the thing using trait.
+     * @param [function] onCompletion Callback function when completed
      * @return {Promise} promise object.
     */
     queryStates(
@@ -516,6 +521,8 @@ export class APIAuthor {
         clause: Clause,
         grouped: boolean,
         aggregations?: Array<Aggregation>,
+        alias?: string,
+        firmwareVersion?: string,
         onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
 
         //TODO: implement me
