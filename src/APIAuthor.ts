@@ -530,4 +530,48 @@ export class APIAuthor {
             resolve(new HistoryStateResults("", grouped));
         })
     }
+
+    /** Check whether trait is enabled for the thing.
+     * @param {string} thingID ThingID of the thing to check.
+     * @param [function] onCompletion Callback function when completed
+     * @return {Promise} promise object.
+     * @example
+     * author.isTraitEnabled(thingID).then(function(err, enabled){
+     *     if(!eanbled){
+     *       return author.enableTrait(thingID);
+     *     }
+     * }).then(function(){
+     *    // Do something after trait enabled
+     * }).catch(function(err){
+     *    // Handling error
+     * })
+     */
+    isTraitEnabled(
+        thingID: string,
+        onCompletion?: (err: Error, result: boolean)=> void): Promise<boolean>{
+
+        //TODO: implement me, checking thingType and firmwareVersion, if both of them are null, then not enabled.
+        return new Promise<boolean>((resolve, reject)=>{
+            resolve(true);
+        })
+    }
+
+    /** Enable trait for the thing.
+     * @param {string} thingID ThingID of the thing to check.
+     * @param {string} thingType Name of ThingType, which should be already defined.
+     * @param {string} firmwareVersion Firmware version, which should be already defined.
+     * @param [function] onCompletion Callback function when completed
+     * @return {Promise} promise object.
+     */
+    enableTrait(
+        thingID: string,
+        thingType: string,
+        firmwareVersion: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
 }
