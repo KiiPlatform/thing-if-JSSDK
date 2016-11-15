@@ -27,13 +27,13 @@ export class HistoryStateResults {
         public queryDescription: string,
         public grouped: boolean,
         public results?: Array<Object>,
-        public groupedResults?: GroupedResults
+        public groupedResults?: Array<GroupedResults>
     ){}
 
     /** Return the results by checking grouped. If grouped results is returned, otherwise GroupedResults returned
      * @return {Object[]|GroupedResults} Results based on grouped.
     */
-    getResults(): Array<Object> | GroupedResults {
+    getResults(): Array<Object> | Array<GroupedResults> {
         if(this.grouped){
             return this.groupedResults
         }else{
