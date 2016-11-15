@@ -534,14 +534,12 @@ export class APIAuthor {
     /** Update thingType to using trait for the thing .
      * @param {string} thingID ThingID of the thing to check.
      * @param {string} thingType Name of ThingType, which should be already defined.
-     * @param [string] firmwareVersion Firmware version, which should be already defined.
      * @param [function] onCompletion Callback function when completed
      * @return {Promise} promise object.
      */
     updateThing(
         thingID: string,
         thingType: string,
-        firmwareVersion?: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
 
         //TODO: implement me

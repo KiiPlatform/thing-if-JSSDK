@@ -790,13 +790,11 @@ export class ThingIFAPI {
 
     /** Update thingType to use trait for the thing.
      * @param {string} thingType Name of ThingType, which should be already defined.
-     * @param [string] firmwareVersion Firmware version, which should be already defined.
      * @param [function] onCompletion Callback function when completed
      * @return {Promise} promise object.
      */
     updateThing(
         thingType: string,
-        firmwareVersion?: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
 
         //TODO: implement me
