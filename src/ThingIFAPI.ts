@@ -600,6 +600,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * @param {string} [alias] Trait alias of state to query. If provided, only states of the specified alias returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -610,7 +611,9 @@ export class ThingIFAPI {
      * });
      */
     getState(
+        alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
+        //TODO: need to implement alias query
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
@@ -763,28 +766,17 @@ export class ThingIFAPI {
     }
 
     /** Query History state of the thing.
-     * **Note**: Regarding trait was not enabled when onboarding thing and then eanbled later.
-     *  If alias is null, this API will only query the states before trait enabled.
-     *  If alias is provided with non null value, this API will query the state after trait enabled with the specified alias.
-     * @param {Clause} clause Instance of clause to query history state.
-     * @param {boolean} grouped If true is passed, the result will be grouped based on the DataGroupingIntervals.
-     * @param [Aggregation[]] aggregations Aggregation Array of Aggregation instance for querying.
-     * @param [string] alias Name of trait alias.
-     * @param [string] firmwareVersion Firmware version to query history states of the thing. Only for the thing using trait.
+     * @param {QueryHistoryStatesRequest} request {@link QueryHistoryStatesRequest} instance.
      * @param [function] onCompletion Callback function when completed
      * @return {Promise} promise object.
     */
     queryStates(
-        clause: Clause,
-        grouped: boolean,
-        aggregations?: Array<Aggregation>,
-        alias?: string,
-        firmwareVersion?: string,
+        request: Options.QueryHistoryStatesRequest,
         onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
 
         //TODO: implement me
         return new Promise<HistoryStateResults>((resolve, reject)=>{
-            resolve(new HistoryStateResults("", grouped));
+            resolve(new HistoryStateResults("", request.grouped));
         })
     }
 
@@ -793,7 +785,7 @@ export class ThingIFAPI {
      * @param [function] onCompletion Callback function when completed
      * @return {Promise} promise object.
      */
-    updateThing(
+    updateThingType(
         thingType: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
 

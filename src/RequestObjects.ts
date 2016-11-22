@@ -4,6 +4,8 @@ import {ServerCode} from './ServerCode'
 import {TypedID} from './TypedID'
 import {DataGroupingInterval} from './DataGroupingInterval'
 import {LayoutPosition} from './LayoutPosition'
+import {Clause} from './Clause'
+import {Aggregation} from './Aggregation'
 
 /**
  * Represents the request for onboarding with vendorThingID with owner.
@@ -420,4 +422,29 @@ export class PatchServerCodeTriggerRequest{
         this.description = description;
         this.metadata = metadata;
     }
+}
+
+/** Represents the request for querying history state of thing
+ * @prop {Clause} clause Clause to query history states.
+ * @prop {boolean} grouped False by default. If true provided, will require history states by data grouping intervals
+ * @prop {Aggregation} aggregation Aggregation for grouped result.
+ * @prop {string} traitAlias Name of trait alias of states.
+ * @prop {string} firmwareVersion Firmware version of thingType of current thing to query.
+*/
+export class QueryHistoryStatesRequest{
+
+    /** Initialize QueryHistoryStatesRequest
+     * @param {Clause} clause Clause to query history states.
+     * @param {boolean} [grouped] False by default. If true provided, will require history states by data grouping intervals
+     * @param {Aggregation} [aggregation] Aggregation for grouped result.
+     * @param {string} [traitAlias] Name of trait alias of states.
+     * @param {string} [firmwareVersion] Firmware version of thingType of current thing to query.
+     */
+    constructor(
+        public clause: Clause,
+        public grouped?: boolean,
+        public aggregation?: Aggregation,
+        public traitAlias?: string,
+        public firmwareVersion?: string
+    ){}
 }
