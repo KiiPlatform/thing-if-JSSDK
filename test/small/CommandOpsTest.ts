@@ -28,34 +28,25 @@ describe("Test CommandOps", function() {
         describe("Validate parameters", function () {
             class TestCase {
                 constructor(
-                    public schema: any,
-                    public schemeVersion: any,
                     public actions: any,
                     public issuerID: any,
                     public expectedError: string
                 ){}
             }
             let tests: Array<TestCase> = [
-                new TestCase(null, 1, [{"turnPower": {"power": true}}], new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", null, [{"turnPower":{"power":true}}], new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, null, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, [{"turnPower":{"power":true}}], null, Errors.ArgumentError),
-                new TestCase({}, 1, {}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", "1", [{"turnPower":{"power":true}}], new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, {"turnPower": {"power": true}}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, [{"turnPower":{"power":true}}], {id: "dummyID"}, Errors.ArgumentError)
+                new TestCase(null, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
+                new TestCase([{"DummyAlias":[{"turnPower":true}]}], null, Errors.ArgumentError),
+                new TestCase({}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
+                new TestCase({"DummyAlias":[{"turnPower": true}]}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
+                new TestCase([{"DummyAlias":[{"turnPower":true}]}], {id: "dummyID"}, Errors.ArgumentError)
             ]
 
             tests.forEach(function(test) {
-                it("when schema="+test.schema
-                    +", schemeVersion ="+test.schemeVersion
-                    +", actions ="+JSON.stringify(test.actions)
+                it("when actions ="+JSON.stringify(test.actions)
                     +", issuerID ="+JSON.stringify(test.issuerID) + ", "
                     +test.expectedError+" error should be returned",
                     function (done) {
                     cmdOp.postNewCommand(new Options.PostCommandRequest(
-                        test.schema,
-                        test.schemeVersion,
                         test.actions,
                         test.issuerID))
                     .then(()=>{
@@ -75,7 +66,7 @@ describe("Test CommandOps", function() {
             };
             let issuerUserID = "123456"
             let expectedReqBody:any = {
-                actions: [{turnPower: {power: true}}],
+                actions: [{"DummyAlias":[{turnPower: true}]}],
                 issuer: `user:${issuerUserID}`,
                 title: "title of led",
                 description: "represent led",
@@ -320,7 +311,7 @@ describe("Test CommandOps", function() {
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
-                                    "actions": [{"turnPower": {"power": true}}],
+                                    "actions": [{"DuumyAlias":{"turnPower": {"power": true}}}],
                                     "commandID": "id1",
                                     "createdAt": (new Date()).getTime(),
                                     "modifiedAt": (new Date()).getTime(),
@@ -329,7 +320,7 @@ describe("Test CommandOps", function() {
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
-                                    "actions": [{"turnPower": {"power": false}}],
+                                    "actions": [{"DummyAlias":[{"turnPower": false}]}],
                                     "commandID": "id2",
                                     "createdAt": (new Date()).getTime(),
                                     "modifiedAt": (new Date()).getTime(),

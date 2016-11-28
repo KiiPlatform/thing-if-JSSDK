@@ -23,7 +23,7 @@ describe("Small Test command APIs of APIAuthor", function() {
     describe("Test APIAuthor#postNewCommand", function() {
 
         describe("handle succeeded reponse", function() {
-            let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
+        let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], owner);
             let expectedCommand = new Command(
                 target,
                 owner,
@@ -64,7 +64,7 @@ describe("Small Test command APIs of APIAuthor", function() {
 
         describe("handle err reponse", function() {
 
-            let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
+        let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], owner);
             let expectedError = new HttpRequestError(400, Errors.HttpError, {
                     "errorCode": "WRONG_COMMAND",
                     "message": "At least one action is required"
@@ -111,7 +111,7 @@ describe("Small Test command APIs of APIAuthor", function() {
             let expectedCommand = new Command(
                 target,
                 owner,
-                [{"turnPower": {"power": true}}]);
+                [{"DummyAlias": [{"turnPower": true}]}]);
             expectedCommand.commandID = commandID;
 
             beforeEach(function() {

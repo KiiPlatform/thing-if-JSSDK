@@ -23,8 +23,10 @@ let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-let condition = new Condition(new Equals("power", "false"));
-let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
+let powerAlias = "PowerAlias";
+let colorAlias = "ColorAlias";
+let condition = new Condition(new Equals("power", "false", powerAlias));
+let actions = [{powerAlias: [{turnPower: true}]}, {colorAlias: [{setColor: [255,0,255]}]}];
 let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 
@@ -63,7 +65,7 @@ describe("Small Test ThingIFAPI#postCommandTrigger", function() {
             let command = new Command(
                 target,
                 owner,
-                [{"turnPower": {"power": true}}]);
+                [{powerAlias: [{"turnPower": true}]}]);
             command.commandID = "dummy-command-id";
 
             let expectedTrigger = new Trigger(predicate, command, null);

@@ -42,8 +42,10 @@ describe('Test TriggerOps', function () {
     });
 
     let expectedTriggerID = "46bc25c0-4f12-11e6-ae54-22000ad9164c";
-    let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
-    let condition = new Condition(new Equals("power", "false"));
+    let powerAlias = "PowerAlias"
+    let colorAlias = "ColorAlias"
+    let actions = [{powerAlias: [{"turnPower": true}]}, {colorAlias: [{"setColor": [255,0,255]}]}];
+    let condition = new Condition(new Equals("power", "false", powerAlias));
     let statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
     let schedulePredicate = new SchedulePredicate("0 12 1 * *");
     let scheduleOncePredicate = new ScheduleOncePredicate(1469089120402);
@@ -52,7 +54,7 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "type":"eq","alias":powerAlias,"field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
@@ -100,7 +102,7 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "type":"eq","alias":powerAlias,"field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
@@ -160,7 +162,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -293,7 +295,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -370,7 +372,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -419,7 +421,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -559,7 +561,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -639,7 +641,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -800,7 +802,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -872,7 +874,7 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "type":"eq","alias":powerAlias,"field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
@@ -897,7 +899,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -959,7 +961,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -1126,7 +1128,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
