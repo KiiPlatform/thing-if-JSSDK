@@ -18,7 +18,7 @@ test:
     - npm run test-cov
 deployment:
   npm:
-    tag: /^[0-9]+(\.[0-9]+){0,1}((\.[0-9]+){1}(-.*)?)?$/
+    tag: /^[0-9]+(\.[0-9]+)?((\.[0-9]+){1}(-.*)?)?$/
     commands:
       - echo "//registry.npmjs.org/:_authToken=${NPM_AUTHTOKEN}" >> .npmrc; npm publish ./
       - bash ./circleci_scripts/release_doc.sh
