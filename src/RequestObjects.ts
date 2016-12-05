@@ -165,6 +165,7 @@ export class PostCommandRequest {
     public title: string;
     public description: string;
     public metadata: Object;
+    public useTrait: boolean;
 
     /**
      * Create a PostCommandRequest.
@@ -174,13 +175,16 @@ export class PostCommandRequest {
      * @param {string} [title] Title of the command.
      * @param {string} [description] Description of the command.
      * @param {Object} [metadata] Key-value list to store within command definition.
+     * @param {boolean} [useTrait] If true passed will post trait formatted command,
+     *  otherwise, false/null passed will post non trait formatted command.
      */
     constructor(
         actions: Array<Object>,
         issuerID?: TypedID,
         title?: string,
         description?: string,
-        metadata?: Object) {
+        metadata?: Object,
+        useTrait?: boolean) {
             this.actions = actions;
             if(!!issuerID && !!issuerID.id && !!issuerID.type){
                 this.issuer = issuerID.toString();
@@ -188,6 +192,7 @@ export class PostCommandRequest {
             this.title = title;
             this.description = description;
             this.metadata = metadata;
+            this.useTrait = useTrait;
         }
 }
 
