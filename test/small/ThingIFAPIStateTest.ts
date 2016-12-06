@@ -56,7 +56,7 @@ describe("Test ThingIFAPI#getState", function() {
             })
         })
         it("test callback", function (done) {
-            thingIFAPI.getState((err, state)=>{
+            thingIFAPI.getState(null, (err, state)=>{
                 try{
                     expect(err).to.null;
                     expect(state).to.be.deep.equal(expectedState);
@@ -95,7 +95,7 @@ describe("Test ThingIFAPI#getState", function() {
             })
         })
         it("test callback", function (done) {
-            thingIFAPI.getState((err, state)=>{
+            thingIFAPI.getState(null, (err, state)=>{
                 try{
                     expect(err).to.be.deep.equal(expectedError);
                     expect(state).to.null;

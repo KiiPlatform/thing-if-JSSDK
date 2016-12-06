@@ -45,7 +45,7 @@ describe("Test APIAuthor#getState", function() {
             })
         })
         it("test callback", function (done) {
-            au.getState(target,(err, state)=>{
+            au.getState(target, null,(err, state)=>{
                 try{
                     expect(err).to.null;
                     expect(state).to.be.deep.equal(expectedState);
@@ -83,7 +83,7 @@ describe("Test APIAuthor#getState", function() {
             })
         })
         it("test callback", function (done) {
-            au.getState(target,(err, state)=>{
+            au.getState(target, null,(err, state)=>{
                 try{
                     expect(err).to.be.deep.equal(expectedError);
                     expect(state).to.null;
