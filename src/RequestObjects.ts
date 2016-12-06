@@ -4,6 +4,8 @@ import {ServerCode} from './ServerCode'
 import {TypedID} from './TypedID'
 import {DataGroupingInterval} from './DataGroupingInterval'
 import {LayoutPosition} from './LayoutPosition'
+import {Clause} from './Clause'
+import {Aggregation} from './Aggregation'
 
 /**
  * Represents the request for onboarding with vendorThingID with owner.
@@ -163,6 +165,7 @@ export class PostCommandRequest {
     public title: string;
     public description: string;
     public metadata: Object;
+    public useTrait: boolean;
 
     /**
      * Create a PostCommandRequest.
@@ -172,13 +175,16 @@ export class PostCommandRequest {
      * @param {string} [title] Title of the command.
      * @param {string} [description] Description of the command.
      * @param {Object} [metadata] Key-value list to store within command definition.
+     * @param {boolean} [useTrait] If true passed will post trait formatted command,
+     *  otherwise, false/null passed will post non trait formatted command.
      */
     constructor(
         actions: Array<Object>,
         issuerID?: TypedID,
         title?: string,
         description?: string,
-        metadata?: Object) {
+        metadata?: Object,
+        useTrait?: boolean) {
             this.actions = actions;
             if(!!issuerID && !!issuerID.id && !!issuerID.type){
                 this.issuer = issuerID.toString();
@@ -186,6 +192,7 @@ export class PostCommandRequest {
             this.title = title;
             this.description = description;
             this.metadata = metadata;
+            this.useTrait = useTrait;
         }
 }
 
@@ -420,4 +427,29 @@ export class PatchServerCodeTriggerRequest{
         this.description = description;
         this.metadata = metadata;
     }
+}
+
+/** Represents the request for querying history state of thing
+ * @prop {Clause} clause Clause to query history states.
+ * @prop {boolean} grouped False by default. If true provided, will require history states by data grouping intervals
+ * @prop {Aggregation} aggregation Aggregation for grouped result.
+ * @prop {string} traitAlias Name of trait alias of states.
+ * @prop {string} firmwareVersion Firmware version of thingType of current thing to query.
+*/
+export class QueryHistoryStatesRequest{
+
+    /** Initialize QueryHistoryStatesRequest
+     * @param {Clause} clause Clause to query history states.
+     * @param {boolean} [grouped] False by default. If true provided, will require history states by data grouping intervals
+     * @param {Aggregation} [aggregation] Aggregation for grouped result.
+     * @param {string} [traitAlias] Name of trait alias of states.
+     * @param {string} [firmwareVersion] Firmware version of thingType of current thing to query.
+     */
+    constructor(
+        public clause: Clause,
+        public grouped?: boolean,
+        public aggregation?: Aggregation,
+        public traitAlias?: string,
+        public firmwareVersion?: string
+    ){}
 }
