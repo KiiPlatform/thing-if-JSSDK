@@ -10,10 +10,15 @@ export default class StateOps extends BaseOp {
     private baseUrl: string
     constructor(
         public au: APIAuthor,
-        public targetID: TypedID
+        public targetID: TypedID,
+        public alias?: string
     ){
         super(au);
-        this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/states`;
+        if(this.alias){
+            this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/states/aliases/${this.alias}`;
+        }else{
+            this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/states`;
+        }
     }
 
     getState(): Promise<Object> {
