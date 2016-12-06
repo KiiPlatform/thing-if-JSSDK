@@ -39,7 +39,13 @@ export default class CommandOps extends BaseOp {
                 return;
             }
 
-            var headers = this.addHeader("Content-Type", "application/json");
+            var contentType: string;
+            if (requestObject.useTrait) {
+                contentType = "application/vnd.kii.CommandCreationRequest+json";
+            } else {
+                contentType = "application/json";
+            }
+            var headers = this.addHeader("Content-Type", contentType);
             var req = {
                 method: "POST",
                 headers: headers,
