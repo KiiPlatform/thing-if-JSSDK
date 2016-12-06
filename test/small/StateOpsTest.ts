@@ -19,11 +19,11 @@ let scope : nock.Scope;
 let testApp = new TestApp();
 let au = new APIAuthor("dummy-token", testApp.app);
 let targetID = new TypedID(Types.Thing, "dummyid");
-let stateOp = new StateOps(au, targetID);
 
 describe("Test StateOps", function() {
     describe("Test StateOps#getState", function() {
         describe("handle http response", function() {
+            let stateOp = new StateOps(au, targetID);
             let path = `/thing-if/apps/${testApp.appID}/targets/${targetID.toString()}/states`;
             let expectedReqHeaders = {
                 "Authorrization": `Bearer ${au.token}`
@@ -43,6 +43,64 @@ describe("Test StateOps", function() {
                         200,
                         responseBody,
                         {"Content-Type": "application/json"}
+                    );
+                stateOp.getState().then((state)=>{
+                    expect(state).to.deep.equal(responseBody);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+
+            it("handle 404 response", function (done) {
+                var errResponse = {
+                    "errorCode": "TARGET_NOT_FOUND",
+                    "message": `Target thing:${targetID.id} not found`
+                }
+                scope = nock(testApp.site, <any>expectedReqHeaders)
+                    .get(path)
+                    .reply(
+                        404,
+                        errResponse,
+                        {"Content-Type": "application/json"}
+                    );
+                stateOp.getState().then((state)=>{
+                    done("should fail");
+                }).catch((err:HttpRequestError)=>{
+                    expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                    expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                    expect(err.body.message).to.be.equal(errResponse.message);
+                    expect(err.status).to.equal(404);
+                    expect(err.name).to.equal(Errors.HttpError);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+        })
+
+        describe("handle http response with Trait", function() {
+            let alias = "DummyAlias";
+            let stateOp = new StateOps(au, targetID, alias);
+            let path = `/thing-if/apps/${testApp.appID}/targets/${targetID.toString()}/states/aliases/${alias}`;
+            let expectedReqHeaders = {
+                "Authorrization": `Bearer ${au.token}`
+            };
+            let responseBody:any = {
+                power: true
+            }
+
+            beforeEach(function() {
+                nock.cleanAll();
+            });
+
+            it("handle success response", function (done) {
+                scope = nock(testApp.site, <any>expectedReqHeaders)
+                    .get(path)
+                    .reply(
+                        200,
+                        responseBody,
+                        {"Content-Type": "application/vnd.kii.TraitState+json"}
                     );
                 stateOp.getState().then((state)=>{
                     expect(state).to.deep.equal(responseBody);

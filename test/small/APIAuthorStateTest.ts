@@ -44,8 +44,28 @@ describe("Test APIAuthor#getState", function() {
                 done(err);
             })
         })
+        it("test promise with Trait", function (done) {
+            au.getState(target, "DummyAlias")
+            .then((state)=>{
+                expect(state).to.be.deep.equal(expectedState);
+                done();
+            }).catch((err)=>{
+                done(err);
+            })
+        })
         it("test callback", function (done) {
             au.getState(target, null,(err, state)=>{
+                try{
+                    expect(err).to.null;
+                    expect(state).to.be.deep.equal(expectedState);
+                    done();
+                }catch(err){
+                    done(err);
+                }
+            })
+        })
+        it("test callback with Trait", function (done) {
+            au.getState(target, "DummyAlias",(err, state)=>{
                 try{
                     expect(err).to.null;
                     expect(state).to.be.deep.equal(expectedState);
@@ -82,8 +102,28 @@ describe("Test APIAuthor#getState", function() {
                 done();
             })
         })
+        it("test promise with Trait", function (done) {
+            au.getState(target, "UnknownAlias")
+            .then((state)=>{
+                done("should fail");
+            }).catch((err: HttpRequestError)=>{
+                expect(err).to.be.deep.equal(expectedError);
+                done();
+            })
+        })
         it("test callback", function (done) {
             au.getState(target, null,(err, state)=>{
+                try{
+                    expect(err).to.be.deep.equal(expectedError);
+                    expect(state).to.null;
+                    done();
+                }catch(err){
+                    done(err);
+                }
+            })
+        })
+        it("test callback with Trait", function (done) {
+            au.getState(target, "UnknownAlias",(err, state)=>{
                 try{
                     expect(err).to.be.deep.equal(expectedError);
                     expect(state).to.null;
