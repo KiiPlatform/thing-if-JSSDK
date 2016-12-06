@@ -23,7 +23,47 @@ describe("Small Test command APIs of APIAuthor", function() {
     describe("Test APIAuthor#postNewCommand", function() {
 
         describe("handle succeeded reponse", function() {
-        let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], owner);
+        let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
+            let expectedCommand = new Command(
+                target,
+                owner,
+                cmdRequest.actions);
+            expectedCommand.commandID = "dummy-id";
+
+            beforeEach(function() {
+                simple.mock(CommandOps.prototype, 'postNewCommand').returnWith(
+                    new P<Command>((resolve, reject)=>{
+                        resolve(expectedCommand);
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                au.postNewCommand(target, cmdRequest)
+                .then((cmd)=>{
+                    expect(cmd).to.be.deep.equal(expectedCommand);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+            it("test callback", function (done) {
+                au.postNewCommand(target, cmdRequest,(err, cmd)=>{
+                    try{
+                        expect(err).to.null;
+                        expect(cmd).to.be.deep.equal(expectedCommand);
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+
+        describe("handle succeeded reponse with Trait", function() {
+        let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], owner, null, null, null, true);
             let expectedCommand = new Command(
                 target,
                 owner,
@@ -64,7 +104,7 @@ describe("Small Test command APIs of APIAuthor", function() {
 
         describe("handle err reponse", function() {
 
-        let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], owner);
+        let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
             let expectedError = new HttpRequestError(400, Errors.HttpError, {
                     "errorCode": "WRONG_COMMAND",
                     "message": "At least one action is required"
@@ -107,6 +147,46 @@ describe("Small Test command APIs of APIAuthor", function() {
         let commandID = "1234235534ferw"
 
         describe("handle succeeded reponse", function() {
+
+            let expectedCommand = new Command(
+                target,
+                owner,
+                [{"turnPower": {"power": true}}]);
+            expectedCommand.commandID = commandID;
+
+            beforeEach(function() {
+                simple.mock(CommandOps.prototype, 'getCommand').returnWith(
+                    new P<Command>((resolve, reject)=>{
+                        resolve(expectedCommand);
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                au.getCommand(target, commandID)
+                .then((cmd)=>{
+                    expect(cmd).to.be.deep.equal(expectedCommand);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+            it("test callback", function (done) {
+                au.getCommand(target, commandID,(err, cmd)=>{
+                    try{
+                        expect(err).to.null;
+                        expect(cmd).to.be.deep.equal(expectedCommand);
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+
+        describe("handle succeeded reponse with Trait", function() {
 
             let expectedCommand = new Command(
                 target,
@@ -190,7 +270,7 @@ describe("Small Test command APIs of APIAuthor", function() {
         describe("handle succeeded reponse", function() {
             let cmd1 = new Command(target,owner,[{"turnPower": {"power": true}}]);
             let cmd2 = new Command(target,owner,[{"turnPower": {"power": false}}]);
-            let cmd3 = new Command(target,owner,[{"turnPower": {"power": true}}]);
+            let cmd3 = new Command(target,owner,[{"DummyAlias": [{"turnPower": true}]}]);
             cmd1.commandID = "id1";
             cmd2.commandID = "id2";
             cmd3.commandID = "id3";

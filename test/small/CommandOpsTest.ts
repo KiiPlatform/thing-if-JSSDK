@@ -35,10 +35,10 @@ describe("Test CommandOps", function() {
             }
             let tests: Array<TestCase> = [
                 new TestCase(null, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase([{"DummyAlias":[{"turnPower":true}]}], null, Errors.ArgumentError),
+                new TestCase([{"turnPower": {"power":true}}], null, Errors.ArgumentError),
                 new TestCase({}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase({"DummyAlias":[{"turnPower": true}]}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase([{"DummyAlias":[{"turnPower":true}]}], {id: "dummyID"}, Errors.ArgumentError)
+                new TestCase({"turnPower": {"power": true}}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
+                new TestCase([{"turnPower": {"power":true}}], {id: "dummyID"}, Errors.ArgumentError),
             ]
 
             tests.forEach(function(test) {
@@ -60,18 +60,7 @@ describe("Test CommandOps", function() {
         })
         describe("handle http response", function() {
             let path = `/thing-if/apps/${testApp.appID}/targets/${targetID.toString()}/commands`;
-            let expectedReqHeaders = {
-                "Content-Type": "application/json",
-                "Authorrization": `Bearer ${au.token}`
-            };
-            let issuerUserID = "123456"
-            let expectedReqBody:any = {
-                actions: [{"DummyAlias":[{turnPower: true}]}],
-                issuer: `user:${issuerUserID}`,
-                title: "title of led",
-                description: "represent led",
-                metadata: {"power": "true for power on, and false for power off"}
-            }
+            let issuerUserID = "123456";
             let expectedCommandID = "2334354545";
 
             beforeEach(function() {
@@ -79,6 +68,10 @@ describe("Test CommandOps", function() {
             });
 
             it("handle success response", function (done) {
+                var expectedReqHeaders = {
+                    "Content-Type": "application/json",
+                    "Authorrization": `Bearer ${au.token}`
+                };
                 scope = nock(testApp.site, <any>expectedReqHeaders)
                     .post(path)
                     .reply(
@@ -86,6 +79,13 @@ describe("Test CommandOps", function() {
                         {commandID: expectedCommandID},
                         {"Content-Type": "application/json"}
                     );
+                var expectedReqBody:any = {
+                    actions: [{turnPower: {power: true}}],
+                    issuer: `user:${issuerUserID}`,
+                    title: "title of led",
+                    description: "represent led",
+                    metadata: {"power": "true for power on, and false for power off"}
+                };
                 var issuerID = new TypedID(Types.User, issuerUserID);
                 var cmdRequest = new Options.PostCommandRequest(
                     expectedReqBody.actions,
@@ -107,7 +107,52 @@ describe("Test CommandOps", function() {
                 })
             })
 
+            it("handle success response with trait", function (done) {
+                var expectedReqHeaders = {
+                    "Content-Type": "application/CommandCreationRequest+json",
+                    "Authorrization": `Bearer ${au.token}`
+                };
+                scope = nock(testApp.site, <any>expectedReqHeaders)
+                    .post(path)
+                    .reply(
+                        201,
+                        {commandID: expectedCommandID},
+                        {"Content-Type": "application/json"}
+                    );
+                var expectedReqBody:any = {
+                    actions: [{"DummyAlias":[{"turnPower": true}]}],
+                    issuer: `user:${issuerUserID}`,
+                    title: "title of led",
+                    description: "represent led",
+                    metadata: {"power": "true for power on, and false for power off"}
+                };
+                var issuerID = new TypedID(Types.User, issuerUserID);
+                var cmdRequest = new Options.PostCommandRequest(
+                    expectedReqBody.actions,
+                    issuerID,
+                    expectedReqBody.title,
+                    expectedReqBody.description,
+                    expectedReqBody.metadata,
+                    true);
+                cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
+                    expect(cmd.commandID).to.be.equal(expectedCommandID);
+                    expect(cmd.actions).to.be.deep.equal(expectedReqBody.actions);
+                    expect(cmd.actionResults).to.be.undefined;
+                    expect(cmd.commandState).to.be.undefined;
+                    expect(cmd.title).to.be.equal(expectedReqBody.title);
+                    expect(cmd.description).to.be.equal(expectedReqBody.description);
+                    expect(cmd.metadata).to.be.deep.equal(expectedReqBody.metadata);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+
             it("handle 400 response", function (done) {
+                var expectedReqHeaders = {
+                    "Content-Type": "application/json",
+                    "Authorrization": `Bearer ${au.token}`
+                };
                 var errResponse:any = {
                     "errorCode": "WRONG_COMMAND",
                     "message": "At least one action is required"
@@ -311,7 +356,7 @@ describe("Test CommandOps", function() {
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
-                                    "actions": [{"DuumyAlias":{"turnPower": {"power": true}}}],
+                                    "actions": [{"turnPower": {"power": true}}],
                                     "commandID": "id1",
                                     "createdAt": (new Date()).getTime(),
                                     "modifiedAt": (new Date()).getTime(),
@@ -320,7 +365,7 @@ describe("Test CommandOps", function() {
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
-                                    "actions": [{"DummyAlias":[{"turnPower": false}]}],
+                                    "actions": [{"turnPower": {"power": false}}],
                                     "commandID": "id2",
                                     "createdAt": (new Date()).getTime(),
                                     "modifiedAt": (new Date()).getTime(),

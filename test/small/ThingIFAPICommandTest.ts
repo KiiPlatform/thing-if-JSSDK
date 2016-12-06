@@ -23,7 +23,7 @@ describe("Small Test command APIs of ThingIFAPI", function() {
         describe("Return IllegalStateError", function() {
             it("when targe is null, IllegalStateError should be returned(promise)",
                 function (done) {
-                var cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}]);
+                var cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}]);
                 thingIFAPI.postNewCommand(cmdRequest)
                 .then(()=>{
                     done("should fail");
@@ -34,7 +34,7 @@ describe("Small Test command APIs of ThingIFAPI", function() {
             })
             it("when targe is null, IllegalStateError should be returned(callback)",
                 function (done) {
-                var cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}]);
+                var cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}]);
                 thingIFAPI.postNewCommand(cmdRequest,(err, cmd)=>{
                     try{
                         expect(cmd).to.null;
@@ -50,7 +50,50 @@ describe("Small Test command APIs of ThingIFAPI", function() {
             let target = new TypedID(Types.Thing, "dummy-thing-id");
             let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target);
 
-            let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}]);
+            let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}]);
+            let expectedCommand = new Command(
+                target,
+                owner,
+                cmdRequest.actions);
+            expectedCommand.commandID = "dummy-command-id";
+
+            beforeEach(function() {
+                simple.mock(CommandOps.prototype, 'postNewCommand').returnWith(
+                    new P<Command>((resolve, reject)=>{
+                        resolve(expectedCommand);
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                thingIFAPI.postNewCommand(cmdRequest)
+                .then((cmd)=>{
+                    expect(cmd).to.be.deep.equal(expectedCommand);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+            it("test callback", function (done) {
+                thingIFAPI.postNewCommand(cmdRequest,(err, cmd)=>{
+                    try{
+                        expect(err).to.null;
+                        expect(cmd).to.be.deep.equal(expectedCommand);
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+
+        describe("handle succeeded reponse with Trait", function() {
+            let target = new TypedID(Types.Thing, "dummy-thing-id");
+            let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target);
+
+            let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], null, null, null, null, true);
             let expectedCommand = new Command(
                 target,
                 owner,
@@ -93,7 +136,7 @@ describe("Small Test command APIs of ThingIFAPI", function() {
             let target = new TypedID(Types.Thing, "dummy-thing-id");
             let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target);
 
-            let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}]);
+            let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}]);
             let expectedError = new HttpRequestError(400, Errors.HttpError, {
                     "errorCode": "WRONG_COMMAND",
                     "message": "At least one action is required"
@@ -160,6 +203,48 @@ describe("Small Test command APIs of ThingIFAPI", function() {
             })
         })
         describe("handle succeeded reponse", function() {
+            let target = new TypedID(Types.Thing, "dummy-thing-id");
+            let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target);
+
+            let expectedCommand = new Command(
+                target,
+                owner,
+                [{"turnPower": {"power": true}}]);
+            expectedCommand.commandID = commandID;
+
+            beforeEach(function() {
+                simple.mock(CommandOps.prototype, 'getCommand').returnWith(
+                    new P<Command>((resolve, reject)=>{
+                        resolve(expectedCommand);
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                thingIFAPI.getCommand(commandID)
+                .then((cmd)=>{
+                    expect(cmd).to.be.deep.equal(expectedCommand);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+            it("test callback", function (done) {
+                thingIFAPI.getCommand(commandID,(err, cmd)=>{
+                    try{
+                        expect(err).to.null;
+                        expect(cmd).to.be.deep.equal(expectedCommand);
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+
+        describe("handle succeeded reponse with Trait", function() {
             let target = new TypedID(Types.Thing, "dummy-thing-id");
             let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target);
 
@@ -248,8 +333,8 @@ describe("Small Test command APIs of ThingIFAPI", function() {
         let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target);
 
         describe("handle succeeded reponse", function() {
-            let cmd1 = new Command(target,owner,[{"DummyAlias": [{"turnPower": true}]}]);
-            let cmd2 = new Command(target,owner,[{"DummyAlias": [{"turnPower": false}]}]);
+            let cmd1 = new Command(target,owner,[{"turnPower": {"power": true}}]);
+            let cmd2 = new Command(target,owner,[{"turnPower": {"power": false}}]);
             let cmd3 = new Command(target,owner,[{"DummyAlias": [{"turnPower": true}]}]);
             cmd1.commandID = "id1";
             cmd2.commandID = "id2";
