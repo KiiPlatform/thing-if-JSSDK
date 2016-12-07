@@ -5,31 +5,84 @@ import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import BaseOp from './BaseOp'
 import {TypedID} from '../TypedID'
+import {QueryHistoryStatesRequest} from '../RequestObjects'
+import {GroupedResults, HistoryStateResults} from '../HistoryStateResults'
 
 export default class StateOps extends BaseOp {
     private baseUrl: string
     constructor(
         public au: APIAuthor,
-        public targetID: TypedID,
-        public alias?: string
+        public targetID: TypedID
     ){
         super(au);
-        if(this.alias){
-            this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/states/aliases/${this.alias}`;
-        }else{
-            this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/states`;
-        }
+        this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/states`;
     }
 
-    getState(): Promise<Object> {
+    getState(alias?: string): Promise<Object> {
         return new Promise<Object>((resolve, reject)=>{
+            var url = this.baseUrl;
+            if(alias){
+                url = url + `/aliases/${alias}`;
+            }
             var req = {
                 method: "GET",
                 headers: this.getHeaders(),
-                url: this.baseUrl
+                url: url
             };
             request(req).then((res)=>{
                 resolve(res.body);
+            }).catch((err)=>{
+                reject(err);
+            });
+        })
+    }
+
+    queryStates(requestObject: QueryHistoryStatesRequest): Promise<HistoryStateResults> {
+        return new Promise<HistoryStateResults>((resolve, reject)=>{
+            var contentType: string;
+            var url = this.baseUrl;
+            if(requestObject.traitAlias){
+                contentType = "application/vnd.kii.TraitStateQueryRequest+json";
+                url = url + `/aliases/${requestObject.traitAlias}/query`;
+            }else{
+                contentType = "application/json";
+                url = url + "/query";
+            }
+            var headers = this.addHeader("Content-Type", contentType);
+            var query = requestObject.clause.toJson();
+            if(requestObject.grouped){
+                query["grouped"] = requestObject.grouped;
+            }
+            var body = {"query": query};
+
+            var req = {
+                method: "POST",
+                headers: headers,
+                url: url,
+                body: body,
+            };
+            request(req).then((res)=>{
+                var responseBody = <any>res.body;
+                var results: Array<Object> = null;
+                var groupedResults: Array<GroupedResults> = null;
+                if(requestObject.grouped){
+                    groupedResults = [];
+                    for(var i in responseBody.results){
+                        var result = responseBody.results[i];
+                        groupedResults.push(new GroupedResults(
+                        new Date(result.range.from),
+                        new Date(result.range.to),
+                        result.objects));
+                    }
+                }else{
+                    results = responseBody.results;
+                }
+                var historyStateResults = new HistoryStateResults(
+                    responseBody.queryDescription,
+                    requestObject.grouped,
+                    results,
+                    groupedResults);
+                resolve(historyStateResults);
             }).catch((err)=>{
                 reject(err);
             });

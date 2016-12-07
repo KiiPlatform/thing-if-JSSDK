@@ -6,7 +6,7 @@ import {Command} from './Command';
 import {Trigger} from './Trigger'
 import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
-import {TypedID} from './TypedID'
+import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
 
 import OnboardingOps from './ops/OnboardingOps'
@@ -410,8 +410,7 @@ export class APIAuthor {
         target: TypedID,
         alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        //TODO: need to implement for alias query
-        return PromiseWrapper.promise((new StateOps(this, target)).getState(), onCompletion);
+        return PromiseWrapper.promise((new StateOps(this, target)).getState(alias), onCompletion);
     }
 
     /** Get vendorThingID of specified target
@@ -517,10 +516,8 @@ export class APIAuthor {
         request: Options.QueryHistoryStatesRequest,
         onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
 
-        //TODO: implement me
-        return new Promise<HistoryStateResults>((resolve, reject)=>{
-            resolve(new HistoryStateResults("", request.grouped));
-        })
+        var targetID = new TypedID(Types.Thing, thingID);
+        return PromiseWrapper.promise((new StateOps(this, targetID)).queryStates(request), onCompletion);
     }
 
     /** Update thingType to using trait for the thing .
