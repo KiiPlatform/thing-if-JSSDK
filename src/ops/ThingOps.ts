@@ -68,5 +68,31 @@ export default class ThingOps extends BaseOp {
 
         })
     }
+
+    updateFirmwareVersion(newFwVersion: string): Promise<void> {
+        return new Promise<void>((resolve, reject)=>{
+            if(!newFwVersion){
+                reject(new ThingIFError(Errors.ArgumentError, "newFwVersion is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(newFwVersion)){
+                reject(new ThingIFError(Errors.ArgumentError, "newFwVersion is not string"));
+                return;
+            }
+
+            var req = {
+                method: "PUT",
+                headers: this.addHeader("Content-Type","application/vnd.kii.ThingFirmwareVersionUpdateRequest+json"),
+                url: `${this.baseUrl}/firmware-version`,
+                body: {
+                    "firmwareVersion": newFwVersion
+                }
+            };
+            request(req).then((res)=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            });
+        })
+    }
 }
 

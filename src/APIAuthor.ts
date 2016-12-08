@@ -499,10 +499,7 @@ export class APIAuthor {
         thingID: string,
         newFwVersion: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+        return PromiseWrapper.voidPromise((new ThingOps(this, thingID)).updateFirmwareVersion(newFwVersion), onCompletion);
     }
 
     /** Query History state of the thing.

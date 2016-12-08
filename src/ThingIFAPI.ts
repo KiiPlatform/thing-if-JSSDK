@@ -758,10 +758,19 @@ export class ThingIFAPI {
     updateFirmwareVersion(
         newFwVersion: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+
+        let orgPromise = new Promise<void>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateFirmwareVersion(newFwVersion).then(()=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
     /** Query History state of the thing.
