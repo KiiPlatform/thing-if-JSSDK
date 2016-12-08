@@ -201,4 +201,95 @@ describe("Small test thing APIs of ThingIFAPI", function() {
             })
         })
     })
+
+    describe("Test ThingIFAPI#updateFirmwareVersion", function() {
+        let newFwVersion = "v1.0";
+
+        describe("handle illegalStateError", function() {
+            let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app);
+            it("when targe is null, IllegalStateError should be returned",
+                function (done) {
+                thingIFAPI.updateFirmwareVersion(newFwVersion)
+                .then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(Errors.IlllegalStateError);
+                    done();
+                })
+            })
+        })
+        describe("handle succeeded reponse", function() {
+            let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target)
+
+            beforeEach(function() {
+                simple.mock(ThingOps.prototype, 'updateFirmwareVersion').returnWith(
+                    new P<void>((resolve, reject)=>{
+                        resolve();
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                thingIFAPI.updateFirmwareVersion(newFwVersion)
+                .then(()=>{
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+            it("test callback", function (done) {
+                thingIFAPI.updateFirmwareVersion(newFwVersion, (err)=>{
+                    try{
+                        expect(err).to.null;
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+
+        describe("handle err reponse", function() {
+            let thingIFAPI = new ThingIFAPI(owner, "dummy-token", testApp.app, target)
+            let expectedError = new HttpRequestError(404, Errors.HttpError, {
+                "errorCode": "THING_NOT_FOUND",
+                "message": `Thing with thingID ${target.id} was not found`,
+                "value": target.id,
+                "field": "thingID",
+                "appID": testApp.appID
+            });
+
+            beforeEach(function() {
+                simple.mock(ThingOps.prototype, 'updateFirmwareVersion').returnWith(
+                    new P<void>((resolve, reject)=>{
+                        reject(expectedError);
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                thingIFAPI.updateFirmwareVersion(newFwVersion)
+                .then((cmd)=>{
+                    done("should fail");
+                }).catch((err: HttpRequestError)=>{
+                    expect(err).to.be.deep.equal(expectedError);
+                    done();
+                })
+            })
+            it("test callback", function (done) {
+                thingIFAPI.updateFirmwareVersion(newFwVersion, (err)=>{
+                    try{
+                        expect(err).to.be.deep.equal(expectedError);
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+    })
 })
