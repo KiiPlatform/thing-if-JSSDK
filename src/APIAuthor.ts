@@ -532,10 +532,6 @@ export class APIAuthor {
         thingID: string,
         thingType: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+        return PromiseWrapper.voidPromise((new ThingOps(this, thingID)).updateThingType(thingType), onCompletion);
     }
 }
