@@ -351,15 +351,19 @@ export class TimeRange extends Clause {
     }
 
     toJson(): any {
-        return {
-            type: "withTimeRange",
-            lowerLimit: this.lowerLimit.getMilliseconds(),
-            upperLimit: this.upperLimit.getMilliseconds()
+        var json: any = {type: "withTimeRange"};
+        if (this.lowerLimit) {
+            json["lowerLimit"] = this.lowerLimit.getTime();
         }
+        if (this.upperLimit) {
+            json["upperLimit"] = this.upperLimit.getTime();
+        }
+        return json;
     }
 
     static fromJson(obj:any): TimeRange {
-        //TODO: implement me
-        return new TimeRange(new Date(), new Date());
+        let lowerLimit = obj.lowerLimit ? new Date(obj.lowerLimit) : null;
+        let upperLimit = obj.upperLimit ? new Date(obj.upperLimit) : null;
+        return new TimeRange(lowerLimit, upperLimit);
     }
 }
