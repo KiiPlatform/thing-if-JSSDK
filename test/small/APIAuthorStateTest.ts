@@ -167,6 +167,16 @@ describe("Test APIAuthor#queryStates", function() {
                 done();
             })
         })
+        it("when thingID is not string, ArgumentError should be returned(promise)",
+            function (done) {
+            au.queryStates((<any>12345), request)
+            .then(()=>{
+                done("should fail");
+            }).catch((err)=>{
+                expect(err.name).to.equal(Errors.ArgumentError);
+                done();
+            })
+        })
     })
 
     describe("handle succeeded reponse", function() {

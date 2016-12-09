@@ -21,6 +21,7 @@ import {Clause} from './Clause'
 import {HistoryStateResults} from './HistoryStateResults'
 import {Aggregation} from './Aggregation'
 import {ThingIFError, Errors} from './ThingIFError'
+import * as KiiUtil from './internal/KiiUtilities'
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -513,9 +514,13 @@ export class APIAuthor {
         request: Options.QueryHistoryStatesRequest,
         onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
 
-        if(!thingID || thingID.length === 0){
+        if (!thingID) {
             return new Promise<HistoryStateResults>((resolve, reject)=>{
                 reject(new ThingIFError(Errors.ArgumentError, "thingID is null or empty"));
+            })
+        } else if (!KiiUtil.isString(thingID)) {
+            return new Promise<HistoryStateResults>((resolve, reject)=>{
+                reject(new ThingIFError(Errors.ArgumentError, "thingID is not string"));
             })
         }
         var targetID = new TypedID(Types.Thing, thingID);
