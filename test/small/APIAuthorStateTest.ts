@@ -147,36 +147,27 @@ describe("Test APIAuthor#queryStates", function() {
         "dummy description", false, [], null);
 
     describe("Return ArgumentError", function() {
-        it("when thingID is null, ArgumentError should be returned(promise)",
-            function (done) {
-            au.queryStates(null, request)
-            .then(()=>{
-                done("should fail");
-            }).catch((err)=>{
-                expect(err.name).to.equal(Errors.ArgumentError);
-                done();
-            })
-        })
-        it("when thingID is empty, ArgumentError should be returned(promise)",
-            function (done) {
-            au.queryStates("", request)
-            .then(()=>{
-                done("should fail");
-            }).catch((err)=>{
-                expect(err.name).to.equal(Errors.ArgumentError);
-                done();
-            })
-        })
-        it("when thingID is not string, ArgumentError should be returned(promise)",
-            function (done) {
-            au.queryStates((<any>12345), request)
-            .then(()=>{
-                done("should fail");
-            }).catch((err)=>{
-                expect(err.name).to.equal(Errors.ArgumentError);
-                done();
-            })
-        })
+        class TestCase {
+            constructor(
+                public thingID: string,
+                public description: string
+            ){};
+        };
+        let tests: Array<TestCase> = [
+            new TestCase(null, "when thingID is null, ArgumentError should be returned(promise)"),
+            new TestCase("", "when thingID is empty, ArgumentError should be returned(promise)"),
+            new TestCase(<any>12345, "when thingID is not string, ArgumentError should be returned(promise)")
+        ];
+        tests.forEach(function(test) {
+            it(test.description, function(done) {
+                au.queryStates(test.thingID, request).then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(Errors.ArgumentError);
+                    done();
+                });
+            });
+        });
     })
 
     describe("handle succeeded reponse", function() {

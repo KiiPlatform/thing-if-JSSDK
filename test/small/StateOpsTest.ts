@@ -142,30 +142,30 @@ describe("Test StateOps", function() {
 
     describe("Test StateOps#queryStates", function() {
         describe("Return ArgumentError", function() {
-            it("when traitAlias is not string, ArgumentError should be returned(promise)", function (done) {
-                let queryRequest = new QueryHistoryStatesRequest(
-                    new Clause.Equals("field1", "hoge"),
-                    false, null, <any>12345, null
-                );
-                stateOp.queryStates(queryRequest).then((result)=>{
-                    done("should fail");
-                }).catch((err)=>{
-                    expect(err.name).to.equal(Errors.ArgumentError);
-                    done();
-                })
-            })
-            it("when traitAlias is empty, ArgumentError should be returned(promise)", function (done) {
-                let queryRequest = new QueryHistoryStatesRequest(
-                    new Clause.Equals("field1", "hoge"),
-                    false, null, "", null
-                );
-                stateOp.queryStates(queryRequest).then((result)=>{
-                    done("should fail");
-                }).catch((err)=>{
-                    expect(err.name).to.equal(Errors.ArgumentError);
-                    done();
-                })
-            })
+            class TestCase {
+                constructor(
+                    public traitAlias: string,
+                    public description: string
+                ){};
+            };
+            let tests: Array<TestCase> = [
+                new TestCase(<any>12345, "when traitAlias is not string, ArgumentError should be returned(promise)"),
+                new TestCase("", "when traitAlias is empty string, ArgumentError should be returned(promise)")
+            ];
+            tests.forEach(function(test) {
+                it(test.description, function (done) {
+                    let queryRequest = new QueryHistoryStatesRequest(
+                        new Clause.Equals("field1", "hoge"),
+                        false, null, test.traitAlias, null
+                    );
+                    stateOp.queryStates(queryRequest).then((result)=>{
+                        done("should fail");
+                    }).catch((err)=>{
+                        expect(err.name).to.equal(Errors.ArgumentError);
+                        done();
+                    });
+                });
+            });
         })
 
         describe("handle http response with Trait", function() {
