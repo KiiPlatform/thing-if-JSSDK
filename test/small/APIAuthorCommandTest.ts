@@ -104,7 +104,7 @@ describe("Small Test command APIs of APIAuthor", function() {
 
         describe("handle err reponse", function() {
 
-        let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
+            let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
             let expectedError = new HttpRequestError(400, Errors.HttpError, {
                     "errorCode": "WRONG_COMMAND",
                     "message": "At least one action is required"
