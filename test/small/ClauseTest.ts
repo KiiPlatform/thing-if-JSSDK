@@ -113,4 +113,32 @@ describe("Test Clause:", function() {
                 });
         });
     });
+    describe("TimeRange", function() {
+        class TestCase {
+            constructor(
+                public lowerLimit: Date,
+                public upperLimit: Date
+            ){};
+        };
+        let tests: Array<TestCase> = [
+            new TestCase(null, null),
+            new TestCase(new Date(12345678), null),
+            new TestCase(null, new Date(12345678)),
+            new TestCase(new Date(12345678), new Date(23456789))
+        ];
+
+        tests.forEach(function(test) {
+            var json: any = {type: "withTimeRange"};
+            if (test.lowerLimit) {
+                json["lowerLimit"] = test.lowerLimit.getTime();
+            }
+            if (test.upperLimit) {
+                json["upperLimit"] = test.upperLimit.getTime();
+            }
+            let tr1 = new Clause.TimeRange(test.lowerLimit, test.upperLimit);
+            expect(tr1.toJson()).to.deep.equal(json);
+            let tr2 = Clause.TimeRange.fromJson(json);
+            expect(tr2).to.deep.equal(tr1);
+        });
+    });
 });
