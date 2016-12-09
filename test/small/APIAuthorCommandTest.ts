@@ -23,7 +23,7 @@ describe("Small Test command APIs of APIAuthor", function() {
     describe("Test APIAuthor#postNewCommand", function() {
 
         describe("handle succeeded reponse", function() {
-        let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
+            let cmdRequest = new Options.PostCommandRequest([{"turnPower": {"power": true}}], owner);
             let expectedCommand = new Command(
                 target,
                 owner,
@@ -63,7 +63,7 @@ describe("Small Test command APIs of APIAuthor", function() {
         })
 
         describe("handle succeeded reponse with Trait", function() {
-        let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], owner, null, null, null, true);
+            let cmdRequest = new Options.PostCommandRequest([{"DummyAlias": [{"turnPower": true}]}], owner, null, null, null, true);
             let expectedCommand = new Command(
                 target,
                 owner,
