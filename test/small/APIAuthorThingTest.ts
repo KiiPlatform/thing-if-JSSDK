@@ -170,4 +170,152 @@ describe("Small test thing APIs of APIAuthor", function() {
             })
         })
     })
+
+    describe("Test APIAuthor#updateFirmwareVersion", function() {
+        let newFwVersion = "v1.0";
+        describe("handle succeeded reponse", function() {
+            beforeEach(function() {
+                simple.mock(ThingOps.prototype, 'updateFirmwareVersion').returnWith(
+                    new P<void>((resolve, reject)=>{
+                        resolve();
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                au.updateFirmwareVersion(target.id, newFwVersion)
+                .then(()=>{
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+            it("test callback", function (done) {
+                au.updateFirmwareVersion(target.id, newFwVersion, (err)=>{
+                    try{
+                        expect(err).to.null;
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+
+        describe("handle err reponse", function() {
+            let expectedError = new HttpRequestError(404, Errors.HttpError, {
+                "errorCode": "THING_NOT_FOUND",
+                "message": `Thing with thingID ${target.id} was not found`,
+                "value": target.id,
+                "field": "thingID",
+                "appID": testApp.appID
+            });
+
+            beforeEach(function() {
+                simple.mock(ThingOps.prototype, 'updateFirmwareVersion').returnWith(
+                    new P<void>((resolve, reject)=>{
+                        reject(expectedError);
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                au.updateFirmwareVersion(target.id, newFwVersion)
+                .then((cmd)=>{
+                    done("should fail");
+                }).catch((err: HttpRequestError)=>{
+                    expect(err).to.be.deep.equal(expectedError);
+                    done();
+                })
+            })
+            it("test callback", function (done) {
+                au.updateFirmwareVersion(target.id, newFwVersion, (err)=>{
+                    try{
+                        expect(err).to.be.deep.equal(expectedError);
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+    })
+
+    describe("Test APIAuthor#updateThingType", function() {
+        let thingType = "dummyThingType";
+        describe("handle succeeded reponse", function() {
+            beforeEach(function() {
+                simple.mock(ThingOps.prototype, 'updateThingType').returnWith(
+                    new P<void>((resolve, reject)=>{
+                        resolve();
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                au.updateThingType(target.id, thingType)
+                .then(()=>{
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+            it("test callback", function (done) {
+                au.updateThingType(target.id, thingType, (err)=>{
+                    try{
+                        expect(err).to.null;
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+
+        describe("handle err reponse", function() {
+            let expectedError = new HttpRequestError(404, Errors.HttpError, {
+                "errorCode": "THING_NOT_FOUND",
+                "message": `Thing with thingID ${target.id} was not found`,
+                "value": target.id,
+                "field": "thingID",
+                "appID": testApp.appID
+            });
+
+            beforeEach(function() {
+                simple.mock(ThingOps.prototype, 'updateThingType').returnWith(
+                    new P<void>((resolve, reject)=>{
+                        reject(expectedError);
+                    })
+                );
+            })
+            afterEach(function() {
+                simple.restore();
+            })
+            it("test promise", function (done) {
+                au.updateThingType(target.id, thingType)
+                .then((cmd)=>{
+                    done("should fail");
+                }).catch((err: HttpRequestError)=>{
+                    expect(err).to.be.deep.equal(expectedError);
+                    done();
+                })
+            })
+            it("test callback", function (done) {
+                au.updateThingType(target.id, thingType, (err)=>{
+                    try{
+                        expect(err).to.be.deep.equal(expectedError);
+                        done();
+                    }catch(err){
+                        done(err);
+                    }
+                })
+            })
+        })
+    })
 })

@@ -613,13 +613,12 @@ export class ThingIFAPI {
     getState(
         alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        //TODO: need to implement alias query
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
-            (new StateOps(this._au, this._target)).getState().then((state)=>{
+            (new StateOps(this._au, this._target)).getState(alias).then((state)=>{
                 resolve(state);
             }).catch((err)=>{
                 reject(err);
@@ -759,10 +758,19 @@ export class ThingIFAPI {
     updateFirmwareVersion(
         newFwVersion: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+
+        let orgPromise = new Promise<void>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateFirmwareVersion(newFwVersion).then(()=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
     /** Query History state of the thing.
@@ -773,11 +781,18 @@ export class ThingIFAPI {
     queryStates(
         request: Options.QueryHistoryStatesRequest,
         onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
-
-        //TODO: implement me
-        return new Promise<HistoryStateResults>((resolve, reject)=>{
-            resolve(new HistoryStateResults("", request.grouped));
+        let orgPromise = new Promise<HistoryStateResults>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new StateOps(this._au, this._target)).queryStates(request).then((result)=>{
+                resolve(result);
+            }).catch((err)=>{
+                reject(err);
+            })
         })
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Update thingType to use trait for the thing.
@@ -789,9 +804,17 @@ export class ThingIFAPI {
         thingType: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
 
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+        let orgPromise = new Promise<void>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateThingType(thingType).then(()=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 }

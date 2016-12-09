@@ -11,13 +11,16 @@ import {Errors, HttpRequestError} from '../../src/ThingIFError'
 import * as Options from '../../src/RequestObjects'
 import StateOps from '../../src/ops/StateOps'
 import * as simple from 'simple-mock';
+import * as Clause from '../../src/Clause'
+import {QueryHistoryStatesRequest} from '../../src/RequestObjects'
+import {HistoryStateResults} from '../../src/HistoryStateResults'
 
 let testApp = new TestApp();
 let owner = new TypedID(Types.User, "dummy-user");
 let au = new APIAuthor("dummy-token", testApp.app);
 let target = new TypedID(Types.Thing, "dummy-thing-id");
 
-
+describe("Small Test state APIs of APIAuthor", function() {
 describe("Test APIAuthor#getState", function() {
     let commandID = "1234235534ferw"
 
@@ -44,8 +47,28 @@ describe("Test APIAuthor#getState", function() {
                 done(err);
             })
         })
+        it("test promise with Trait", function (done) {
+            au.getState(target, "DummyAlias")
+            .then((state)=>{
+                expect(state).to.be.deep.equal(expectedState);
+                done();
+            }).catch((err)=>{
+                done(err);
+            })
+        })
         it("test callback", function (done) {
-            au.getState(target,(err, state)=>{
+            au.getState(target, null,(err, state)=>{
+                try{
+                    expect(err).to.null;
+                    expect(state).to.be.deep.equal(expectedState);
+                    done();
+                }catch(err){
+                    done(err);
+                }
+            })
+        })
+        it("test callback with Trait", function (done) {
+            au.getState(target, "DummyAlias",(err, state)=>{
                 try{
                     expect(err).to.null;
                     expect(state).to.be.deep.equal(expectedState);
@@ -82,8 +105,28 @@ describe("Test APIAuthor#getState", function() {
                 done();
             })
         })
+        it("test promise with Trait", function (done) {
+            au.getState(target, "UnknownAlias")
+            .then((state)=>{
+                done("should fail");
+            }).catch((err: HttpRequestError)=>{
+                expect(err).to.be.deep.equal(expectedError);
+                done();
+            })
+        })
         it("test callback", function (done) {
-            au.getState(target,(err, state)=>{
+            au.getState(target, null,(err, state)=>{
+                try{
+                    expect(err).to.be.deep.equal(expectedError);
+                    expect(state).to.null;
+                    done();
+                }catch(err){
+                    done(err);
+                }
+            })
+        })
+        it("test callback with Trait", function (done) {
+            au.getState(target, "UnknownAlias",(err, state)=>{
                 try{
                     expect(err).to.be.deep.equal(expectedError);
                     expect(state).to.null;
@@ -95,6 +138,108 @@ describe("Test APIAuthor#getState", function() {
         })
     })
 })
+describe("Test APIAuthor#queryStates", function() {
+    let thingID = "dummyThingID"
+    let request = new QueryHistoryStatesRequest(
+        new Clause.Equals("field1", "hoge"),
+        false, null, "DummyAlias", null);
+    let expectedResult = new HistoryStateResults(
+        "dummy description", false, [], null);
 
+    describe("Return ArgumentError", function() {
+        class TestCase {
+            constructor(
+                public thingID: string,
+                public description: string
+            ){};
+        };
+        let tests: Array<TestCase> = [
+            new TestCase(null, "when thingID is null, ArgumentError should be returned(promise)"),
+            new TestCase("", "when thingID is empty, ArgumentError should be returned(promise)"),
+            new TestCase(<any>12345, "when thingID is not string, ArgumentError should be returned(promise)")
+        ];
+        tests.forEach(function(test) {
+            it(test.description, function(done) {
+                au.queryStates(test.thingID, request).then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(Errors.ArgumentError);
+                    done();
+                });
+            });
+        });
+    })
 
+    describe("handle succeeded reponse", function() {
+        beforeEach(function() {
+            simple.mock(StateOps.prototype, 'queryStates').returnWith(
+                new P<HistoryStateResults>((resolve, reject)=>{
+                    resolve(expectedResult);
+                })
+            );
+        })
+        afterEach(function() {
+            simple.restore();
+        })
+        it("test promise", function (done) {
+            au.queryStates(thingID, request)
+            .then((result)=>{
+                expect(result).to.be.deep.equal(expectedResult);
+                done();
+            }).catch((err)=>{
+                done(err);
+            })
+        })
+        it("test callback", function (done) {
+            au.queryStates(thingID, request, (err, result)=>{
+                try{
+                    expect(err).to.null;
+                    expect(result).to.be.deep.equal(expectedResult);
+                    done();
+                }catch(err){
+                    done(err);
+                }
+            })
+        })
+    })
+
+    describe("handle err reponse", function() {
+        let expectedError = new HttpRequestError(404, Errors.HttpError, {
+            "errorCode": "TARGET_NOT_FOUND",
+            "message": `Target thing:${target.id} not found`
+        });
+
+        beforeEach(function() {
+            simple.mock(StateOps.prototype, 'queryStates').returnWith(
+                new P<HistoryStateResults>((resolve, reject)=>{
+                    reject(expectedError);
+                })
+            );
+        })
+        afterEach(function() {
+            simple.restore();
+        })
+        it("test promise", function (done) {
+            au.queryStates(thingID, request)
+            .then((result)=>{
+                done("should fail");
+            }).catch((err: HttpRequestError)=>{
+                expect(err).to.be.deep.equal(expectedError);
+                done();
+            })
+        })
+        it("test callback", function (done) {
+            au.queryStates(thingID, request, (err, result)=>{
+                try{
+                    expect(err).to.be.deep.equal(expectedError);
+                    expect(result).to.null;
+                    done();
+                }catch(err){
+                    done(err);
+                }
+            })
+        })
+    })
+})
+})
 

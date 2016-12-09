@@ -42,10 +42,10 @@ describe('Test TriggerOps', function () {
     });
 
     let expectedTriggerID = "46bc25c0-4f12-11e6-ae54-22000ad9164c";
-    let schema = "LED";
-    let schemaVersion = 1;
-    let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
-    let condition = new Condition(new Equals("power", "false"));
+    let powerAlias = "PowerAlias"
+    let colorAlias = "ColorAlias"
+    let actions = [{powerAlias: [{"turnPower": true}]}, {colorAlias: [{"setColor": [255,0,255]}]}];
+    let condition = new Condition(new Equals("power", "false", powerAlias));
     let statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
     let schedulePredicate = new SchedulePredicate("0 12 1 * *");
     let scheduleOncePredicate = new ScheduleOncePredicate(1469089120402);
@@ -54,14 +54,12 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "type":"eq","alias":powerAlias,"field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
             "actions": actions
@@ -76,8 +74,6 @@ describe('Test TriggerOps', function () {
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
             "actions": actions
@@ -92,8 +88,6 @@ describe('Test TriggerOps', function () {
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
             "actions": actions
@@ -108,7 +102,7 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "type":"eq","alias":powerAlias,"field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
@@ -154,7 +148,7 @@ describe('Test TriggerOps', function () {
 
     describe('#postCommandTrigger() with promise', function () {
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, target, owner);
+        let commandRequest = new TriggerCommandObject(actions, target, owner);
         it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
@@ -168,14 +162,12 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -190,8 +182,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -220,8 +210,6 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -236,8 +224,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -266,8 +252,6 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -282,8 +266,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -313,14 +295,12 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -352,12 +332,9 @@ describe('Test TriggerOps', function () {
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
                 new TestCase(null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject(null, 1, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("", 1, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is empty"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target, owner), predicate), Errors.ArgumentError, "actions of command is null", "should handle error when actions is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, owner), null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, null), predicate), Errors.ArgumentError, "issuerID of command is null", "should handle error when issuerID is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject(null, target, owner), predicate), Errors.ArgumentError, "actions of command is null", "should handle error when actions is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject([{turnPower: {power:true}}], target, owner), null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject([{turnPower: {power:true}}], target, null), predicate), Errors.ArgumentError, "issuerID of command is null", "should handle error when issuerID is null"),
                 new TestCase(new PostCommandTriggerRequest(null, predicate), Errors.ArgumentError, "command is null", "should handle error when command is null"),
             ]
             tests.forEach(function(test) {
@@ -380,7 +357,7 @@ describe('Test TriggerOps', function () {
     });
     describe('#postCommandTrigger() with promise(cross thing command trigger)', function () {
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, owner);
+        let commandRequest = new TriggerCommandObject(actions, commandTarget, owner);
 
         it("with StatePredicate", function (done) {
             nock(
@@ -395,14 +372,12 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": commandTarget.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -418,8 +393,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(commandTarget);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -448,7 +421,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -588,7 +561,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -654,7 +627,7 @@ describe('Test TriggerOps', function () {
         // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         let patchCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
-        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, target, owner);
+        let commandRequest = new TriggerCommandObject(actions, target, owner);
         it("with StatePredicate", function (done) {
             nock(
                 testApp.site,
@@ -668,14 +641,12 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -700,8 +671,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -730,8 +699,6 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -755,8 +722,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -785,8 +750,6 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -810,8 +773,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -841,14 +802,12 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -880,13 +839,10 @@ describe('Test TriggerOps', function () {
             }
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
-                new TestCase(null, new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
-                new TestCase("", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
+                new TestCase(null, new PatchCommandTriggerRequest(new TriggerCommandObject([{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
+                new TestCase("", new PatchCommandTriggerRequest(new TriggerCommandObject([{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
                 new TestCase("trigger-01234-abcd", null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject(null, 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is null"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is empty"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target), null), Errors.ArgumentError, "actions of command is null", "should handle error when actions and predicate are null"),
+                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject(null, target), null), Errors.ArgumentError, "actions of command is null", "should handle error when actions and predicate are null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
@@ -918,14 +874,12 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "type":"eq","alias":powerAlias,"field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": commandTarget.toString(),
             "issuer": owner.toString(),
             "actions": actions
@@ -945,14 +899,12 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": commandTarget.toString(),
                         "issuer": owner.toString(),
                         "actions": actions
@@ -969,7 +921,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CrossThingCommandTriggerWithState, {"Content-Type": "application/json"});
 
-            let request = new PatchCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, owner), statePredicate);
+            let request = new PatchCommandTriggerRequest(new TriggerCommandObject(actions, commandTarget, owner), statePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -977,8 +929,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(commandTarget);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -1011,7 +961,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -1178,7 +1128,7 @@ describe('Test TriggerOps', function () {
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "type":"eq","alias":powerAlias,"field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -1274,8 +1224,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -1321,8 +1269,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -1648,8 +1594,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -1660,8 +1604,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
@@ -1672,8 +1614,6 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
                     expect(trigger.command.actions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);

@@ -68,5 +68,57 @@ export default class ThingOps extends BaseOp {
 
         })
     }
+
+    updateFirmwareVersion(newFwVersion: string): Promise<void> {
+        return new Promise<void>((resolve, reject)=>{
+            if(!newFwVersion){
+                reject(new ThingIFError(Errors.ArgumentError, "newFwVersion is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(newFwVersion)){
+                reject(new ThingIFError(Errors.ArgumentError, "newFwVersion is not string"));
+                return;
+            }
+
+            var req = {
+                method: "PUT",
+                headers: this.addHeader("Content-Type","application/vnd.kii.ThingFirmwareVersionUpdateRequest+json"),
+                url: `${this.baseUrl}/firmware-version`,
+                body: {
+                    "firmwareVersion": newFwVersion
+                }
+            };
+            request(req).then((res)=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            });
+        })
+    }
+
+    updateThingType(thingType: string): Promise<void> {
+        return new Promise<void>((resolve, reject)=>{
+            if(!thingType){
+                reject(new ThingIFError(Errors.ArgumentError, "thingType is null or empty"));
+                return;
+            }else if(!KiiUtil.isString(thingType)){
+                reject(new ThingIFError(Errors.ArgumentError, "thingType is not string"));
+                return;
+            }
+
+            var req = {
+                method: "PUT",
+                headers: this.addHeader("Content-Type","application/vnd.kii.ThingTypeUpdateRequest+json"),
+                url: `${this.baseUrl}/thing-type`,
+                body: {
+                    "thingType": thingType
+                }
+            };
+            request(req).then((res)=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            });
+        })
+    }
 }
 

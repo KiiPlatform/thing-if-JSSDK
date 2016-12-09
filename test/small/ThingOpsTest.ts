@@ -178,3 +178,187 @@ describe('Test ThingOps#updateVendorThingID', function () {
         });
     })
 });
+
+describe('Test ThingOps#updateFrimwareVersion', function () {
+    let path = `/api/apps/${testApp.appID}/things/${thingID}/firmware-version`;
+    let reqHeaders = {
+        "Content-Type": "application/vnd.kii.ThingFirmwareVersionUpdateRequest+json",
+        "Authorrization": `Bearer ${au.token}`
+    };
+    let newFwVersion = "v1.0";
+    describe("handle ArgumentError", function() {
+        class TestCase {
+            constructor(
+                public newFwVersion: any,
+                public expectedError: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, Errors.ArgumentError),
+            new TestCase("", Errors.ArgumentError)
+        ];
+
+        tests.forEach(function(test) {
+            it("when newFwVersion="+test.newFwVersion+", "
+                + test.expectedError+" should be returned",
+                function(done) {
+                thingOp.updateFirmwareVersion(test.newFwVersion)
+                .then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.be.equal(Errors.ArgumentError);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+        })
+    })
+
+    describe("handle http response", function() {
+
+        beforeEach(function() {
+            nock.cleanAll();
+        });
+
+        it("handle success response", function (done) {
+            scope = nock(testApp.site, <any>reqHeaders)
+                .put(path, {
+                    "firmwareVersion": newFwVersion
+                })
+                .reply(204);
+
+            thingOp.updateFirmwareVersion(newFwVersion).then(()=>{
+                done();
+            }).catch((err)=>{
+                done(err);
+            })
+        });
+
+        it("handle 404 error response", function (done) {
+            let errResponse = {
+                "errorCode": "THING_NOT_FOUND",
+                "message": `Thing with thingID ${thingID} was not found`,
+                "value": thingID,
+                "field": "thingID",
+                "appID": testApp.appID
+            };
+
+            scope = nock(testApp.site, <any>reqHeaders)
+                .put(path, {
+                    "firmwareVersion": newFwVersion
+                })
+                .reply(
+                    404,
+                    errResponse,
+                    {"Content-Type": "application/vnd.kii.ThingNotFoundException+json"}
+                );
+
+            thingOp.updateFirmwareVersion(newFwVersion).then((installID)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err).not.be.null;
+                expect(err.status).to.equal(404);
+                expect(err.name).to.equal(Errors.HttpError);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
+                done();
+            }).catch((err: Error)=>{
+                done(err);
+            });
+        });
+    })
+});
+
+describe('Test ThingOps#updateThingType', function () {
+    let path = `/api/apps/${testApp.appID}/things/${thingID}/thing-type`;
+    let reqHeaders = {
+        "Content-Type": "application/vnd.kii.ThingTypeUpdateRequest+json",
+        "Authorrization": `Bearer ${au.token}`
+    };
+    let thingType = "dummyThingType";
+    describe("handle ArgumentError", function() {
+        class TestCase {
+            constructor(
+                public thingType: any,
+                public expectedError: string
+            ){}
+        }
+        let tests = [
+            new TestCase(null, Errors.ArgumentError),
+            new TestCase("", Errors.ArgumentError)
+        ];
+
+        tests.forEach(function(test) {
+            it("when thingType="+test.thingType+", "
+                + test.expectedError+" should be returned",
+                function(done) {
+                thingOp.updateThingType(test.thingType)
+                .then(()=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.be.equal(Errors.ArgumentError);
+                    done();
+                }).catch((err)=>{
+                    done(err);
+                })
+            })
+        })
+    })
+
+    describe("handle http response", function() {
+
+        beforeEach(function() {
+            nock.cleanAll();
+        });
+
+        it("handle success response", function (done) {
+            scope = nock(testApp.site, <any>reqHeaders)
+                .put(path, {
+                    "thingType": thingType
+                })
+                .reply(204);
+
+            thingOp.updateThingType(thingType).then(()=>{
+                done();
+            }).catch((err)=>{
+                done(err);
+            })
+        });
+
+        it("handle 404 error response", function (done) {
+            let errResponse = {
+                "errorCode": "THING_NOT_FOUND",
+                "message": `Thing with thingID ${thingID} was not found`,
+                "value": thingID,
+                "field": "thingID",
+                "appID": testApp.appID
+            };
+
+            scope = nock(testApp.site, <any>reqHeaders)
+                .put(path, {
+                    "thingType": thingType
+                })
+                .reply(
+                    404,
+                    errResponse,
+                    {"Content-Type": "application/vnd.kii.ThingNotFoundException+json"}
+                );
+
+            thingOp.updateThingType(thingType).then((installID)=>{
+                done("should fail");
+            }).catch((err:HttpRequestError)=>{
+                expect(err).not.be.null;
+                expect(err.status).to.equal(404);
+                expect(err.name).to.equal(Errors.HttpError);
+                expect(JSON.parse(err.body.rawData)).to.deep.equal(errResponse);
+                expect(err.body.errorCode).to.be.equal(errResponse.errorCode);
+                expect(err.body.message).to.be.equal(errResponse.message);
+                done();
+            }).catch((err: Error)=>{
+                done(err);
+            });
+        });
+    })
+});

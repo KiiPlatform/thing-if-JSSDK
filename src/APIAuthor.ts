@@ -6,7 +6,7 @@ import {Command} from './Command';
 import {Trigger} from './Trigger'
 import {ServerCodeResult} from './ServerCodeResult'
 import * as Options from './RequestObjects'
-import {TypedID} from './TypedID'
+import {TypedID, Types} from './TypedID'
 import {OnboardingResult} from './OnboardingResult'
 
 import OnboardingOps from './ops/OnboardingOps'
@@ -20,7 +20,8 @@ import * as PromiseWrapper from './internal/PromiseWrapper'
 import {Clause} from './Clause'
 import {HistoryStateResults} from './HistoryStateResults'
 import {Aggregation} from './Aggregation'
-
+import {ThingIFError, Errors} from './ThingIFError'
+import * as KiiUtil from './internal/KiiUtilities'
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -410,8 +411,7 @@ export class APIAuthor {
         target: TypedID,
         alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        //TODO: need to implement for alias query
-        return PromiseWrapper.promise((new StateOps(this, target)).getState(), onCompletion);
+        return PromiseWrapper.promise((new StateOps(this, target)).getState(alias), onCompletion);
     }
 
     /** Get vendorThingID of specified target
@@ -500,10 +500,7 @@ export class APIAuthor {
         thingID: string,
         newFwVersion: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+        return PromiseWrapper.voidPromise((new ThingOps(this, thingID)).updateFirmwareVersion(newFwVersion), onCompletion);
     }
 
     /** Query History state of the thing.
@@ -517,10 +514,17 @@ export class APIAuthor {
         request: Options.QueryHistoryStatesRequest,
         onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
 
-        //TODO: implement me
-        return new Promise<HistoryStateResults>((resolve, reject)=>{
-            resolve(new HistoryStateResults("", request.grouped));
-        })
+        if (!thingID) {
+            return new Promise<HistoryStateResults>((resolve, reject)=>{
+                reject(new ThingIFError(Errors.ArgumentError, "thingID is null or empty"));
+            })
+        } else if (!KiiUtil.isString(thingID)) {
+            return new Promise<HistoryStateResults>((resolve, reject)=>{
+                reject(new ThingIFError(Errors.ArgumentError, "thingID is not string"));
+            })
+        }
+        var targetID = new TypedID(Types.Thing, thingID);
+        return PromiseWrapper.promise((new StateOps(this, targetID)).queryStates(request), onCompletion);
     }
 
     /** Update thingType to using trait for the thing .
@@ -533,10 +537,6 @@ export class APIAuthor {
         thingID: string,
         thingType: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+        return PromiseWrapper.voidPromise((new ThingOps(this, thingID)).updateThingType(thingType), onCompletion);
     }
 }

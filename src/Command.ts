@@ -34,21 +34,15 @@ export class Command {
      * @constructor
      * @param {TypedID} targetID ID of the target thing.
      * @param {TypedID} issuerID ID of the command issuer.
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
      * @param {Object[]} actions Array of actions of the command.
      */
     constructor(
         targetID: TypedID,
         issuerID: TypedID,
-        schema: string,
-        schemaVersion: number,
         actions: Array<Object>
     ) {
         this.targetID = targetID;
         this.issuerID = issuerID;
-        this.schema = schema;
-        this.schemaVersion = schemaVersion;
         this.actions = actions;
     }
 
@@ -96,8 +90,6 @@ export class Command {
         let command = new Command(
             TypedID.fromString(obj.target),
             TypedID.fromString(obj.issuer),
-            obj.schema,
-            obj.schemaVersion,
             obj.actions);
         command.commandID = obj.commandID;
         command.actionResults = obj.actionResults;
