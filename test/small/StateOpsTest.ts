@@ -141,6 +141,33 @@ describe("Test StateOps", function() {
     }),
 
     describe("Test StateOps#queryStates", function() {
+        describe("Return ArgumentError", function() {
+            it("when traitAlias is not string, ArgumentError should be returned(promise)", function (done) {
+                let queryRequest = new QueryHistoryStatesRequest(
+                    new Clause.Equals("field1", "hoge"),
+                    false, null, <any>12345, null
+                );
+                stateOp.queryStates(queryRequest).then((result)=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(Errors.ArgumentError);
+                    done();
+                })
+            })
+            it("when traitAlias is empty, ArgumentError should be returned(promise)", function (done) {
+                let queryRequest = new QueryHistoryStatesRequest(
+                    new Clause.Equals("field1", "hoge"),
+                    false, null, "", null
+                );
+                stateOp.queryStates(queryRequest).then((result)=>{
+                    done("should fail");
+                }).catch((err)=>{
+                    expect(err.name).to.equal(Errors.ArgumentError);
+                    done();
+                })
+            })
+        })
+
         describe("handle http response with Trait", function() {
             let alias = "DummyAlias";
             let path = `/thing-if/apps/${testApp.appID}/targets/${targetID.toString()}/states/aliases/${alias}/query`;

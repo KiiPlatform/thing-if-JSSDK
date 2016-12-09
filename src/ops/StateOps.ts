@@ -7,6 +7,8 @@ import BaseOp from './BaseOp'
 import {TypedID} from '../TypedID'
 import {QueryHistoryStatesRequest} from '../RequestObjects'
 import {GroupedResults, HistoryStateResults} from '../HistoryStateResults'
+import * as KiiUtil from '../internal/KiiUtilities'
+import {ThingIFError, Errors} from '../ThingIFError'
 
 export default class StateOps extends BaseOp {
     private baseUrl: string
@@ -41,9 +43,17 @@ export default class StateOps extends BaseOp {
         return new Promise<HistoryStateResults>((resolve, reject)=>{
             var contentType: string;
             var url = this.baseUrl;
-            if(requestObject.traitAlias){
+            var traitAlias = requestObject.traitAlias;
+            if(traitAlias != null){
+                if(!KiiUtil.isString(traitAlias)){
+                    reject(new ThingIFError(Errors.ArgumentError, "traitAlias is not string"));
+                    return;
+                }else if(traitAlias.length == 0){
+                    reject(new ThingIFError(Errors.ArgumentError, "traitAlias is empty string"));
+                    return;
+                }
                 contentType = "application/vnd.kii.TraitStateQueryRequest+json";
-                url = url + `/aliases/${requestObject.traitAlias}/query`;
+                url = url + `/aliases/${traitAlias}/query`;
             }else{
                 contentType = "application/json";
                 url = url + "/query";
