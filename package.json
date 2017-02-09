@@ -54,6 +54,6 @@
   "dependencies": {
     "es6-promise": "^4.0.4",
     "make-error-cause": "^1.2.1",
-    "popsicle": "^8.2.0"
+    "popsicle": "^9.1.0"
   }
 }
