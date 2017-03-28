@@ -42,7 +42,7 @@
     "jsdoc": "^3.4.1",
     "minami": "^1.1.1",
     "mocha": "^3.0.2",
-    "nock": "^8.0.0",
+    "nock": "^9.0.10",
     "simple-mock": "^0.7.0",
     "ts-loader": "^0.9.1",
     "typescript": "^2.0.3",
