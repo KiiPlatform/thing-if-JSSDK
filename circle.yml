@@ -13,8 +13,8 @@ test:
     # uglify library
     - webpack 
     - >
-      mv ./dist/thing-if-sdk.js $CIRCLE_ARTIFACTS/thing-if-sdk-min.js
-      mv ./dist/thing-if-sdk.js.map $CIRCLE_ARTIFACTS/thing-if-sdk-min.js.map
+      cp ./dist/thing-if-sdk.js $CIRCLE_ARTIFACTS/thing-if-sdk-min.js &&
+      cp ./dist/thing-if-sdk.js.map $CIRCLE_ARTIFACTS/thing-if-sdk-min.js.map
 
    # build sdk
     - npm run build-src
