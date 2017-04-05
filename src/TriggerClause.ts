@@ -1,24 +1,25 @@
+import { Trigger } from './Trigger';
 /**
- * Base Clause implementation.
+ * Base TriggerClause implementation.
  */
-export abstract class Clause {
+export abstract class TriggerClause {
     abstract toJson(): any;
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a clause.
-     * @return {Clause} Equals instance
+     * @return {TriggerClause} Equals instance
      */
-    static fromJson(obj:any): Clause {
+    static fromJson(obj:any): TriggerClause {
         if (obj.type == "eq") {
-            return Equals.fromJson(obj);
+            return EqualsClauseInTrigger.fromJson(obj);
         } else if (obj.type == "not") {
-            return NotEquals.fromJson(obj);
+            return NotEqualsClauseInTrigger.fromJson(obj);
         } else if (obj.type == "and") {
-            return And.fromJson(obj);
+            return AndClauseInTrigger.fromJson(obj);
         } else if (obj.type == "or") {
-            return Or.fromJson(obj);
+            return OrClauseInTrigger.fromJson(obj);
         } else if (obj.type == "range") {
-            return Range.fromJson(obj);
+            return RangeClauseInTrigger.fromJson(obj);
         }
         return null;
     }
@@ -28,7 +29,7 @@ export abstract class Clause {
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
-export class Equals extends Clause {
+export class EqualsClauseInTrigger extends TriggerClause {
     public field: string;
     public value: string|number|boolean;
 
@@ -60,12 +61,12 @@ export class Equals extends Clause {
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a equals condition.
-     * @return {Equals} Equals instance
+     * @return {EqualsClauseInTrigger} Equals instance
      */
-    static fromJson(obj:any): Equals {
+    static fromJson(obj:any): EqualsClauseInTrigger {
         let field = obj.field;
         let value = obj.value;
-        return new Equals(field, value);
+        return new EqualsClauseInTrigger(field, value);
     }
 }
 /**
@@ -73,7 +74,7 @@ export class Equals extends Clause {
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
-export class NotEquals extends Clause {
+export class NotEqualsClauseInTrigger extends TriggerClause {
     public field: string;
     public value: string|number|boolean;
 
@@ -108,27 +109,27 @@ export class NotEquals extends Clause {
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a not equals condition.
-     * @return {NotEquals} NotEquals instance
+     * @return {NotEqualsClauseInTrigger} NotEquals instance
      */
-    static fromJson(obj:any): NotEquals {
+    static fromJson(obj:any): NotEqualsClauseInTrigger {
         let field = obj.clause.field;
         let value = obj.clause.value;
-        return new NotEquals(field, value);
+        return new NotEqualsClauseInTrigger(field, value);
     }
 }
 /**
  * Represents the And operator.
- * @prop {Clause[]} clauses Clauses to be concatenated with And operator.
+ * @prop {TriggerClause[]} clauses Clauses to be concatenated with And operator.
  */
-export class And extends Clause {
-    public clauses: Clause[];
+export class AndClauseInTrigger extends TriggerClause {
+    public clauses: TriggerClause[];
 
     /**
      * Create a AND operator.
      * @constructor
-     * @param {Clause[]} clauses Array of clauses to be concatenated with And operator.
+     * @param {TriggerClause[]} clauses Array of clauses to be concatenated with And operator.
      */
-    constructor(...clauses: Clause[]) {
+    constructor(...clauses: TriggerClause[]) {
         super();
         this.clauses = clauses;
     }
@@ -138,7 +139,7 @@ export class And extends Clause {
      */
     toJson(): any {
         var json: any = {type: "and"};
-        var clauses :Array<Clause> = new Array<Clause>();
+        var clauses :Array<TriggerClause> = new Array<TriggerClause>();
         for (var clause of this.clauses) {
             clauses.push(clause.toJson());
         }
@@ -148,32 +149,32 @@ export class And extends Clause {
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a AND operator.
-     * @return {And} And instance
+     * @return {AndClauseInTrigger} And instance
      */
-    static fromJson(obj:any): And {
-        let clauses: Array<Clause> = new Array<Clause>();
+    static fromJson(obj:any): AndClauseInTrigger {
+        let clauses: Array<TriggerClause> = new Array<TriggerClause>();
         let array: Array<any> = obj.clauses;
         for (var json of array) {
-            clauses.push(Clause.fromJson(json));
+            clauses.push(TriggerClause.fromJson(json));
         }
-        let and = new And();
+        let and = new AndClauseInTrigger();
         and.clauses = clauses;
         return and;
     }
 }
 /**
  * Represents the OR operator.
- * @prop {Clause[]} clauses Clauses to be concatenated with Or operator.
+ * @prop {TriggerClause[]} clauses Clauses to be concatenated with Or operator.
  */
-export class Or extends Clause {
-    public clauses: Clause[];
+export class OrClauseInTrigger extends TriggerClause {
+    public clauses: TriggerClause[];
 
     /**
      * Create a OR operator.
      * @constructor
-     * @param {Clause[]} clauses Array of clauses to be concatenated with Or operator.
+     * @param {TriggerClause[]} clauses Array of clauses to be concatenated with Or operator.
      */
-    constructor(...clauses: Clause[]) {
+    constructor(...clauses: TriggerClause[]) {
         super();
         this.clauses = clauses;
     }
@@ -183,7 +184,7 @@ export class Or extends Clause {
      */
     toJson(): any {
         var json: any = {type: "or"};
-        var clauses :Array<Clause> = new Array<Clause>();
+        var clauses :Array<TriggerClause> = new Array<TriggerClause>();
         for (var clause of this.clauses) {
             clauses.push(clause.toJson());
         }
@@ -193,15 +194,15 @@ export class Or extends Clause {
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a OR operator.
-     * @return {Or} Or instance
+     * @return {OrClauseInTrigger} Or instance
      */
-    static fromJson(obj:any): Or {
-        let clauses: Array<Clause> = new Array<Clause>();
+    static fromJson(obj:any): OrClauseInTrigger {
+        let clauses: Array<TriggerClause> = new Array<TriggerClause>();
         let array: Array<any> = obj.clauses;
         for (var json of array) {
-            clauses.push(Clause.fromJson(json));
+            clauses.push(TriggerClause.fromJson(json));
         }
-        let or = new Or();
+        let or = new OrClauseInTrigger();
         or.clauses = clauses;
         return or;
     }
@@ -214,7 +215,7 @@ export class Or extends Clause {
  * @prop {number} lowerLimit The lower limit of the range.
  * @prop {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
  */
-export class Range extends Clause {
+export class RangeClauseInTrigger extends TriggerClause {
     public field: string;
     public upperLimit: number;
     public upperIncluded: boolean;
@@ -249,32 +250,32 @@ export class Range extends Clause {
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
      */
-    static greaterThan(field: string, lowerLimit: number): Range {
-        return new Range(field, null, null, lowerLimit, false);
+    static greaterThan(field: string, lowerLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(field, null, null, lowerLimit, false);
     }
     /**
      * Create a Range instance of the less than or equals.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
      */
-    static greaterThanEquals(field: string, lowerLimit: number): Range {
-        return new Range(field, null, null, lowerLimit, true);
+    static greaterThanEquals(field: string, lowerLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(field, null, null, lowerLimit, true);
     }
     /**
      * Create a Range instance of the greater than.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      */
-    static lessThan(field: string, upperLimit: number): Range {
-        return new Range(field, upperLimit, false, null, null);
+    static lessThan(field: string, upperLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(field, upperLimit, false, null, null);
     }
     /**
      * Create a Range instance of the greater than or equals.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      */
-    static lessThanEquals(field: string, upperLimit: number): Range {
-        return new Range(field, upperLimit, true, null, null);
+    static lessThanEquals(field: string, upperLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(field, upperLimit, true, null, null);
     }
     /**
      * This method is for internal use only.
@@ -299,14 +300,14 @@ export class Range extends Clause {
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a range condition.
-     * @return {Range} Range instance
+     * @return {RangeClauseInTrigger} Range instance
      */
-    static fromJson(obj:any): Range {
+    static fromJson(obj:any): RangeClauseInTrigger {
         let field = obj.field;
         let upperLimit = obj.upperLimit ? obj.upperLimit : null;
         let upperIncluded = obj.upperIncluded ? obj.upperIncluded : null;
         let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
         let lowerIncluded = obj.lowerIncluded ? obj.lowerIncluded : null;
-        return new Range(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
+        return new RangeClauseInTrigger(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
     }
 }
