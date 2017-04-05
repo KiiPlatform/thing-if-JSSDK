@@ -20,7 +20,8 @@
     "prepublish": "typings install && npm run build-lib",
     "build-src-for-doc": "tsc src/*.ts typings/globals/node/index.d.ts --target es6 --module commonjs --outDir built-for-doc",
     "build-doc": "npm run build-src-for-doc && rm -fr jsdoc/html && jsdoc built-for-doc -c jsdoc/conf.json -R README.md",
-    "build-src": "webpack"
+    "build-src": "webpack",
+    "build-src-uglify": "webpack --optimize-minimize"
   },
   "repository": {
     "type": "git",
