@@ -5,14 +5,16 @@ dependencies:
 test:
   pre:
     # generate typedoc
-    - gulp doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
+    - npm run build-doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
 
     # uglify library
-    - gulp --u
-    - cp ./dist/thing-if-sdk* $CIRCLE_ARTIFACTS/
+    - webpack 
+    - >
+      mv ./dist/thing-if-sdk.js $CIRCLE_ARTIFACTS/thing-if-sdk-min.js
+      mv ./dist/thing-if-sdk.js.map $CIRCLE_ARTIFACTS/thing-if-sdk-min.js.map
 
    # build sdk
-    - gulp
+    - npm run build-src
     - cp ./dist/thing-if-sdk* $CIRCLE_ARTIFACTS/
   post:
     - npm run test-cov
