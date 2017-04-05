@@ -5,14 +5,7 @@ var webpack = require('webpack'),
 var libraryName = 'ThingIF',
     libraryFileName = 'thing-if-sdk',
     plugins = [],
-    outputFile;
-
-if (yargs.argv.u) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
-  outputFile = libraryFileName + '.min.js';
-} else {
-  outputFile = libraryFileName + '.js';
-}
+    outputFile = libraryFileName + '.js';
 
 var config = {
   devtool: 'source-map',
@@ -31,12 +24,12 @@ var config = {
   },
   module: {
     loaders: [
-      { test: /\.tsx?$/, loader: 'ts', exclude: /node_modules/ }
+      { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/ }
     ]
   },
   resolve: {
-    root: path.resolve('./src'),
-    extensions: [ '', '.ts']
+    modules: [path.resolve('./src'), "node_modules"],
+    extensions: [".ts"]
   },
   plugins: plugins
 };
