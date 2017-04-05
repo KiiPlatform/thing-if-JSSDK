@@ -18,7 +18,8 @@
     "large-test": "npm run build-test && mocha 'built/test/large/*.js' --timeout 20000",
     "build-lib": "rm -fr built && rm -fr lib && tsc && cp -fr built lib",
     "prepublish": "typings install && npm run build-lib",
-    "build-doc": "rm -fr jsdoc/html && jsdoc built-for-doc -c jsdoc/conf.json -R README.md",
+    "build-src-for-doc": "tsc src/*.ts typings/globals/node/index.d.ts --target es6 --module commonjs --outDir built-for-doc",
+    "build-doc": "npm run build-src-for-doc && rm -fr jsdoc/html && jsdoc built-for-doc -c jsdoc/conf.json -R README.md",
     "build-src": "webpack"
   },
   "repository": {
