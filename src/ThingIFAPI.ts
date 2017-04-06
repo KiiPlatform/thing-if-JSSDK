@@ -18,7 +18,9 @@ import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
-import {QueryResult} from './QueryResult'
+import { QueryResult } from './QueryResult';
+import { QueryHistoryStatesRequest } from './RequestObjects';
+import { QueryHistoryStatesResults, QueryGroupedHistoryStatesResults } from './HistoryState';
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
@@ -791,4 +793,35 @@ export class ThingIFAPI {
             resolve();
         })
     }
+
+    /** Query history states of thing.
+     * @param  {QueryHistoryStatesRequest} request parameters to do query.
+     * @param  {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    query(
+        request: Options.QueryHistoryStatesRequest,
+        onCompletion?: (err: Error, results: QueryHistoryStatesResults) => void
+        ): Promise<QueryHistoryStatesResults>{
+        //TODO: implement me
+        return new Promise<QueryHistoryStatesResults>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /**
+     * Query grouped history states of thing based on data grouping intervals.
+     * @param {QueryGroupedHistoryStatesRequest} request request object.
+     * @param {fuction} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    groupedQuery(
+        request: Options.QueryGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: QueryGroupedHistoryStatesResults) => void
+        ): Promise<QueryGroupedHistoryStatesResults>{
+        //TODO: implement me
+        return new Promise<QueryGroupedHistoryStatesResults>((resolve, reject)=>{
+            resolve();
+        })
+    }    
 }
