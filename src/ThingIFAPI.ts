@@ -590,6 +590,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * @param {string} [alias] Trait alias of state to query. If provided, only states of the specified alias returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -600,7 +601,9 @@ export class ThingIFAPI {
      * });
      */
     getState(
+        alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
+        // TODO: fix me
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
