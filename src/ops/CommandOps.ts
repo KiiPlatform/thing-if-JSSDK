@@ -24,11 +24,11 @@ export default class CommandOps extends BaseOp {
     postNewCommand(requestObject: PostCommandRequest): Promise<Command> {
         return new Promise<Command>((resolve, reject)=>{
             // validate parameters
-            if(!requestObject.actions){
-                reject(new ThingIFError(Errors.ArgumentError, "actions is null or empty"));
+            if(!requestObject.aliasActions){
+                reject(new ThingIFError(Errors.ArgumentError, "aliasActions is null or empty"));
                 return;
-            }else if(!KiiUtil.isArray(requestObject.actions)){
-                reject(new ThingIFError(Errors.ArgumentError, "actions is not array"));
+            }else if(!KiiUtil.isArray(requestObject.aliasActions)){
+                reject(new ThingIFError(Errors.ArgumentError, "aliasActions is not array"));
                 return;
             }
             if(!requestObject.issuer){
@@ -51,7 +51,7 @@ export default class CommandOps extends BaseOp {
                 var newCommand = new Command(
                         this.targetID,
                         TypedID.fromString(requestObject.issuer),
-                        requestObject.actions);
+                        requestObject.aliasActions);
                 newCommand.commandID = (<any>res.body).commandID;
                 if(!!requestObject.title){
                     newCommand.title = requestObject.title;

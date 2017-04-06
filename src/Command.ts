@@ -1,12 +1,14 @@
 import {TypedID} from './TypedID'
 import * as KiiUtil from './internal/KiiUtilities'
+import { AliasAction } from './AliasAction';
+import { AliasActionResult } from './AliasActionResult';
 /**
  * Represents Command
  * @prop {string} commandID ID of command.
  * @prop {TypedID} targetID ID of the target thing.
  * @prop {TypedID} issuerID ID of the command issuer.
- * @prop {Object[]} actions Array of actions of the command.
- * @prop {Object[]} actionResults Array of action results of the command.
+ * @prop {AliasAction[]} aliasActions Array of actions of the command.
+ * @prop {AliasActionResult[]} aliasActionResults Array of action results of the command.
  * @prop {string} commandState State of the command.
  * @prop {string} firedByTriggerID ID of the trigger if command invoked by trigger.
  * @prop {Date} created Timestamp of the creation of the command.
@@ -19,8 +21,8 @@ export class Command {
     public commandID: string;
     public targetID: TypedID;
     public issuerID: TypedID;
-    public actions: Array<Object>;
-    public actionResults: Array<Object>;
+    public aliasActions: Array<AliasAction>;
+    public aliasActionResults: Array<AliasActionResult>;
     public commandState:string;
     public firedByTriggerID:string;
     public created:Date;
@@ -34,16 +36,16 @@ export class Command {
      * @constructor
      * @param {TypedID} targetID ID of the target thing.
      * @param {TypedID} issuerID ID of the command issuer.
-     * @param {Object[]} actions Array of actions of the command.
+     * @param {AliasAction[]} aliasActions Array of actions of the command.
      */
     constructor(
         targetID: TypedID,
         issuerID: TypedID,
-        actions: Array<Object>
+        aliasActions: Array<AliasAction>
     ) {
         this.targetID = targetID;
         this.issuerID = issuerID;
-        this.actions = actions;
+        this.aliasActions = aliasActions;
     }
 
     /**
@@ -61,11 +63,11 @@ export class Command {
         if(!!this.issuerID){
             jsonObject.issuer = this.issuerID.toString();
         }
-        if(!!this.actions){
-            jsonObject.actions = this.actions;
+        if(!!this.aliasActions){
+            jsonObject.actions = this.aliasActions;
         }
-        if(!!this.actionResults){
-            jsonObject.actionResults = this.actionResults;
+        if(!!this.aliasActionResults){
+            jsonObject.actionResults = this.aliasActionResults;
         }
         if(!!this.title){
             jsonObject.title = this.title;
@@ -92,7 +94,7 @@ export class Command {
             TypedID.fromString(obj.issuer),
             obj.actions);
         command.commandID = obj.commandID;
-        command.actionResults = obj.actionResults;
+        command.aliasActionResults = obj.actionResults;
         command.commandState= obj.commandState;
         command.firedByTriggerID = obj.firedByTriggerID;
         command.title = obj.title;
