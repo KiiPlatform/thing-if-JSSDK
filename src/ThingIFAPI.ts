@@ -21,6 +21,7 @@ import PushOps from './ops/PushOps'
 import { QueryResult } from './QueryResult';
 import { QueryHistoryStatesRequest } from './RequestObjects';
 import { QueryHistoryStatesResults, QueryGroupedHistoryStatesResults } from './HistoryState';
+import { QueryAggregationResults } from './AggregatedResult';
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
@@ -812,7 +813,7 @@ export class ThingIFAPI {
     /**
      * Query grouped history states of thing based on data grouping intervals.
      * @param {QueryGroupedHistoryStatesRequest} request request object.
-     * @param {fuction} [onCompletion] Callback function when completed
+     * @param {fuction} [onCompletion] Callback function when completed.
      * @return {Promise} promise object.
      */
     groupedQuery(
@@ -823,5 +824,21 @@ export class ThingIFAPI {
         return new Promise<QueryGroupedHistoryStatesResults>((resolve, reject)=>{
             resolve();
         })
-    }    
+    }   
+
+    /**
+     * Aggregate history states of thing.
+     * @param {AggregateGroupedHistoryStatesRequest} request request object.
+     * @param {function} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    aggregate(
+        request: Options.AggregateGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: QueryAggregationResults) => void
+        ): Promise<QueryAggregationResults>{
+        //TODO: implement me
+        return new Promise<QueryAggregationResults>((resolve, reject)=>{
+            resolve();
+        })
+    }
 }

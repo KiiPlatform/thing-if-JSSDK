@@ -6,6 +6,7 @@ import {LayoutPosition} from './LayoutPosition'
 import { AliasAction } from './AliasAction';
 import { QueryClause } from './QueryClause';
 import { TimeRange } from './TimeRange';
+import { Aggregation } from './Aggregation';
 
 /**
  * Represents the request for onboarding with vendorThingID with owner.
@@ -456,6 +457,22 @@ export class QueryGroupedHistoryStatesRequest{
         public range: TimeRange,
         public alias?: string,
         public firmwareVersion?: string,
+    ){}
+}
+
+/** Represents the request for aggregating history state of thing.
+ * @prop {QueryGroupedHistoryStatesRequest} groupedQuery grouped query request.
+ * @prop {Aggregation} aggregation aggregation of query.
+*/
+export class AggregateGroupedHistoryStatesRequest{
+
+    /** Initialize AggregateGroupedHistoryStatesRequest
+     * @param {QueryGroupedHistoryStatesRequest} groupedQuery grouped query request.
+     * @param {Aggregation} aggregation aggregation of query.
+     */
+    constructor(
+        public groupedQuery: QueryGroupedHistoryStatesRequest,
+        public aggregation: Aggregation
     ){}
 }
 
