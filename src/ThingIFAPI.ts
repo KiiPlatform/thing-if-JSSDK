@@ -740,4 +740,55 @@ export class ThingIFAPI {
         })
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
+
+    /** Get firmware version of the thing
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getFirmwareVersion(onCompletion?: (err: Error)=> void): Promise<string>{
+        //TODO: implement me
+        return new Promise<string>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Update firmware version of the thing
+     * @param {string} firmwareVersion New firmware version.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateFirmwareVersion(
+        firmwareVersion: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Get thingType to use trait for the thing.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getThingType(onCompletion?: (err: Error)=> void): Promise<string>{
+        //TODO: implement me
+        return new Promise<string>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Update thingType to use trait for the thing.
+     * @param {string} thingType Name of ThingType, which should be already defined.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateThingType(
+        thingType: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
 }
