@@ -138,8 +138,6 @@ export class OnboardWithThingIDRequest {
 
 /**
  * Represents the request for creating a command.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
  * @prop {string} issuer ID of the command issuer.
  * @prop {string} title Title of the command.
@@ -147,8 +145,6 @@ export class OnboardWithThingIDRequest {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class PostCommandRequest {
-    public schema: string;
-    public schemaVersion: number;
     public actions: Array<Object>;
     public issuer: string;
     public title: string;
@@ -158,8 +154,6 @@ export class PostCommandRequest {
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
      * @param {number[]} actions Array of actions of the command.
      * @param {TypedID} [issuerID] ID of the command issuer.
      * @param {string} [title] Title of the command.
@@ -167,15 +161,11 @@ export class PostCommandRequest {
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        schema: string,
-        schemaVersion: number,
         actions: Array<Object>,
         issuerID?: TypedID,
         title?: string,
         description?: string,
         metadata?: Object) {
-            this.schema = schema;
-            this.schemaVersion = schemaVersion;
             this.actions = actions;
             if(!!issuerID && !!issuerID.id && !!issuerID.type){
                 this.issuer = issuerID.toString();
@@ -227,8 +217,6 @@ export class ListQueryOptions {
 
 /**
  * Represents the fields to construct command for creating/updating command trigger.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
  * @prop {TypedID} issuerID instance of TypedID to represent issuer of command.
  * @prop {TypedID} targetID instance of TypedID to represent target of command.
@@ -237,8 +225,6 @@ export class ListQueryOptions {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class TriggerCommandObject {
-    public schema: string;
-    public schemaVersion: number;
     public actions: Array<Object>;
     public issuerID: TypedID;
     public targetID: TypedID;
@@ -249,8 +235,6 @@ export class TriggerCommandObject {
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
      * @param {number[]} actions Array of actions of the command.
      * @param {TypedID} [targetID] instance of TypedID to represent target of command.
      * @param {TypedID} [issuerID] instance of TypedID to represent issuer of command.
@@ -259,16 +243,12 @@ export class TriggerCommandObject {
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        schema: string,
-        schemaVersion: number,
         actions: Array<Object>,
         targetID?: TypedID,
         issuerID?: TypedID,
         title?: string,
         description?: string,
         metadata?: Object) {
-            this.schema = schema;
-            this.schemaVersion = schemaVersion;
             this.actions = actions;
             this.targetID = targetID;
             this.issuerID = issuerID;

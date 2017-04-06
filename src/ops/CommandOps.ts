@@ -24,20 +24,6 @@ export default class CommandOps extends BaseOp {
     postNewCommand(requestObject: PostCommandRequest): Promise<Command> {
         return new Promise<Command>((resolve, reject)=>{
             // validate parameters
-            if(!requestObject.schema){
-                reject(new ThingIFError(Errors.ArgumentError, "schema is null or empty"));
-                return;
-            }else if(!KiiUtil.isString(requestObject.schema)){
-                reject(new ThingIFError(Errors.ArgumentError, "schema is not string"));
-                return;
-            }
-            if(!requestObject.schemaVersion){
-                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is null or empty"));
-                return;
-            }else if(!KiiUtil.isNumber(requestObject.schemaVersion)){
-                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is not number"));
-                return;
-            }
             if(!requestObject.actions){
                 reject(new ThingIFError(Errors.ArgumentError, "actions is null or empty"));
                 return;
@@ -65,8 +51,6 @@ export default class CommandOps extends BaseOp {
                 var newCommand = new Command(
                         this.targetID,
                         TypedID.fromString(requestObject.issuer),
-                        requestObject.schema,
-                        requestObject.schemaVersion,
                         requestObject.actions);
                 newCommand.commandID = (<any>res.body).commandID;
                 if(!!requestObject.title){

@@ -5,8 +5,6 @@ import * as KiiUtil from './internal/KiiUtilities'
  * @prop {string} commandID ID of command.
  * @prop {TypedID} targetID ID of the target thing.
  * @prop {TypedID} issuerID ID of the command issuer.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
  * @prop {Object[]} actionResults Array of action results of the command.
  * @prop {string} commandState State of the command.
@@ -21,8 +19,6 @@ export class Command {
     public commandID: string;
     public targetID: TypedID;
     public issuerID: TypedID;
-    public schema: string;
-    public schemaVersion: number;
     public actions: Array<Object>;
     public actionResults: Array<Object>;
     public commandState:string;
@@ -38,21 +34,15 @@ export class Command {
      * @constructor
      * @param {TypedID} targetID ID of the target thing.
      * @param {TypedID} issuerID ID of the command issuer.
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
      * @param {Object[]} actions Array of actions of the command.
      */
     constructor(
         targetID: TypedID,
         issuerID: TypedID,
-        schema: string,
-        schemaVersion: number,
         actions: Array<Object>
     ) {
         this.targetID = targetID;
         this.issuerID = issuerID;
-        this.schema = schema;
-        this.schemaVersion = schemaVersion;
         this.actions = actions;
     }
 
@@ -70,12 +60,6 @@ export class Command {
         }
         if(!!this.issuerID){
             jsonObject.issuer = this.issuerID.toString();
-        }
-        if(!!this.schema){
-            jsonObject.schema = this.schema;
-        }
-        if(!!this.schemaVersion){
-            jsonObject.schemaVersion = this.schemaVersion;
         }
         if(!!this.actions){
             jsonObject.actions = this.actions;
@@ -100,14 +84,12 @@ export class Command {
      * @return {Command} Command instance
      */
     static fromJson(obj: any): Command {
-        if(!obj.target || !obj.issuer || !obj.schema || !obj.schemaVersion || !obj.actions){
+        if(!obj.target || !obj.issuer || !obj.actions){
             return null;
         }
         let command = new Command(
             TypedID.fromString(obj.target),
             TypedID.fromString(obj.issuer),
-            obj.schema,
-            obj.schemaVersion,
             obj.actions);
         command.commandID = obj.commandID;
         command.actionResults = obj.actionResults;
