@@ -25,26 +25,31 @@ export abstract class TriggerClause {
 }
 /**
  * Represents the clause of equals condition.
+ * @prop {string} alias alias name.
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
 export class EqualsClauseInTrigger extends TriggerClause {
+    public alias: string;
     public field: string;
     public value: string|number|boolean;
 
     /**
      * Create a equals condition.
      * @constructor
+     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
      */
     constructor(
+        alias: string,
         field: string,
         value: string|number|boolean
     ) {
         super();
         this.field = field;
         this.value = value;
+        this.alias = alias;
     }
     /**
      * This method is for internal use only.
@@ -53,6 +58,7 @@ export class EqualsClauseInTrigger extends TriggerClause {
     toJson(): any {
         return {
             type: "eq",
+            alias: this.alias,
             field: this.field,
             value: this.value
         };
@@ -65,31 +71,37 @@ export class EqualsClauseInTrigger extends TriggerClause {
     static fromJson(obj:any): EqualsClauseInTrigger {
         let field = obj.field;
         let value = obj.value;
-        return new EqualsClauseInTrigger(field, value);
+        let alias = obj.alias;
+        return new EqualsClauseInTrigger(alias, field, value);
     }
 }
 /**
  * Represents the clause of not equals condition.
+ * @prop {string} alias alias.
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
 export class NotEqualsClauseInTrigger extends TriggerClause {
+    public alias: string;
     public field: string;
     public value: string|number|boolean;
 
     /**
      * Create a not equals condition.
      * @constructor
+     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
      */
     constructor(
+        alias: string,
         field: string,
         value: string|number|boolean
     ) {
         super();
         this.field = field;
         this.value = value;
+        this.alias = alias;
     }
     /**
      * This method is for internal use only.
@@ -100,6 +112,7 @@ export class NotEqualsClauseInTrigger extends TriggerClause {
             type: "not",
             clause: {
                 type: "eq",
+                alias: this.alias,
                 field: this.field,
                 value: this.value
             }
@@ -113,7 +126,8 @@ export class NotEqualsClauseInTrigger extends TriggerClause {
     static fromJson(obj:any): NotEqualsClauseInTrigger {
         let field = obj.clause.field;
         let value = obj.clause.value;
-        return new NotEqualsClauseInTrigger(field, value);
+        let alias = obj.clause.alias;
+        return new NotEqualsClauseInTrigger(alias, field, value);
     }
 }
 /**
@@ -208,6 +222,7 @@ export class OrClauseInTrigger extends TriggerClause {
 }
 /**
  * Represents the clause of range condition.
+ * @prop {string} alias alias.
  * @prop {string} field Field name of comparison.
  * @prop {number} upperLimit The upper limit of the range.
  * @prop {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
@@ -215,6 +230,7 @@ export class OrClauseInTrigger extends TriggerClause {
  * @prop {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
  */
 export class RangeClauseInTrigger extends TriggerClause {
+    public alias: string;
     public field: string;
     public upperLimit: number;
     public upperIncluded: boolean;
@@ -224,6 +240,7 @@ export class RangeClauseInTrigger extends TriggerClause {
     /**
      * Create a range condition.
      * @constructor
+     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      * @param {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
@@ -231,6 +248,7 @@ export class RangeClauseInTrigger extends TriggerClause {
      * @param {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
      */
     constructor(
+        alias: string,
         field: string,
         upperLimit: number,
         upperIncluded: boolean,
@@ -238,6 +256,7 @@ export class RangeClauseInTrigger extends TriggerClause {
         lowerIncluded: boolean
     ) {
         super();
+        this.alias = alias;
         this.field = field;
         this.upperLimit = upperLimit;
         this.upperIncluded = upperIncluded;
@@ -246,35 +265,39 @@ export class RangeClauseInTrigger extends TriggerClause {
     }
     /**
      * Create a Range instance of the less than.
+     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
      */
-    static greaterThan(field: string, lowerLimit: number): RangeClauseInTrigger {
-        return new RangeClauseInTrigger(field, null, null, lowerLimit, false);
+    static greaterThan(alias: string, field: string, lowerLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(alias, field, null, null, lowerLimit, false);
     }
     /**
      * Create a Range instance of the less than or equals.
+     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
      */
-    static greaterThanEquals(field: string, lowerLimit: number): RangeClauseInTrigger {
-        return new RangeClauseInTrigger(field, null, null, lowerLimit, true);
+    static greaterThanEquals(alias: string, field: string, lowerLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(alias, field, null, null, lowerLimit, true);
     }
     /**
      * Create a Range instance of the greater than.
+     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      */
-    static lessThan(field: string, upperLimit: number): RangeClauseInTrigger {
-        return new RangeClauseInTrigger(field, upperLimit, false, null, null);
+    static lessThan(alias: string, field: string, upperLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(alias, field, upperLimit, false, null, null);
     }
     /**
      * Create a Range instance of the greater than or equals.
+     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      */
-    static lessThanEquals(field: string, upperLimit: number): RangeClauseInTrigger {
-        return new RangeClauseInTrigger(field, upperLimit, true, null, null);
+    static lessThanEquals(alias: string, field: string, upperLimit: number): RangeClauseInTrigger {
+        return new RangeClauseInTrigger(alias, field, upperLimit, true, null, null);
     }
     /**
      * This method is for internal use only.
@@ -294,6 +317,7 @@ export class RangeClauseInTrigger extends TriggerClause {
         if (this.lowerIncluded != null && this.lowerIncluded != undefined) {
             json["lowerIncluded"] = this.lowerIncluded;
         }
+        json["alias"] = this.alias;
         return json;
     }
     /**
@@ -307,6 +331,7 @@ export class RangeClauseInTrigger extends TriggerClause {
         let upperIncluded = obj.upperIncluded ? obj.upperIncluded : null;
         let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
         let lowerIncluded = obj.lowerIncluded ? obj.lowerIncluded : null;
-        return new RangeClauseInTrigger(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
+        let alias = obj.alias;
+        return new RangeClauseInTrigger(alias, field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
     }
 }

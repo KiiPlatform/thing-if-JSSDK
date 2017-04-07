@@ -150,10 +150,10 @@ export class OnboardWithThingIDRequest {
  */
 export class PostCommandRequest {
     public aliasActions: Array<AliasAction>;
-    public issuer: string;
-    public title: string;
-    public description: string;
-    public metadata: Object;
+    public issuer?: string;
+    public title?: string;
+    public description?: string;
+    public metadata?: Object;
 
     /**
      * Create a PostCommandRequest.

@@ -27,31 +27,26 @@ export abstract class QueryClause {
 }
 /**
  * Represents equals clause when query history states.
- * @prop {string} alias alias name.
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
 export class EqualsClauseInQuery extends QueryClause {
-    public alias: string;
     public field: string;
     public value: string|number|boolean;
 
     /**
      * Create a equals clause.
      * @constructor
-     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
      */
     constructor(
-        alias: string,
         field: string,
         value: string|number|boolean
     ) {
         super();
         this.field = field;
         this.value = value;
-        this.alias = alias;
     }
     /**
      * This method is for internal use only.
@@ -60,7 +55,6 @@ export class EqualsClauseInQuery extends QueryClause {
     toJson(): any {
         return {
             type: "eq",
-            alias: this.alias,
             field: this.field,
             value: this.value
         };
@@ -73,35 +67,29 @@ export class EqualsClauseInQuery extends QueryClause {
     static fromJson(obj:any): EqualsClauseInQuery {
         let field = obj.field;
         let value = obj.value;
-        let alias = obj.alias;
-        return new EqualsClauseInQuery(alias, field, value);
+        return new EqualsClauseInQuery(field, value);
     }
 }
 /**
  * Represents not equals clause when query history states.
- * @prop {string} alias alias.
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
 export class NotEqualsClauseInQuery extends QueryClause {
-    public alias: string;
     public field: string;
     public value: string|number|boolean;
 
     /**
      * Create a not equals clause.
      * @constructor
-     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
      */
     constructor(
-        alias: string,
         field: string,
         value: string|number|boolean
     ) {
         super();
-        this.alias = alias;
         this.field = field;
         this.value = value;
     }
@@ -114,7 +102,6 @@ export class NotEqualsClauseInQuery extends QueryClause {
             type: "not",
             clause: {
                 type: "eq",
-                alias: this.alias,
                 field: this.field,
                 value: this.value
             }
@@ -128,8 +115,7 @@ export class NotEqualsClauseInQuery extends QueryClause {
     static fromJson(obj:any): NotEqualsClauseInQuery {
         let field = obj.clause.field;
         let value = obj.clause.value;
-        let alias = obj.clause.alias;
-        return new NotEqualsClauseInQuery(alias, field, value);
+        return new NotEqualsClauseInQuery(field, value);
     }
 }
 /**
@@ -224,7 +210,6 @@ export class OrClauseInQuery extends QueryClause {
 }
 /**
  * Represents the clause of range clause when query history states.
- * @prop {string} alias alias.
  * @prop {string} field Field name of comparison.
  * @prop {number} upperLimit The upper limit of the range.
  * @prop {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
@@ -232,7 +217,6 @@ export class OrClauseInQuery extends QueryClause {
  * @prop {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
  */
 export class RangeClauseInQuery extends QueryClause {
-    public alias: string;
     public field: string;
     public upperLimit: number;
     public upperIncluded: boolean;
@@ -242,7 +226,6 @@ export class RangeClauseInQuery extends QueryClause {
     /**
      * Create a range clause.
      * @constructor
-     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      * @param {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
@@ -250,7 +233,6 @@ export class RangeClauseInQuery extends QueryClause {
      * @param {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
      */
     constructor(
-        alias: string,
         field: string,
         upperLimit: number,
         upperIncluded: boolean,
@@ -258,7 +240,6 @@ export class RangeClauseInQuery extends QueryClause {
         lowerIncluded: boolean
     ) {
         super();
-        this.alias = alias;
         this.field = field;
         this.upperLimit = upperLimit;
         this.upperIncluded = upperIncluded;
@@ -267,43 +248,39 @@ export class RangeClauseInQuery extends QueryClause {
     }
     /**
      * Create a Range instance of the less than.
-     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
      * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
      */
-    static greaterThan(alias: string, field: string, lowerLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(alias, field, null, null, lowerLimit, false);
+    static greaterThan(field: string, lowerLimit: number): RangeClauseInQuery {
+        return new RangeClauseInQuery(field, null, null, lowerLimit, false);
     }
     /**
      * Create a Range instance of the less than or equals.
-     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
      * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
     */
-    static greaterThanEquals(alias: string, field: string, lowerLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(alias, field, null, null, lowerLimit, true);
+    static greaterThanEquals(field: string, lowerLimit: number): RangeClauseInQuery {
+        return new RangeClauseInQuery(field, null, null, lowerLimit, true);
     }
     /**
      * Create a Range instance of the greater than.
-     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
      */
-    static lessThan(alias: string, field: string, upperLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(alias, field, upperLimit, false, null, null);
+    static lessThan(field: string, upperLimit: number): RangeClauseInQuery {
+        return new RangeClauseInQuery(field, upperLimit, false, null, null);
     }
     /**
      * Create a Range instance of the greater than or equals.
-     * @param {string} alias alias.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
      * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
      */
-    static lessThanEquals(alias: string, field: string, upperLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(alias, field, upperLimit, true, null, null);
+    static lessThanEquals(field: string, upperLimit: number): RangeClauseInQuery {
+        return new RangeClauseInQuery(field, upperLimit, true, null, null);
     }
     /**
      * This method is for internal use only.
@@ -323,7 +300,6 @@ export class RangeClauseInQuery extends QueryClause {
         if (this.lowerIncluded != null && this.lowerIncluded != undefined) {
             json["lowerIncluded"] = this.lowerIncluded;
         }
-        json["alias"] = this.alias;
         return json;
     }
     /**
@@ -337,8 +313,7 @@ export class RangeClauseInQuery extends QueryClause {
         let upperIncluded = obj.upperIncluded ? obj.upperIncluded : null;
         let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
         let lowerIncluded = obj.lowerIncluded ? obj.lowerIncluded : null;
-        let alias = obj.alias;
-        return new RangeClauseInQuery(alias, field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
+        return new RangeClauseInQuery(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
     }
 }
 

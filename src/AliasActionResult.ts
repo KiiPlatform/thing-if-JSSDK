@@ -7,6 +7,22 @@ export class AliasActionResult {
     constructor(
         public alias: string,
         public actionResults: Array<ActionResult>) {}
+
+    /**
+     * Retrieves action results with specified action name.
+     * @param {string} actionName Action name.
+     * @return {Array<ActionResult>} Found array of ActionResult object, if there is not 
+     * ActionResult object with the specifed action name, returns empty arrray.
+     */
+    getActionResults(actionName: string): Array<ActionResult> {
+        let foundResults: Array<ActionResult> = [];
+        for(let result of this.actionResults) {
+            if(result.actionName === actionName) {
+                foundResults.push(result);
+            }
+        }
+        return foundResults;
+    }
 }
 
 /**

@@ -748,7 +748,7 @@ export class ThingIFAPI {
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
      */
-    getFirmwareVersion(onCompletion?: (err: Error)=> void): Promise<string>{
+    getFirmwareVersion(onCompletion?: (err: Error, firmwareVersion: string)=> void): Promise<string>{
         //TODO: implement me
         return new Promise<string>((resolve, reject)=>{
             resolve();
@@ -773,7 +773,7 @@ export class ThingIFAPI {
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
      */
-    getThingType(onCompletion?: (err: Error)=> void): Promise<string>{
+    getThingType(onCompletion?: (err: Error, thingType: string)=> void): Promise<string>{
         //TODO: implement me
         return new Promise<string>((resolve, reject)=>{
             resolve();
@@ -788,7 +788,6 @@ export class ThingIFAPI {
     updateThingType(
         thingType: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-
         //TODO: implement me
         return new Promise<void>((resolve, reject)=>{
             resolve();

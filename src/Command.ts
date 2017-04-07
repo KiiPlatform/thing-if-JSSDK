@@ -109,6 +109,38 @@ export class Command {
         }
         return command;
     }
+
+    /**
+     * Retrieve aliasAction with specified alias.
+     * @param {string} alias alias name. 
+     * @return {Array<AliasAction>} Found array of AliasAction object. If there is not
+     * AliasActon object with the specified alias, empty array returned.
+     */
+    getAliasActions(alias: string): Array<AliasAction> {
+        let foundAliasActions: Array<AliasAction> = [];
+        for(let aliasAction of this.aliasActions) {
+            if(aliasAction.alias === alias) {
+                foundAliasActions.push(aliasAction);
+            }
+        }
+        return foundAliasActions;
+    }
+
+    /**
+     * Retrieve aliasAction result with specified alias.
+     * @param {string} alias alias name. 
+     * @return {Array<AliasActionResult>} Found array of AliasActionResult object. If there is not
+     * AliasActionResult object with the specified alias, empty array returned. 
+     */
+    getAliasResults(alias: string): Array<AliasActionResult> {
+        let foundAliasResults: Array<AliasActionResult> = [];
+        for(let aliasResult of this.aliasActionResults) {
+            if(aliasResult.alias === alias) {
+                foundAliasResults.push(aliasResult);
+            }
+        }
+        return foundAliasResults;
+    }
 }
 
 /** Represents state of command.
