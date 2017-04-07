@@ -414,8 +414,8 @@ export class PatchServerCodeTriggerRequest{
 }
 
 /** Represents the request for querying history state of thing
+ * @prop {string} alias Name of trait alias of states.
  * @prop {QueryClause} clause Clause to query history states.
- * @prop {string} traitAlias Name of trait alias of states.
  * @prop {string} firmwareVersion Firmware version of thingType of current thing to query.
  * @prop {number} bestEffortLimit Limit the number of results for query.
  * @prop {string} paginationKey Key to retrieve next page.
@@ -423,15 +423,15 @@ export class PatchServerCodeTriggerRequest{
 export class QueryHistoryStatesRequest{
 
     /** Initialize QueryHistoryStatesRequest
+     * @param {string} alias Name of alias of states.
      * @param {QueryClause} clause Clause to query history states.
-     * @param {string} [alias] Name of alias of states.
      * @param {string} [firmwareVersion] Firmware version of thingType of current thing to query.
      * @param {number} [bestEffortLimit] Limit the number of results for query.
      * @param {string} [paginationKey] Key to retrieve next page.
      */
     constructor(
+        public alias: string,
         public clause: QueryClause,
-        public alias?: string,
         public firmwareVersion?: string,
         public bestEffortLimit? : number,
         public paginationKey? : string
@@ -439,23 +439,23 @@ export class QueryHistoryStatesRequest{
 }
 
 /** Represents the request for querying grouped history state of thing based on data grouping intervals.
- * @prop {QueryClause} clause Clause to query history states.
+ * @prop {string} alias Name of trait alias of states.
  * @prop {TimeRange} range Time range of query results.
- * @prop {string} traitAlias Name of trait alias of states.
+ * @prop {QueryClause} clause Clause to query history states.
  * @prop {string} firmwareVersion Firmware version of thingType of current thing to query.
 */
 export class QueryGroupedHistoryStatesRequest{
 
     /** Initialize QueryHistoryStatesRequest
-     * @param {QueryClause} clause Clause to query history states.
+     * @param {string} alias Name of alias of states.
      * @param {TimeRange} range Time range of query results.
-     * @param {string} [alias] Name of alias of states.
+     * @param {QueryClause} [clause] Clause to query history states.
      * @param {string} [firmwareVersion] Firmware version of thingType of current thing to query.
      */
     constructor(
-        public clause: QueryClause,
+        public alias: string,
         public range: TimeRange,
-        public alias?: string,
+        public clause?: QueryClause,
         public firmwareVersion?: string,
     ){}
 }
