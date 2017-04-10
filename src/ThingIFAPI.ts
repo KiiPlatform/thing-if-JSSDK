@@ -420,7 +420,7 @@ export class ThingIFAPI {
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
      * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
+     * var request = new ThingIF.PatchServerCodeTriggerRequest(serverCode, statePredicate);
      * api.patchServerCodeTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
      * }).catch(function(err){
