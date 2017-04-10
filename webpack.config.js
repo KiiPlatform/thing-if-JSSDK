@@ -20,7 +20,8 @@ var config = {
   externals: {
     "es6-promise": "es6-promise",
     "popsicle": "popsicle",
-    "make-error-cause": "make-error-cause"
+    "make-error-cause": "make-error-cause",
+    "winston": "winston"
   },
   module: {
     loaders: [

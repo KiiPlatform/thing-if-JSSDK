@@ -1,7 +1,18 @@
-import winston from 'winston'
+let winston: any = require('winston');
 
+/**
+ * Represents log level.
+  <ul>
+  <li>LogLevel.Error: error level.</li>
+  <li>LogLevel.Warn: warn level. </li>
+  <li>LogLevel.Info: info level.</li>
+  <li>LogLevel.Verbose: verbose level.</li>
+  <li>LogLevel.Debug: debug level.</li>
+  <li>LogLevel.Silly: silly level.</li>
+  </ul>
+ */
 export const LogLevel = {
-    Error: "errpr",
+    Error: "error",
     Warn: "warn",
     Info: "info",
     Verbose: "verbose",
@@ -9,9 +20,12 @@ export const LogLevel = {
     Silly: "silly"
 }
 
+/**
+ * Represents Logger for SDK.
+ */
 export class Logger {
     private static instance: Logger;
-    private winstonLogger: winston.Logger;
+    private winstonLogger: any;
 
     private constructor() {
         this.winstonLogger = new winston.Logger({
@@ -22,18 +36,65 @@ export class Logger {
         })
     }
 
-    static getInstance() {
+    /**
+     * Get a singleton Logger instance.
+     * @return {Logger} returns singleton instance of Logger.
+     * @example
+     * // should set log level first
+     * ThingIF.Logger.getInstance().setLogLevel(ThingIF.LogLevel.Debug);
+     */
+    static getInstance(): Logger {
         if(!Logger.instance) {
             Logger.instance = new Logger();
         }
         return Logger.instance;
     }
 
+    /**
+     * Set level of logger.
+     * @param {string} level level should be one of values of const LogLevel.
+     */
     setLogLevel(level: string) {
         this.winstonLogger.level = level;
     }
 
+    /**
+     * Make a log record.
+     * @param {string} level level should be one of values of const LogLevel.
+     * @param {string} msg log message.
+     */
     log(level: string, msg: string) {
-        this.winstonLogger.log(level, msg);
+        if(!!this.winstonLogger) {
+            this.winstonLogger.log(level, msg);
+        }
+    }
+
+    /**
+     * Internal usage only. SDK uses it to log http request.
+     * @param {string} level log level for this request
+     * @param {any} req request object.
+     */
+    logHttpRequest(level: string, req: any) {
+        let curl = "";
+        if(!!req.method) {
+            curl += `curl -X ${req.method} `
+        }
+        let headers = "";
+        if(!!req.headers) {
+            for(let key in req.headers) {
+                if(req.headers.hasOwnProperty(key)) {
+                    headers += `-H "${key}: ${req.headers[key]}" `;
+                }
+            }
+        }
+        curl += headers;
+
+        if(!!req.body) {
+            curl += `-d '${JSON.stringify(req.body)}' `
+        }
+        if(!!req.url) {
+            curl += `"${req.url}"`
+        }
+        this.log(level, curl);
     }
 }
