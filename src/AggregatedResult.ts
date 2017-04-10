@@ -12,15 +12,3 @@ export class AggregatedResults {
         public aggregatedStates?: Array<HistoryState> 
     ){}
 }
-
-/**
- * Represents result of aggregation query.
- * @prop {string} queryDescription string description of the query.
- * @prop {Array<AggregatedResults>} groupedResults array of AggregatedResults objects.
- */
-export class QueryAggregationResults {
-    constructor(
-        public queryDescription: string,
-        public groupedResults: Array<AggregatedResults>
-    ){}
-}

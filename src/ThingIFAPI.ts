@@ -20,8 +20,8 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import { QueryResult } from './QueryResult';
 import { QueryHistoryStatesRequest } from './RequestObjects';
-import { QueryHistoryStatesResults, QueryGroupedHistoryStatesResults } from './HistoryState';
-import { QueryAggregationResults } from './AggregatedResult';
+import { AggregatedResults } from './AggregatedResult';
+import { HistoryState, GroupedHistoryStates } from './HistoryState';
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
@@ -801,10 +801,10 @@ export class ThingIFAPI {
      */
     query(
         request: Options.QueryHistoryStatesRequest,
-        onCompletion?: (err: Error, results: QueryHistoryStatesResults) => void
-        ): Promise<QueryHistoryStatesResults>{
+        onCompletion?: (err: Error, results: QueryResult<HistoryState>) => void
+        ): Promise<QueryResult<HistoryState>>{
         //TODO: implement me
-        return new Promise<QueryHistoryStatesResults>((resolve, reject)=>{
+        return new Promise<QueryResult<HistoryState>>((resolve, reject)=>{
             resolve();
         })
     }
@@ -817,10 +817,10 @@ export class ThingIFAPI {
      */
     groupedQuery(
         request: Options.QueryGroupedHistoryStatesRequest,
-        onCompletion?: (err: Error, results: QueryGroupedHistoryStatesResults) => void
-        ): Promise<QueryGroupedHistoryStatesResults>{
+        onCompletion?: (err: Error, results: Array<GroupedHistoryStates>) => void
+        ): Promise<Array<GroupedHistoryStates>>{
         //TODO: implement me
-        return new Promise<QueryGroupedHistoryStatesResults>((resolve, reject)=>{
+        return new Promise<Array<GroupedHistoryStates>>((resolve, reject)=>{
             resolve();
         })
     }   
@@ -833,10 +833,10 @@ export class ThingIFAPI {
      */
     aggregate(
         request: Options.AggregateGroupedHistoryStatesRequest,
-        onCompletion?: (err: Error, results: QueryAggregationResults) => void
-        ): Promise<QueryAggregationResults>{
+        onCompletion?: (err: Error, results: Array<AggregatedResults>) => void
+        ): Promise<Array<AggregatedResults>>{
         //TODO: implement me
-        return new Promise<QueryAggregationResults>((resolve, reject)=>{
+        return new Promise<Array<AggregatedResults>>((resolve, reject)=>{
             resolve();
         })
     }
