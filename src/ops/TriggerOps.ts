@@ -39,8 +39,8 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
             var commandRequest = requestObject.command;
-            if (!commandRequest.actions) {
-                reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
+            if (!commandRequest.aliasActions) {
+                reject(new ThingIFError(Errors.ArgumentError, "aliasActions of command is null"));
                 return;
             }
 
@@ -62,7 +62,7 @@ export default class TriggerOps extends BaseOp {
             var command = new Command(
                 commandTarget,
                 commandRequest.issuerID,
-                commandRequest.actions);
+                commandRequest.aliasActions);
             command.title = commandRequest.title;
             command.description = commandRequest.description;
             command.metadata = commandRequest.metadata;
@@ -205,8 +205,8 @@ export default class TriggerOps extends BaseOp {
 
             if(!!requestObject.command){
                 var commandRequest = requestObject.command;
-                if (!commandRequest.actions) {
-                    reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
+                if (!commandRequest.aliasActions) {
+                    reject(new ThingIFError(Errors.ArgumentError, "aliasActions of command is null"));
                     return;
                 }
                 if (!commandRequest.issuerID) {
@@ -216,7 +216,7 @@ export default class TriggerOps extends BaseOp {
                 var command = new Command(
                     commandRequest.targetID,
                     commandRequest.issuerID,
-                    commandRequest.actions);
+                    commandRequest.aliasActions);
                 command.title = commandRequest.title;
                 command.description = commandRequest.description;
                 command.metadata = commandRequest.metadata;

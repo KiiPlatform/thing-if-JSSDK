@@ -132,7 +132,7 @@ export class Command {
      * @return {Array<AliasActionResult>} Found array of AliasActionResult object. If there is not
      * AliasActionResult object with the specified alias, empty array returned. 
      */
-    getAliasResults(alias: string): Array<AliasActionResult> {
+    getAliasActionResults(alias: string): Array<AliasActionResult> {
         let foundAliasResults: Array<AliasActionResult> = [];
         for(let aliasResult of this.aliasActionResults) {
             if(aliasResult.alias === alias) {
