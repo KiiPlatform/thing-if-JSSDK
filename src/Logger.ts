@@ -52,7 +52,7 @@ export class Logger {
 
     /**
      * Set level of logger.
-     * @param {string} level level should be one of values of const LogLevel.
+     * @param {string} level level should be one of values of const {@link LogLevel}.
      */
     setLogLevel(level: string) {
         this.winstonLogger.level = level;
@@ -60,7 +60,7 @@ export class Logger {
 
     /**
      * Make a log record.
-     * @param {string} level level should be one of values of const LogLevel.
+     * @param {string} level level should be one of values of const {@link LogLevel}.
      * @param {string} msg log message.
      */
     log(level: string, msg: string) {
@@ -71,7 +71,7 @@ export class Logger {
 
     /**
      * Internal usage only. SDK uses it to log http request.
-     * @param {string} level log level for this request
+     * @param {string} level log level for this request. Should be one of values of const {@link LogLevel}.
      * @param {any} req request object.
      */
     logHttpRequest(level: string, req: any) {
