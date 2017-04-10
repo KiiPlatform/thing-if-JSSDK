@@ -1,3 +1,6 @@
+machine: 
+  node: 
+    version: v6.1.0
 dependencies:
   post:
     # install typings of dependencies
@@ -5,20 +8,22 @@ dependencies:
 test:
   pre:
     # generate typedoc
-    - gulp doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
+    - npm run build-doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
 
     # uglify library
-    - gulp --u
-    - cp ./dist/thing-if-sdk* $CIRCLE_ARTIFACTS/
+    - >
+      npm run build-src-uglify &&
+      cp ./dist/thing-if-sdk.js $CIRCLE_ARTIFACTS/thing-if-sdk-min.js &&
+      cp ./dist/thing-if-sdk.js.map $CIRCLE_ARTIFACTS/thing-if-sdk-min.js.map
 
    # build sdk
-    - gulp
+    - npm run build-src
     - cp ./dist/thing-if-sdk* $CIRCLE_ARTIFACTS/
   post:
     - npm run test-cov
 deployment:
   npm:
-    branch: master
+    tag: /^[0-9]+(\.[0-9]+){0,2}((-.*)?)?$/
     commands:
       - echo "//registry.npmjs.org/:_authToken=${NPM_AUTHTOKEN}" >> .npmrc; npm publish ./
       - bash ./circleci_scripts/release_doc.sh
