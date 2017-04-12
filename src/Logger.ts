@@ -59,14 +59,20 @@ export class Logger {
     }
 
     /**
-     * Make a log record.
+     * Get level of logger.
+     * @return level of logger.
+     */
+    getLogLevel(): string {
+        return this.winstonLogger.level;
+    }
+
+    /**
+     * Make a log record. log methods provides the same string interpolation methods as winston.Logger.log().
      * @param {string} level level should be one of values of const {@link LogLevel}.
      * @param {string} msg log message.
      */
-    log(level: string, msg: string) {
-        if(!!this.winstonLogger) {
-            this.winstonLogger.log(level, msg);
-        }
+    log(level: string, msg: string, ...others: any[]) {
+        this.winstonLogger.log.apply(this.winstonLogger, arguments);
     }
 
     /**
