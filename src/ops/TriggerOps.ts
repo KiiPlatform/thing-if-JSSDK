@@ -39,8 +39,19 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
             var commandRequest = requestObject.command;
-            if (!commandRequest.aliasActions) {
-                reject(new ThingIFError(Errors.ArgumentError, "aliasActions of command is null"));
+            if (!commandRequest.schema) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema of command is null or empty"));
+                return;
+            } else if (!KiiUtil.isString(commandRequest.schema)) {
+                reject(new ThingIFError(Errors.ArgumentError, "schema of command is not string"));
+                return;
+            }
+            if (commandRequest.schemaVersion === null || commandRequest.schemaVersion === undefined) {
+                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion of command is null"));
+                return;
+            }
+            if (!commandRequest.actions) {
+                reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
                 return;
             }
 
@@ -62,7 +73,9 @@ export default class TriggerOps extends BaseOp {
             var command = new Command(
                 commandTarget,
                 commandRequest.issuerID,
-                commandRequest.aliasActions);
+                commandRequest.schema,
+                commandRequest.schemaVersion,
+                commandRequest.actions);
             command.title = commandRequest.title;
             command.description = commandRequest.description;
             command.metadata = commandRequest.metadata;
@@ -205,8 +218,19 @@ export default class TriggerOps extends BaseOp {
 
             if(!!requestObject.command){
                 var commandRequest = requestObject.command;
-                if (!commandRequest.aliasActions) {
-                    reject(new ThingIFError(Errors.ArgumentError, "aliasActions of command is null"));
+                if (!commandRequest.schema) {
+                    reject(new ThingIFError(Errors.ArgumentError, "schema of command is null or empty"));
+                    return;
+                } else if (!KiiUtil.isString(commandRequest.schema)) {
+                    reject(new ThingIFError(Errors.ArgumentError, "schema of command is not string"));
+                    return;
+                }
+                if (commandRequest.schemaVersion === null || commandRequest.schemaVersion === undefined) {
+                    reject(new ThingIFError(Errors.ArgumentError, "schemaVersion of command is null"));
+                    return;
+                }
+                if (!commandRequest.actions) {
+                    reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
                     return;
                 }
                 if (!commandRequest.issuerID) {
@@ -216,7 +240,9 @@ export default class TriggerOps extends BaseOp {
                 var command = new Command(
                     commandRequest.targetID,
                     commandRequest.issuerID,
-                    commandRequest.aliasActions);
+                    commandRequest.schema,
+                    commandRequest.schemaVersion,
+                    commandRequest.actions);
                 command.title = commandRequest.title;
                 command.description = commandRequest.description;
                 command.metadata = commandRequest.metadata;
