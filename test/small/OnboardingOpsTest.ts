@@ -10,7 +10,6 @@ import OnboardingOps from '../../src/ops/OnboardingOps'
 import * as TestUtil from './utils/TestUtil'
 
 import {
-    DataGroupingInterval,
     LayoutPosition,
     APIAuthor,
     TypedID,
@@ -73,11 +72,14 @@ describe('Test OnboardingOps', function () {
                     thingID: "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
                     thingPassword: "password",
                     owner: owner.toString(),
-                    layoutPosition: "ENDNODE",
-                    dataGroupingInterval: "1_MINUTE"
+                    layoutPosition: "ENDNODE"
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
-            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner, DataGroupingInterval.INTERVAL_1_MINUTE, LayoutPosition.ENDNODE);
+            var request = new RequestObjects.OnboardWithThingIDRequest(
+                "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
+                "password",
+                owner,
+                LayoutPosition.ENDNODE);
             (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
                 expect(result.thingID).to.equals(responseBody.thingID);
                 expect(result.accessToken).to.equals(responseBody.accessToken);
@@ -107,7 +109,10 @@ describe('Test OnboardingOps', function () {
                     errResponse,
                     {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
                 );
-            var request = new RequestObjects.OnboardWithThingIDRequest("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "password", owner);
+            var request = new RequestObjects.OnboardWithThingIDRequest(
+                "th.7b3f20b00022-414b-6e11-0374-03ab0ce5",
+                "password",
+                owner);
             (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
                 done("should fail");
             }).catch((err:ThingIFError)=>{
@@ -130,11 +135,17 @@ describe('Test OnboardingOps', function () {
                     thingPassword: "password",
                     owner: owner.toString(),
                     firmwareVersion: "v1.0.0",
-                    dataGroupingInterval: "1_MINUTE",
                     layoutPosition: "ENDNODE"
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
-            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", owner, null, null, "v1.0.0", DataGroupingInterval.INTERVAL_1_MINUTE, LayoutPosition.ENDNODE);
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest(
+                "01234-56789-abcdefg-hijklm",
+                "password",
+                owner,
+                null,
+                "v1.0.0",
+                null,
+                LayoutPosition.ENDNODE);
             (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
                 expect(result.thingID).to.equals(responseBody.thingID);
                 expect(result.accessToken).to.equals(responseBody.accessToken);
@@ -164,7 +175,10 @@ describe('Test OnboardingOps', function () {
                     errResponse,
                     {"Content-Type": "application/vnd.kii.WrongTokenException+json"}
                 );
-            var request = new RequestObjects.OnboardWithVendorThingIDRequest("01234-56789-abcdefg-hijklm", "password", owner);
+            var request = new RequestObjects.OnboardWithVendorThingIDRequest(
+                "01234-56789-abcdefg-hijklm",
+                "password",
+                owner);
             (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
                 done("should fail");
             }).catch((err:ThingIFError)=>{
@@ -183,7 +197,6 @@ describe("Test ArgumentError for OnboardingOps", function() {
                 public thingID: string,
                 public thingPassword: string,
                 public owner: TypedID,
-                public dataGroupingInterval: any,
                 public layoutPosition: any,
                 public expectedError: string,
                 public expectedErrorMsg: string,
@@ -191,19 +204,21 @@ describe("Test ArgumentError for OnboardingOps", function() {
             ){}
         }
         let tests = [
-            new TestCase(null, "passowrd", owner, null, null, Errors.ArgumentError, "thingID is null or empty", "should handle error when thingID is null"),
-            new TestCase("", "passowrd", owner, null, null, Errors.ArgumentError, "thingID is null or empty", "should handle error when thingID is empty string"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", null, owner, null, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "", owner, null, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", null, null, null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", owner, 1, null, Errors.ArgumentError, "dataGroupingInterval is not string", "should handle error when dataGroupingInterval is not string"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", owner, "1 minute", null, Errors.ArgumentError, "dataGroupingInterval is invalid, should equal to one of values of DataGroupingInterval", "should handle error when dataGroupingInterval is invalid string"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", owner, null, 1, Errors.ArgumentError, "layoutPosition is not string", "should handle error when layoutPosition is not string"),
-            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", owner, null, "gateway", Errors.ArgumentError, "layoutPosition is invalid, should equal to one of values of LayoutPosition", "should handle error when layoutPosition is invalid string"),
+            new TestCase(null, "passowrd", owner, null, Errors.ArgumentError, "thingID is null or empty", "should handle error when thingID is null"),
+            new TestCase("", "passowrd", owner, null, Errors.ArgumentError, "thingID is null or empty", "should handle error when thingID is empty string"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", null, owner, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "", owner, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", null, null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", owner, 1, Errors.ArgumentError, "layoutPosition is not string", "should handle error when layoutPosition is not string"),
+            new TestCase("th.7b3f20b00022-414b-6e11-0374-03ab0ce5", "passowrd", owner, "gateway", Errors.ArgumentError, "layoutPosition is invalid, should equal to one of values of LayoutPosition", "should handle error when layoutPosition is invalid string"),
         ]
         tests.forEach(function(test) {
             it(test.description, function(done){
-                var request = new RequestObjects.OnboardWithThingIDRequest(test.thingID, test.thingPassword, test.owner, test.dataGroupingInterval, test.layoutPosition);
+                var request = new RequestObjects.OnboardWithThingIDRequest(
+                    test.thingID,
+                    test.thingPassword,
+                    test.owner,
+                    test.layoutPosition);
                 (new OnboardingOps(au)).onboardWithThingID(request).then((result:OnboardingResult)=>{
                     done("should fail");
                 }).catch((err:ThingIFError)=>{
@@ -228,7 +243,6 @@ describe("Test ArgumentError for OnboardingOps", function() {
                 public thingType: any,
                 public thingProperties: any,
                 public firmwareVersion: any,
-                public dataGroupingInterval: any,
                 public layoutPosition: any,
                 public expectedError: string,
                 public expectedErrorMsg: string,
@@ -236,18 +250,16 @@ describe("Test ArgumentError for OnboardingOps", function() {
             ){}
         }
         let tests = [
-            new TestCase(null, "passowrd", owner, null, null, null, null, null, Errors.ArgumentError, "vendorThingID is null or empty", "should handle error when vendorThingID is null"),
-            new TestCase("", "passowrd", owner, null, null, null, null, null, Errors.ArgumentError, "vendorThingID is null or empty", "should handle error when vendorThingID is empty string"),
-            new TestCase("01234-56789-abcdefg-hijklm", null, owner, null, null, null, null, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
-            new TestCase("01234-56789-abcdefg-hijklm", "", owner, null, null, null, null, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
-            new TestCase("01234-56789-abcdefg-hijklm", "passowrd", null, null, null, null, null, null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
-            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, 1, null, null, null, null, Errors.ArgumentError, "thingType is not string", "should handle error when thingType is not string"),
-            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, "LED", "power:true", null, null, null, Errors.ArgumentError, "thingProperties is not object", "should handle error when thingProperties is not object"),
-            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, 1234, null, null, Errors.ArgumentError, "firmwareVersion is not string", "should handle error when firmwareVersion is not string"),
-            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, null, 1, null, Errors.ArgumentError, "dataGroupingInterval is not string", "should handle error when dataGroupingInterval is not string"),
-            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, null, "1 minute", null, Errors.ArgumentError, "dataGroupingInterval is invalid, should equal to one of values of DataGroupingInterval", "should handle error when dataGroupingInterval is invalid string"),
-            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, null, null, 1, Errors.ArgumentError, "layoutPosition is not string", "should handle error when layoutPosition is not string"),
-            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, null, null, "gateway", Errors.ArgumentError, "layoutPosition is invalid, should equal to one of values of LayoutPosition", "should handle error when layoutPosition is invalid string"),
+            new TestCase(null, "passowrd", owner, null, null, null, null, Errors.ArgumentError, "vendorThingID is null or empty", "should handle error when vendorThingID is null"),
+            new TestCase("", "passowrd", owner, null, null, null, null, Errors.ArgumentError, "vendorThingID is null or empty", "should handle error when vendorThingID is empty string"),
+            new TestCase("01234-56789-abcdefg-hijklm", null, owner, null, null, null, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is null"),
+            new TestCase("01234-56789-abcdefg-hijklm", "", owner, null, null, null, null, Errors.ArgumentError, "thingPassword is null or empty", "should handle error when password is empty string"),
+            new TestCase("01234-56789-abcdefg-hijklm", "passowrd", null, null, null, null, null, Errors.ArgumentError, "owner is null", "should handle error when owner is null"),
+            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, 1, null, null, null, Errors.ArgumentError, "thingType is not string", "should handle error when thingType is not string"),
+            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, "LED", "power:true", null, null, Errors.ArgumentError, "thingProperties is not object", "should handle error when thingProperties is not object"),
+            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, 1234, null, Errors.ArgumentError, "firmwareVersion is not string", "should handle error when firmwareVersion is not string"),
+            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, null, 1, Errors.ArgumentError, "layoutPosition is not string", "should handle error when layoutPosition is not string"),
+            new TestCase("01234-56789-abcdefg-hijklm", "password", owner, null, null, null, "gateway", Errors.ArgumentError, "layoutPosition is invalid, should equal to one of values of LayoutPosition", "should handle error when layoutPosition is invalid string"),
         ]
         tests.forEach(function(test) {
             it(test.description, function(done){
@@ -256,9 +268,8 @@ describe("Test ArgumentError for OnboardingOps", function() {
                     test.thingPassword,
                     test.owner,
                     test.thingType,
-                    test.thingProperties,
                     test.firmwareVersion,
-                    test.dataGroupingInterval,
+                    test.thingProperties,
                     test.layoutPosition);
                 (new OnboardingOps(au)).onboardWithVendorThingID(request).then((result:OnboardingResult)=>{
                     done("should fail");
