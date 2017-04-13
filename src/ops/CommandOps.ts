@@ -24,11 +24,25 @@ export default class CommandOps extends BaseOp {
     postNewCommand(requestObject: PostCommandRequest): Promise<Command> {
         return new Promise<Command>((resolve, reject)=>{
             // validate parameters
-            if(!requestObject.aliasActions){
-                reject(new ThingIFError(Errors.ArgumentError, "aliasActions is null or empty"));
+            if(!requestObject.schema){
+                reject(new ThingIFError(Errors.ArgumentError, "schema is null or empty"));
                 return;
-            }else if(!KiiUtil.isArray(requestObject.aliasActions)){
-                reject(new ThingIFError(Errors.ArgumentError, "aliasActions is not array"));
+            }else if(!KiiUtil.isString(requestObject.schema)){
+                reject(new ThingIFError(Errors.ArgumentError, "schema is not string"));
+                return;
+            }
+            if(!requestObject.schemaVersion){
+                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is null or empty"));
+                return;
+            }else if(!KiiUtil.isNumber(requestObject.schemaVersion)){
+                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is not number"));
+                return;
+            }
+            if(!requestObject.actions){
+                reject(new ThingIFError(Errors.ArgumentError, "actions is null or empty"));
+                return;
+            }else if(!KiiUtil.isArray(requestObject.actions)){
+                reject(new ThingIFError(Errors.ArgumentError, "actions is not array"));
                 return;
             }
             if(!requestObject.issuer){
@@ -51,7 +65,9 @@ export default class CommandOps extends BaseOp {
                 var newCommand = new Command(
                         this.targetID,
                         TypedID.fromString(requestObject.issuer),
-                        requestObject.aliasActions);
+                        requestObject.schema,
+                        requestObject.schemaVersion,
+                        requestObject.actions);
                 newCommand.commandID = (<any>res.body).commandID;
                 if(!!requestObject.title){
                     newCommand.title = requestObject.title;
