@@ -1,18 +1,18 @@
-import {Clause} from './Clause';
+import {TriggerClause} from './TriggerClause';
 
 /**
  * Represents the condition for the StatePredicate.
- * @prop {Clause} clause Query condition to be applied.
+ * @prop {TriggerClause} clause Query condition to be applied.
  */
 export class Condition {
-    public clause: Clause;
+    public clause: TriggerClause;
 
     /**
      * Create a condition.
      * @constructor
-     * @param {Clause} clause Query condition to be applied.
+     * @param {TriggerClause} clause Query condition to be applied.
      */
-    constructor(clause: Clause) {
+    constructor(clause: TriggerClause) {
         this.clause = clause;
     }
     /**
@@ -21,6 +21,6 @@ export class Condition {
      * @return {Condition} Condition instance
      */
     static fromJson(obj:any): Condition {
-        return new Condition(Clause.fromJson(obj));
+        return new Condition(TriggerClause.fromJson(obj));
     }
 }
