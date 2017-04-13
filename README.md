@@ -33,19 +33,10 @@ So your code can load it either with CommonJS style, AMD style or script tag.
 Built with `gulp` command
 
 ```
-$ gulp
+$ npm run build-src
 ```
 
 If succeeded, library file named `thing-if-sdk.js` is available under `./dist/` folder.
-
-#### Uglify build
-Built with `--u` option.
-
-```
-$ gulp --u
-```
-
-If succeeded, uglified library file named `thing-if-sdk.min.js` is available under `./dist/` folder.
 
 ## Use thing-if-sdk in browser app
 
