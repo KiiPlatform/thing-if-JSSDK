@@ -67,7 +67,9 @@ export class Logger {
     }
 
     /**
-     * Make a log record. log methods provides the same string interpolation methods as winston.Logger.log().
+     * Make a log record. log methods provides the same string
+     * [interpolation methods]{@link https://github.com/winstonjs/winston#string-interpolation}
+     * of winston.Logger.log().
      * @param {string} level level should be one of values of const {@link LogLevel}.
      * @param {string} msg log message.
      */
