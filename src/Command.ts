@@ -1,14 +1,14 @@
 import {TypedID} from './TypedID'
 import * as KiiUtil from './internal/KiiUtilities'
+import { AliasAction } from './AliasAction';
+import { AliasActionResult } from './AliasActionResult';
 /**
  * Represents Command
  * @prop {string} commandID ID of command.
  * @prop {TypedID} targetID ID of the target thing.
  * @prop {TypedID} issuerID ID of the command issuer.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
- * @prop {Object[]} actions Array of actions of the command.
- * @prop {Object[]} actionResults Array of action results of the command.
+ * @prop {AliasAction[]} aliasActions Array of actions of the command.
+ * @prop {AliasActionResult[]} aliasActionResults Array of action results of the command.
  * @prop {string} commandState State of the command.
  * @prop {string} firedByTriggerID ID of the trigger if command invoked by trigger.
  * @prop {Date} created Timestamp of the creation of the command.
@@ -21,10 +21,8 @@ export class Command {
     public commandID: string;
     public targetID: TypedID;
     public issuerID: TypedID;
-    public schema: string;
-    public schemaVersion: number;
-    public actions: Array<Object>;
-    public actionResults: Array<Object>;
+    public aliasActions: Array<AliasAction>;
+    public aliasActionResults: Array<AliasActionResult>;
     public commandState:string;
     public firedByTriggerID:string;
     public created:Date;
@@ -38,22 +36,16 @@ export class Command {
      * @constructor
      * @param {TypedID} targetID ID of the target thing.
      * @param {TypedID} issuerID ID of the command issuer.
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
-     * @param {Object[]} actions Array of actions of the command.
+     * @param {AliasAction[]} aliasActions Array of actions of the command.
      */
     constructor(
         targetID: TypedID,
         issuerID: TypedID,
-        schema: string,
-        schemaVersion: number,
-        actions: Array<Object>
+        aliasActions: Array<AliasAction>
     ) {
         this.targetID = targetID;
         this.issuerID = issuerID;
-        this.schema = schema;
-        this.schemaVersion = schemaVersion;
-        this.actions = actions;
+        this.aliasActions = aliasActions;
     }
 
     /**
@@ -71,17 +63,11 @@ export class Command {
         if(!!this.issuerID){
             jsonObject.issuer = this.issuerID.toString();
         }
-        if(!!this.schema){
-            jsonObject.schema = this.schema;
+        if(!!this.aliasActions){
+            jsonObject.actions = this.aliasActions;
         }
-        if(!!this.schemaVersion){
-            jsonObject.schemaVersion = this.schemaVersion;
-        }
-        if(!!this.actions){
-            jsonObject.actions = this.actions;
-        }
-        if(!!this.actionResults){
-            jsonObject.actionResults = this.actionResults;
+        if(!!this.aliasActionResults){
+            jsonObject.actionResults = this.aliasActionResults;
         }
         if(!!this.title){
             jsonObject.title = this.title;
@@ -100,17 +86,15 @@ export class Command {
      * @return {Command} Command instance
      */
     static fromJson(obj: any): Command {
-        if(!obj.target || !obj.issuer || !obj.schema || !obj.schemaVersion || !obj.actions){
+        if(!obj.target || !obj.issuer || !obj.actions){
             return null;
         }
         let command = new Command(
             TypedID.fromString(obj.target),
             TypedID.fromString(obj.issuer),
-            obj.schema,
-            obj.schemaVersion,
             obj.actions);
         command.commandID = obj.commandID;
-        command.actionResults = obj.actionResults;
+        command.aliasActionResults = obj.actionResults;
         command.commandState= obj.commandState;
         command.firedByTriggerID = obj.firedByTriggerID;
         command.title = obj.title;
@@ -124,6 +108,38 @@ export class Command {
             command.modified = new Date(obj.modifiedAt);
         }
         return command;
+    }
+
+    /**
+     * Retrieve aliasAction with specified alias.
+     * @param {string} alias alias name. 
+     * @return {Array<AliasAction>} Found array of AliasAction object. If there is not
+     * AliasActon object with the specified alias, empty array returned.
+     */
+    getAliasActions(alias: string): Array<AliasAction> {
+        let foundAliasActions: Array<AliasAction> = [];
+        for(let aliasAction of this.aliasActions) {
+            if(aliasAction.alias === alias) {
+                foundAliasActions.push(aliasAction);
+            }
+        }
+        return foundAliasActions;
+    }
+
+    /**
+     * Retrieve aliasAction result with specified alias.
+     * @param {string} alias alias name. 
+     * @return {Array<AliasActionResult>} Found array of AliasActionResult object. If there is not
+     * AliasActionResult object with the specified alias, empty array returned. 
+     */
+    getAliasActionResults(alias: string): Array<AliasActionResult> {
+        let foundAliasResults: Array<AliasActionResult> = [];
+        for(let aliasResult of this.aliasActionResults) {
+            if(aliasResult.alias === alias) {
+                foundAliasResults.push(aliasResult);
+            }
+        }
+        return foundAliasResults;
     }
 }
 

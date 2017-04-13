@@ -9,7 +9,6 @@ import {OnboardingResult} from '../OnboardingResult'
 import {MqttEndpoint} from '../OnboardingResult'
 import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import * as KiiUtil from '../internal/KiiUtilities'
-import {DataGroupingInterval} from '../DataGroupingInterval'
 import {LayoutPosition} from '../LayoutPosition'
 
 import BaseOp from './BaseOp'
@@ -37,19 +36,6 @@ export default class OnboardingOps extends BaseOp {
             if (!onboardRequest.owner) {
                 reject(new ThingIFError(Errors.ArgumentError, "owner is null"));
                 return;
-            }
-            if (onboardRequest.dataGroupingInterval){
-                var dataGroupingInterval = onboardRequest.dataGroupingInterval;
-                if(!KiiUtil.isString(dataGroupingInterval)){
-                    reject(new ThingIFError(Errors.ArgumentError, "dataGroupingInterval is not string"));
-                    return;
-                }else{
-                    if(!KiiUtil.isValueOfObject(dataGroupingInterval, DataGroupingInterval)){
-                        reject(new ThingIFError(Errors.ArgumentError,
-                            "dataGroupingInterval is invalid, should equal to one of values of DataGroupingInterval"));
-                        return;
-                    }
-                }
             }
             if (onboardRequest.layoutPosition){
 
@@ -113,19 +99,6 @@ export default class OnboardingOps extends BaseOp {
                 if(!KiiUtil.isString(firmwareVersion)){
                     reject(new ThingIFError(Errors.ArgumentError, "firmwareVersion is not string"));
                     return;
-                }
-            }
-            if (onboardRequest.dataGroupingInterval){
-                var dataGroupingInterval = onboardRequest.dataGroupingInterval;
-                if(!KiiUtil.isString(dataGroupingInterval)){
-                    reject(new ThingIFError(Errors.ArgumentError, "dataGroupingInterval is not string"));
-                    return;
-                }else{
-                    if(!KiiUtil.isValueOfObject(dataGroupingInterval, DataGroupingInterval)){
-                        reject(new ThingIFError(Errors.ArgumentError,
-                            "dataGroupingInterval is invalid, should equal to one of values of DataGroupingInterval"));
-                        return;
-                    }
                 }
             }
             if (onboardRequest.layoutPosition){
