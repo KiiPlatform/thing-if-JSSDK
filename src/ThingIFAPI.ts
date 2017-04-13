@@ -18,7 +18,10 @@ import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
-import {QueryResult} from './QueryResult'
+import { QueryResult } from './QueryResult';
+import { QueryHistoryStatesRequest } from './RequestObjects';
+import { AggregatedResults } from './AggregatedResult';
+import { HistoryState, GroupedHistoryStates } from './HistoryState';
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
@@ -590,6 +593,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * @param {string} [alias] Trait alias of state to query. If provided, only states of the specified alias returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -600,7 +604,9 @@ export class ThingIFAPI {
      * });
      */
     getState(
+        alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
+        // TODO: fix me
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
@@ -736,5 +742,102 @@ export class ThingIFAPI {
             })
         })
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
+    }
+
+    /** Get firmware version of the thing
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getFirmwareVersion(onCompletion?: (err: Error, firmwareVersion: string)=> void): Promise<string>{
+        //TODO: implement me
+        return new Promise<string>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Update firmware version of the thing
+     * @param {string} firmwareVersion New firmware version.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateFirmwareVersion(
+        firmwareVersion: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Get thingType to use trait for the thing.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getThingType(onCompletion?: (err: Error, thingType: string)=> void): Promise<string>{
+        //TODO: implement me
+        return new Promise<string>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Update thingType to use trait for the thing.
+     * @param {string} thingType Name of ThingType, which should be already defined.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateThingType(
+        thingType: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Query history states of thing.
+     * @param  {QueryHistoryStatesRequest} request parameters to do query.
+     * @param  {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    query(
+        request: Options.QueryHistoryStatesRequest,
+        onCompletion?: (err: Error, results: QueryResult<HistoryState>) => void
+        ): Promise<QueryResult<HistoryState>>{
+        //TODO: implement me
+        return new Promise<QueryResult<HistoryState>>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /**
+     * Query grouped history states of thing based on data grouping intervals.
+     * @param {QueryGroupedHistoryStatesRequest} request request object.
+     * @param {fuction} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    groupedQuery(
+        request: Options.QueryGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<GroupedHistoryStates>) => void
+        ): Promise<Array<GroupedHistoryStates>>{
+        //TODO: implement me
+        return new Promise<Array<GroupedHistoryStates>>((resolve, reject)=>{
+            resolve();
+        })
+    }   
+
+    /**
+     * Aggregate history states of thing.
+     * @param {AggregateGroupedHistoryStatesRequest} request request object.
+     * @param {function} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    aggregate(
+        request: Options.AggregateGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<AggregatedResults>) => void
+        ): Promise<Array<AggregatedResults>>{
+        //TODO: implement me
+        return new Promise<Array<AggregatedResults>>((resolve, reject)=>{
+            resolve();
+        })
     }
 }
