@@ -1,41 +1,39 @@
 /**
- * Base QueryClause implementation.
+ * Base Clause implementation.
  */
-export abstract class QueryClause {
+export abstract class Clause {
     abstract toJson(): any;
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a clause.
-     * @return {QueryClause} a QueryClause instance
+     * @return {Clause} Equals instance
      */
-    static fromJson(obj:any): QueryClause {
+    static fromJson(obj:any): Clause {
         if (obj.type == "eq") {
-            return EqualsClauseInQuery.fromJson(obj);
+            return Equals.fromJson(obj);
         } else if (obj.type == "not") {
-            return NotEqualsClauseInQuery.fromJson(obj);
+            return NotEquals.fromJson(obj);
         } else if (obj.type == "and") {
-            return AndClauseInQuery.fromJson(obj);
+            return And.fromJson(obj);
         } else if (obj.type == "or") {
-            return OrClauseInQuery.fromJson(obj);
+            return Or.fromJson(obj);
         } else if (obj.type == "range") {
-            return RangeClauseInQuery.fromJson(obj);
-        } else if (obj.type == "all") {
-            return new AllClause();
+            return Range.fromJson(obj);
         }
         return null;
     }
 }
 /**
- * Represents equals clause when query history states.
+ * Represents the clause of equals condition.
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
-export class EqualsClauseInQuery extends QueryClause {
+export class Equals extends Clause {
     public field: string;
     public value: string|number|boolean;
 
     /**
-     * Create a equals clause.
+     * Create a equals condition.
      * @constructor
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
@@ -61,26 +59,26 @@ export class EqualsClauseInQuery extends QueryClause {
     }
     /**
      * This method is for internal use only.
-     * @param obj JSON object that represented a equals clause.
-     * @return {EqualsClauseInQuery} EqualsClauseInQuery instance
+     * @param obj JSON object that represented a equals condition.
+     * @return {Equals} Equals instance
      */
-    static fromJson(obj:any): EqualsClauseInQuery {
+    static fromJson(obj:any): Equals {
         let field = obj.field;
         let value = obj.value;
-        return new EqualsClauseInQuery(field, value);
+        return new Equals(field, value);
     }
 }
 /**
- * Represents not equals clause when query history states.
+ * Represents the clause of not equals condition.
  * @prop {string} field Field name of comparison.
  * @prop {(string|number|boolean)} value Value to be compared.
  */
-export class NotEqualsClauseInQuery extends QueryClause {
+export class NotEquals extends Clause {
     public field: string;
     public value: string|number|boolean;
 
     /**
-     * Create a not equals clause.
+     * Create a not equals condition.
      * @constructor
      * @param {string} field Field name of comparison.
      * @param {string} value Value to be compared.
@@ -109,28 +107,28 @@ export class NotEqualsClauseInQuery extends QueryClause {
     }
     /**
      * This method is for internal use only.
-     * @param obj JSON object that represented a not equals clause.
-     * @return {NotEqualsClauseInQuery} NotEqualsClauseInQuery instance
+     * @param obj JSON object that represented a not equals condition.
+     * @return {NotEquals} NotEquals instance
      */
-    static fromJson(obj:any): NotEqualsClauseInQuery {
+    static fromJson(obj:any): NotEquals {
         let field = obj.clause.field;
         let value = obj.clause.value;
-        return new NotEqualsClauseInQuery(field, value);
+        return new NotEquals(field, value);
     }
 }
 /**
- * Represents the And clause when query history states.
- * @prop {QueryClause[]} clauses Clauses to be concatenated with and clause.
+ * Represents the And operator.
+ * @prop {Clause[]} clauses Clauses to be concatenated with And operator.
  */
-export class AndClauseInQuery extends QueryClause {
-    public clauses: QueryClause[];
+export class And extends Clause {
+    public clauses: Clause[];
 
     /**
      * Create a AND operator.
      * @constructor
-     * @param {QueryClause[]} clauses Array of clauses to be concatenated with And clause.
+     * @param {Clause[]} clauses Array of clauses to be concatenated with And operator.
      */
-    constructor(...clauses: QueryClause[]) {
+    constructor(...clauses: Clause[]) {
         super();
         this.clauses = clauses;
     }
@@ -140,7 +138,7 @@ export class AndClauseInQuery extends QueryClause {
      */
     toJson(): any {
         var json: any = {type: "and"};
-        var clauses :Array<QueryClause> = new Array<QueryClause>();
+        var clauses :Array<Clause> = new Array<Clause>();
         for (var clause of this.clauses) {
             clauses.push(clause.toJson());
         }
@@ -149,33 +147,33 @@ export class AndClauseInQuery extends QueryClause {
     }
     /**
      * This method is for internal use only.
-     * @param obj JSON object that represented a AND clause.
-     * @return {AndClauseInQuery} AndClauseInQuery instance
+     * @param obj JSON object that represented a AND operator.
+     * @return {And} And instance
      */
-    static fromJson(obj:any): AndClauseInQuery {
-        let clauses: Array<QueryClause> = new Array<QueryClause>();
+    static fromJson(obj:any): And {
+        let clauses: Array<Clause> = new Array<Clause>();
         let array: Array<any> = obj.clauses;
         for (var json of array) {
-            clauses.push(QueryClause.fromJson(json));
+            clauses.push(Clause.fromJson(json));
         }
-        let and = new AndClauseInQuery();
+        let and = new And();
         and.clauses = clauses;
         return and;
     }
 }
 /**
- * Represents the OR clause when query history states.
- * @prop {QueryClause[]} clauses Clauses to be concatenated with Or clause.
+ * Represents the OR operator.
+ * @prop {Clause[]} clauses Clauses to be concatenated with Or operator.
  */
-export class OrClauseInQuery extends QueryClause {
-    public clauses: QueryClause[];
+export class Or extends Clause {
+    public clauses: Clause[];
 
     /**
      * Create a OR operator.
      * @constructor
-     * @param {QueryClause[]} clauses Array of clauses to be concatenated with Or clause.
+     * @param {Clause[]} clauses Array of clauses to be concatenated with Or operator.
      */
-    constructor(...clauses: QueryClause[]) {
+    constructor(...clauses: Clause[]) {
         super();
         this.clauses = clauses;
     }
@@ -185,7 +183,7 @@ export class OrClauseInQuery extends QueryClause {
      */
     toJson(): any {
         var json: any = {type: "or"};
-        var clauses :Array<QueryClause> = new Array<QueryClause>();
+        var clauses :Array<Clause> = new Array<Clause>();
         for (var clause of this.clauses) {
             clauses.push(clause.toJson());
         }
@@ -194,29 +192,29 @@ export class OrClauseInQuery extends QueryClause {
     }
     /**
      * This method is for internal use only.
-     * @param obj JSON object that represented a OR clause.
-     * @return {OrClauseInQuery} Or instance
+     * @param obj JSON object that represented a OR operator.
+     * @return {Or} Or instance
      */
-    static fromJson(obj:any): OrClauseInQuery {
-        let clauses: Array<QueryClause> = new Array<QueryClause>();
+    static fromJson(obj:any): Or {
+        let clauses: Array<Clause> = new Array<Clause>();
         let array: Array<any> = obj.clauses;
         for (var json of array) {
-            clauses.push(QueryClause.fromJson(json));
+            clauses.push(Clause.fromJson(json));
         }
-        let or = new OrClauseInQuery();
+        let or = new Or();
         or.clauses = clauses;
         return or;
     }
 }
 /**
- * Represents the clause of range clause when query history states.
+ * Represents the clause of range condition.
  * @prop {string} field Field name of comparison.
  * @prop {number} upperLimit The upper limit of the range.
  * @prop {boolean} upperIncluded Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".
  * @prop {number} lowerLimit The lower limit of the range.
  * @prop {boolean} lowerIncluded Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".
  */
-export class RangeClauseInQuery extends QueryClause {
+export class Range extends Clause {
     public field: string;
     public upperLimit: number;
     public upperIncluded: boolean;
@@ -224,7 +222,7 @@ export class RangeClauseInQuery extends QueryClause {
     public lowerIncluded: boolean;
 
     /**
-     * Create a range clause.
+     * Create a range condition.
      * @constructor
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
@@ -250,37 +248,33 @@ export class RangeClauseInQuery extends QueryClause {
      * Create a Range instance of the less than.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
-     * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
      */
-    static greaterThan(field: string, lowerLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(field, null, null, lowerLimit, false);
+    static greaterThan(field: string, lowerLimit: number): Range {
+        return new Range(field, null, null, lowerLimit, false);
     }
     /**
      * Create a Range instance of the less than or equals.
      * @param {string} field Field name of comparison.
      * @param {number} lowerLimit The upper lower of the range.
-     * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
-    */
-    static greaterThanEquals(field: string, lowerLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(field, null, null, lowerLimit, true);
+     */
+    static greaterThanEquals(field: string, lowerLimit: number): Range {
+        return new Range(field, null, null, lowerLimit, true);
     }
     /**
      * Create a Range instance of the greater than.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
-     * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
      */
-    static lessThan(field: string, upperLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(field, upperLimit, false, null, null);
+    static lessThan(field: string, upperLimit: number): Range {
+        return new Range(field, upperLimit, false, null, null);
     }
     /**
      * Create a Range instance of the greater than or equals.
      * @param {string} field Field name of comparison.
      * @param {number} upperLimit The upper limit of the range.
-     * @returns {RangeClauseInQuery} RangeClauseInQuery instance.
      */
-    static lessThanEquals(field: string, upperLimit: number): RangeClauseInQuery {
-        return new RangeClauseInQuery(field, upperLimit, true, null, null);
+    static lessThanEquals(field: string, upperLimit: number): Range {
+        return new Range(field, upperLimit, true, null, null);
     }
     /**
      * This method is for internal use only.
@@ -305,30 +299,14 @@ export class RangeClauseInQuery extends QueryClause {
     /**
      * This method is for internal use only.
      * @param obj JSON object that represented a range condition.
-     * @return {RangeClauseInQuery} RangeClauseInQuery instance
+     * @return {Range} Range instance
      */
-    static fromJson(obj:any): RangeClauseInQuery {
+    static fromJson(obj:any): Range {
         let field = obj.field;
         let upperLimit = obj.upperLimit ? obj.upperLimit : null;
         let upperIncluded = obj.upperIncluded ? obj.upperIncluded : null;
         let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
         let lowerIncluded = obj.lowerIncluded ? obj.lowerIncluded : null;
-        return new RangeClauseInQuery(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
-    }
-}
-
-/**
- * Represents all clause.
- */
-export class AllClause extends QueryClause {
-    
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): Object {
-        return {
-            type: "all"
-        }
+        return new Range(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
     }
 }
