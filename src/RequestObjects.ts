@@ -19,14 +19,7 @@ import { Aggregation } from './Aggregation';
  * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithVendorThingIDRequest {
-    public vendorThingID: string;
-    public thingPassword: string;
-    public owner: string;
-    public thingType: string;
-    public thingProperties: Object;
-    public firmwareVersion: string;
-    public layoutPosition: string;
-
+    public owner?: string;
     /**
      * Create a OnboardWithVendorThingIDRequest.
      * @constructor
@@ -34,18 +27,18 @@ export class OnboardWithVendorThingIDRequest {
      * @param {string} thingPassword Password of the thing.
      * @param {TypedID} [ownerID] ID of the owner. UserID or GroupID.
      * @param {string} [thingType] Type of the thing. This is optional and ignored if Thing is already registered.
-     * @param {Object} [thingProperties] Thing properties includes predefined and custom properties.
      * @param {string} [firmwareVersion] Firmware version of thing.
+     * @param {Object} [thingProperties] Thing properties includes predefined and custom properties.
      * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(
-        vendorThingID: string,
-        thingPassword: string,
+        public vendorThingID: string,
+        public thingPassword: string,
         ownerID?: TypedID,
-        thingType?: string,
-        thingProperties?: Object,
-        firmwareVersion?:string,
-        layoutPosition?: string
+        public thingType?: string,
+        public firmwareVersion?:string,
+        public thingProperties?: Object,
+        public layoutPosition?: string
         ) {
             this.vendorThingID = vendorThingID;
             this.thingPassword = thingPassword;
@@ -71,10 +64,7 @@ export class OnboardWithVendorThingIDRequest {
  * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithThingIDRequest {
-    public thingID: string;
-    public thingPassword: string;
-    public owner: string;
-    public layoutPosition: string;
+    public owner?: string;
     /**
      * Create a OnboardWithThingIDRequest.
      * @constructor
@@ -84,10 +74,10 @@ export class OnboardWithThingIDRequest {
      * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(
-        thingID: string,
-        thingPassword: string,
+        public thingID: string,
+        public thingPassword: string,
         ownerID?: TypedID,
-        layoutPosition?: string) {
+        public layoutPosition?: string) {
             this.thingID = thingID;
             this.thingPassword = thingPassword;
             if (!!ownerID) {
