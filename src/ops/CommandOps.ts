@@ -45,7 +45,7 @@ export default class CommandOps extends BaseOp {
             delete requestBody["aliasActions"];
             requestBody["actions"] = JsonUtil.aliasActonArrayToJsons(requestObject.aliasActions);
 
-            var headers = this.addHeader("Content-Type", "application/json");
+            var headers = this.addHeader("Content-Type", "application/vnd.kii.CommandCreationRequest+json");
             var req = {
                 method: "POST",
                 headers: headers,
