@@ -8,7 +8,7 @@ import {Predicate} from './Predicate'
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
  * @prop {Command} command Definition of the command to execute.
  * @prop {ServerCode} serverCode Details of the server code to execute.
- * @prop {boolean} disabled Whether the trigger is disabled or not. 
+ * @prop {boolean} disabled Whether the trigger is disabled or not.
  * @prop {string} disabledReason Reasons for disabled trigger
  * @prop {string} title Title of the trigger
  * @prop {string} description Description of the trigger
@@ -59,17 +59,19 @@ export class Trigger {
      * @return {Trigger} Trigger instance
      */
     static fromJson(obj: any): Trigger {
-        let predicate: Predicate = Predicate.fromJson(obj.predicate);
-        let command: Command = obj.command ? Command.fromJson(obj.command) : null;
-        let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
-        let trigger = new Trigger(predicate, command, serverCode);
-        trigger.triggerID = obj.triggerID ? obj.triggerID : null;
-        trigger.disabled = obj.disabled === undefined ?  null : obj.disabled;
-        trigger.disabledReason = obj.disabledReason ? obj.disabledReason : null;
-        trigger.title = obj.title ? obj.title : null;
-        trigger.description = obj.description ? obj.description : null;
-        trigger.metadata = obj.metadata ? obj.metadata : null;
-        return trigger;
+        //TODO: will move this method to JsonUtilities
+        // let predicate: Predicate = Predicate.fromJson(obj.predicate);
+        // let command: Command = obj.command ? Command.fromJson(obj.command) : null;
+        // let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
+        // let trigger = new Trigger(predicate, command, serverCode);
+        // trigger.triggerID = obj.triggerID ? obj.triggerID : null;
+        // trigger.disabled = obj.disabled === undefined ?  null : obj.disabled;
+        // trigger.disabledReason = obj.disabledReason ? obj.disabledReason : null;
+        // trigger.title = obj.title ? obj.title : null;
+        // trigger.description = obj.description ? obj.description : null;
+        // trigger.metadata = obj.metadata ? obj.metadata : null;
+        // return trigger;
+        return null;
     }
 
 }
