@@ -1,9 +1,12 @@
 import { Action, AliasAction } from '../AliasAction';
 import { isObject, isArray } from './KiiUtilities';
 import { ActionResult, AliasActionResult } from '../AliasActionResult';
+import { Command } from '../Command';
+import { TypedID } from '../TypedID';
+
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
-        let json = {};
+        let json: any = {};
         json[action.name] = action.value;
         return json;
     }
@@ -21,7 +24,7 @@ export function jsonToAction(json: any): Action {
 
 export function aliasActionToJson(aliasAction: AliasAction): Object {
     if (!!aliasAction && !!aliasAction.alias) {
-        let json = {};
+        let json: any = {};
         let actionJsonArray = [];
         for (let action of aliasAction.actions) {
             actionJsonArray.push(actionToJson(action));
@@ -54,7 +57,7 @@ export function jsonToActionResult(json: any): ActionResult {
     if (isObject(json) && Object.keys(json).length == 1) {
         let actionName = Object.keys(json)[0];
         if (isObject(json[actionName])) {
-            let resultJson = <Object>json[actionName];
+            let resultJson = json[actionName];
             let succeeded: boolean;
             let data: Object;
             let errorMessage: string;
@@ -85,4 +88,74 @@ export function jsonToAliasActionResult(json: any): AliasActionResult {
         }
     }
     return null;
+}
+
+export function aliasActonArrayToJsons(aas: Array<AliasAction>): Object[] {
+    if (!!aas && isArray(aas)) {
+        let json = [];
+        for (let aa of aas) {
+            let aaJson = aliasActionToJson(aa);
+            if (!!aaJson) {
+                json.push(aaJson);
+            }
+        }
+        return json;
+    }
+    return null;
+}
+
+export function jsonArrayToAliasActoins(jsons: any): AliasAction[] {
+    if (isArray(jsons)) {
+        let aas = [];
+        for (let json of jsons) {
+            let aa = jsonToAliasAction(json);
+            if (!!aa) {
+                aas.push(aa);
+            }
+        }
+        return aas;
+    }
+    return null;
+}
+
+export function jsonArrayToAliasActionResults(jsons: any): AliasActionResult[] {
+    if (isArray(jsons)) {
+        let aars = [];
+        for (let json of jsons) {
+            let aar = jsonToAliasActionResult(json);
+            if (!!aar) {
+                aars.push(aar);
+            }
+        }
+        return aars;
+    }
+    return null;
+}
+
+export function jsonToCommand(obj: any): Command {
+    if (!obj.target || !obj.issuer || !obj.actions) {
+        return null;
+    }
+    let aliasActons = jsonArrayToAliasActoins(obj.actions);
+    let command = new Command(
+        TypedID.fromString(obj.target),
+        TypedID.fromString(obj.issuer),
+        aliasActons);
+    command.commandID = obj.commandID;
+    if (!!obj.actionResults) {
+        command.aliasActionResults = jsonArrayToAliasActionResults(obj.actionResults);
+    }
+    command.commandState = obj.commandState;
+    command.firedByTriggerID = obj.firedByTriggerID;
+    command.title = obj.title;
+    command.description = obj.description;
+    command.metadata = obj.metadata;
+
+    if (!!obj.createdAt) {
+        command.created = new Date(obj.createdAt);
+    }
+    if (!!obj.modifiedAt) {
+        command.modified = new Date(obj.modifiedAt);
+    }
+    return command;
 }

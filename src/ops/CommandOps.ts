@@ -10,6 +10,7 @@ import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import * as KiiUtil from '../internal/KiiUtilities'
 import {TypedID} from '../TypedID'
 import {QueryResult} from '../QueryResult'
+import * as JsonUtil from '../internal/JsonUtilities'
 
 export default class CommandOps extends BaseOp {
     private baseUrl: string;
@@ -39,12 +40,17 @@ export default class CommandOps extends BaseOp {
                 return;
             }
 
+            // delete aliasActions key, and
+            let requestBody = JSON.parse(JSON.stringify(requestObject));
+            delete requestBody["aliasActions"];
+            requestBody["actions"] = JsonUtil.aliasActonArrayToJsons(requestObject.aliasActions);
+
             var headers = this.addHeader("Content-Type", "application/json");
             var req = {
                 method: "POST",
                 headers: headers,
                 url: this.baseUrl,
-                body: requestObject,
+                body: requestBody,
             };
 
             request(req).then((res)=>{
@@ -89,7 +95,7 @@ export default class CommandOps extends BaseOp {
                 var commands = new Array<Command>();
                 for (var i in rawCmds){
                     var rawCmd = rawCmds[i];
-                    var command = Command.fromJson(rawCmd);
+                    var command = JsonUtil.jsonToCommand(rawCmd);
                     commands.push(command);
                 }
                 var paginationKey = (<any>res.body)["nextPaginationKey"];
@@ -119,7 +125,7 @@ export default class CommandOps extends BaseOp {
                 url: `${this.baseUrl}/${commandID}`
             };
             request(req).then((res)=>{
-                resolve(Command.fromJson(res.body));
+                resolve(JsonUtil.jsonToCommand(res.body));
             }).catch((err)=>{
                 reject(err);
             });

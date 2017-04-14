@@ -80,39 +80,10 @@ export class Command {
         }
         return jsonObject;
     }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a command.
-     * @return {Command} Command instance
-     */
-    static fromJson(obj: any): Command {
-        if(!obj.target || !obj.issuer || !obj.actions){
-            return null;
-        }
-        let command = new Command(
-            TypedID.fromString(obj.target),
-            TypedID.fromString(obj.issuer),
-            obj.actions);
-        command.commandID = obj.commandID;
-        command.aliasActionResults = obj.actionResults;
-        command.commandState= obj.commandState;
-        command.firedByTriggerID = obj.firedByTriggerID;
-        command.title = obj.title;
-        command.description = obj.description;
-        command.metadata = obj.metadata;
-
-        if(!!obj.createdAt){
-            command.created = new Date(obj.createdAt);
-        }
-        if(!!obj.modifiedAt){
-            command.modified = new Date(obj.modifiedAt);
-        }
-        return command;
-    }
 
     /**
      * Retrieve aliasAction with specified alias.
-     * @param {string} alias alias name. 
+     * @param {string} alias alias name.
      * @return {Array<AliasAction>} Found array of AliasAction object. If there is not
      * AliasActon object with the specified alias, empty array returned.
      */
@@ -128,9 +99,9 @@ export class Command {
 
     /**
      * Retrieve aliasAction result with specified alias.
-     * @param {string} alias alias name. 
+     * @param {string} alias alias name.
      * @return {Array<AliasActionResult>} Found array of AliasActionResult object. If there is not
-     * AliasActionResult object with the specified alias, empty array returned. 
+     * AliasActionResult object with the specified alias, empty array returned.
      */
     getAliasActionResults(alias: string): Array<AliasActionResult> {
         let foundAliasResults: Array<AliasActionResult> = [];
