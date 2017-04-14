@@ -2,11 +2,12 @@ import { Action, AliasAction } from '../AliasAction';
 import { isObject, isArray } from './KiiUtilities';
 import { ActionResult, AliasActionResult } from '../AliasActionResult';
 export function actionToJson(action: Action): Object {
-    let json = {};
     if (!!action && !!action.name) {
+        let json = {};
         json[action.name] = action.value;
+        return json;
     }
-    return json;
+    return null;
 }
 
 export function jsonToAction(json: any): Action {
@@ -19,15 +20,16 @@ export function jsonToAction(json: any): Action {
 }
 
 export function aliasActionToJson(aliasAction: AliasAction): Object {
-    let json = {};
     if (!!aliasAction && !!aliasAction.alias) {
+        let json = {};
         let actionJsonArray = [];
         for (let action of aliasAction.actions) {
             actionJsonArray.push(actionToJson(action));
         }
         json[aliasAction.alias] = actionJsonArray;
+        return json;
     }
-    return json;
+    return null;
 }
 
 export function jsonToAliasAction(json: any): AliasAction {

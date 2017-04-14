@@ -5,10 +5,10 @@ import { ActionResult, AliasActionResult } from '../../src/AliasActionResult';
 
 describe('Test JsonUtilities', () => {
     it('Test actionToJson()', () => {
-        expect(actionToJson(new Action(null, null))).deep.equal({});
+        expect(actionToJson(new Action(null, null))).null;
         expect(actionToJson(new Action("turnPower", true))).deep.equal({ turnPower: true });
-        expect(actionToJson(<any>34)).deep.equal({});
-        expect(actionToJson(<any>null)).deep.equal({});
+        expect(actionToJson(<any>34)).null;
+        expect(actionToJson(<any>null)).null;
     })
 
     it('Test jsonToAction()', () => {
@@ -24,8 +24,8 @@ describe('Test JsonUtilities', () => {
                     { "turnPower": true }]
             }
             );
-        expect(aliasActionToJson(<any>{})).deep.equal({});
-        expect(aliasActionToJson(<any>null)).deep.equal({});
+        expect(aliasActionToJson(<any>{})).null;
+        expect(aliasActionToJson(<any>null)).null;
     })
 
     it('Test jsonToAliasAction()', () => {
