@@ -139,12 +139,7 @@ export class OnboardWithThingIDRequest {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class PostCommandRequest {
-    public aliasActions: Array<AliasAction>;
     public issuer?: string;
-    public title?: string;
-    public description?: string;
-    public metadata?: Object;
-
     /**
      * Create a PostCommandRequest.
      * @constructor
@@ -155,18 +150,14 @@ export class PostCommandRequest {
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        aliasActions: Array<AliasAction>,
+        public aliasActions: Array<AliasAction>,
         issuerID?: TypedID,
-        title?: string,
-        description?: string,
-        metadata?: Object) {
-            this.aliasActions = aliasActions;
+        public title?: string,
+        public description?: string,
+        public metadata?: Object) {
             if(!!issuerID && !!issuerID.id && !!issuerID.type){
                 this.issuer = issuerID.toString();
             }
-            this.title = title;
-            this.description = description;
-            this.metadata = metadata;
         }
 }
 
