@@ -1,28 +1,7 @@
 /**
  * Base TriggerClause implementation.
  */
-export abstract class TriggerClause {
-    abstract toJson(): any;
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a clause.
-     * @return {TriggerClause} Equals instance
-     */
-    static fromJson(obj:any): TriggerClause {
-        if (obj.type == "eq") {
-            return EqualsClauseInTrigger.fromJson(obj);
-        } else if (obj.type == "not") {
-            return NotEqualsClauseInTrigger.fromJson(obj);
-        } else if (obj.type == "and") {
-            return AndClauseInTrigger.fromJson(obj);
-        } else if (obj.type == "or") {
-            return OrClauseInTrigger.fromJson(obj);
-        } else if (obj.type == "range") {
-            return RangeClauseInTrigger.fromJson(obj);
-        }
-        return null;
-    }
-}
+export class TriggerClause {}
 /**
  * Represents the clause of equals condition.
  * @prop {string} alias alias name.
@@ -50,29 +29,6 @@ export class EqualsClauseInTrigger extends TriggerClause {
         this.field = field;
         this.value = value;
         this.alias = alias;
-    }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        return {
-            type: "eq",
-            alias: this.alias,
-            field: this.field,
-            value: this.value
-        };
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a equals condition.
-     * @return {EqualsClauseInTrigger} Equals instance
-     */
-    static fromJson(obj:any): EqualsClauseInTrigger {
-        let field = obj.field;
-        let value = obj.value;
-        let alias = obj.alias;
-        return new EqualsClauseInTrigger(alias, field, value);
     }
 }
 /**
@@ -103,32 +59,6 @@ export class NotEqualsClauseInTrigger extends TriggerClause {
         this.value = value;
         this.alias = alias;
     }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        return {
-            type: "not",
-            clause: {
-                type: "eq",
-                alias: this.alias,
-                field: this.field,
-                value: this.value
-            }
-        };
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a not equals condition.
-     * @return {NotEqualsClauseInTrigger} NotEquals instance
-     */
-    static fromJson(obj:any): NotEqualsClauseInTrigger {
-        let field = obj.clause.field;
-        let value = obj.clause.value;
-        let alias = obj.clause.alias;
-        return new NotEqualsClauseInTrigger(alias, field, value);
-    }
 }
 /**
  * Represents the And operator.
@@ -146,34 +76,6 @@ export class AndClauseInTrigger extends TriggerClause {
         super();
         this.clauses = clauses;
     }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        var json: any = {type: "and"};
-        var clauses :Array<TriggerClause> = new Array<TriggerClause>();
-        for (var clause of this.clauses) {
-            clauses.push(clause.toJson());
-        }
-        json["clauses"] = clauses;
-        return json;
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a AND operator.
-     * @return {AndClauseInTrigger} And instance
-     */
-    static fromJson(obj:any): AndClauseInTrigger {
-        let clauses: Array<TriggerClause> = new Array<TriggerClause>();
-        let array: Array<any> = obj.clauses;
-        for (var json of array) {
-            clauses.push(TriggerClause.fromJson(json));
-        }
-        let and = new AndClauseInTrigger();
-        and.clauses = clauses;
-        return and;
-    }
 }
 /**
  * Represents the OR operator.
@@ -190,34 +92,6 @@ export class OrClauseInTrigger extends TriggerClause {
     constructor(...clauses: TriggerClause[]) {
         super();
         this.clauses = clauses;
-    }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        var json: any = {type: "or"};
-        var clauses :Array<TriggerClause> = new Array<TriggerClause>();
-        for (var clause of this.clauses) {
-            clauses.push(clause.toJson());
-        }
-        json["clauses"] = clauses;
-        return json;
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a OR operator.
-     * @return {OrClauseInTrigger} Or instance
-     */
-    static fromJson(obj:any): OrClauseInTrigger {
-        let clauses: Array<TriggerClause> = new Array<TriggerClause>();
-        let array: Array<any> = obj.clauses;
-        for (var json of array) {
-            clauses.push(TriggerClause.fromJson(json));
-        }
-        let or = new OrClauseInTrigger();
-        or.clauses = clauses;
-        return or;
     }
 }
 /**
@@ -298,40 +172,5 @@ export class RangeClauseInTrigger extends TriggerClause {
      */
     static lessThanEquals(alias: string, field: string, upperLimit: number): RangeClauseInTrigger {
         return new RangeClauseInTrigger(alias, field, upperLimit, true, null, null);
-    }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        var json: any = {type: "range", field: this.field};
-        if (this.upperLimit != null && this.upperLimit != undefined) {
-            json["upperLimit"] = this.upperLimit;
-        }
-        if (this.upperIncluded != null && this.upperIncluded != undefined) {
-            json["upperIncluded"] = this.upperIncluded;
-        }
-        if (this.lowerLimit != null && this.lowerLimit != undefined) {
-            json["lowerLimit"] = this.lowerLimit;
-        }
-        if (this.lowerIncluded != null && this.lowerIncluded != undefined) {
-            json["lowerIncluded"] = this.lowerIncluded;
-        }
-        json["alias"] = this.alias;
-        return json;
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a range condition.
-     * @return {RangeClauseInTrigger} Range instance
-     */
-    static fromJson(obj:any): RangeClauseInTrigger {
-        let field = obj.field;
-        let upperLimit = obj.upperLimit ? obj.upperLimit : null;
-        let upperIncluded = obj.upperIncluded ? obj.upperIncluded : null;
-        let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
-        let lowerIncluded = obj.lowerIncluded ? obj.lowerIncluded : null;
-        let alias = obj.alias;
-        return new RangeClauseInTrigger(alias, field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
     }
 }
