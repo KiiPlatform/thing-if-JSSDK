@@ -11,6 +11,7 @@ import {
     AndClauseInTrigger,
     OrClauseInTrigger
 } from '../TriggerClause';
+import { TriggerCommandObject } from '../RequestObjects';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -278,6 +279,26 @@ export function triggerClauseToJson(clause: TriggerClause): Object {
             type: "or",
             clauses: jsonArray
         };
+    }
+    return null;
+}
+export function triggeredCommandToJson(cmd: TriggerCommandObject): Object {
+    if (!!cmd.targetID && isArray(cmd.aliasActions) && !!cmd.issuerID) {
+        var jsonObject: any = {};
+        jsonObject.target = cmd.targetID.toString();
+        jsonObject.issuer = cmd.issuerID.toString();
+        jsonObject.actions = aliasActonArrayToJsons(cmd.aliasActions);
+
+        if (!!cmd.title) {
+            jsonObject.title = cmd.title;
+        }
+        if (!!cmd.description) {
+            jsonObject.description = cmd.description;
+        }
+        if (!!cmd.metadata) {
+            jsonObject.metadata = cmd.metadata;
+        }
+        return jsonObject;
     }
     return null;
 }

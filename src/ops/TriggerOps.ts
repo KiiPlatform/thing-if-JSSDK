@@ -19,6 +19,8 @@ import {TypedID} from '../TypedID'
 import {Command} from '../Command'
 import {ServerCodeResult} from '../ServerCodeResult'
 import * as KiiUtil from '../internal/KiiUtilities'
+import * as JsonUtils from '../internal/JsonUtilities'
+import { triggeredCommandToJson } from '../internal/JsonUtilities';
 
 export default class TriggerOps extends BaseOp {
     constructor(
@@ -59,18 +61,10 @@ export default class TriggerOps extends BaseOp {
                 commandTarget = commandRequest.targetID;
             }
 
-            var command = new Command(
-                commandTarget,
-                commandRequest.issuerID,
-                commandRequest.aliasActions);
-            command.title = commandRequest.title;
-            command.description = commandRequest.description;
-            command.metadata = commandRequest.metadata;
-
             var requestBody: any = {
                 predicate: requestObject.predicate.toJson(),
                 triggersWhat: TriggersWhat.COMMAND,
-                command: command.toJson()
+                command: JsonUtils.triggeredCommandToJson(commandRequest)
             }
 
             if(!!requestObject.title){
@@ -84,6 +78,14 @@ export default class TriggerOps extends BaseOp {
             if(!!requestObject.metadata){
                 requestBody["metadata"] = requestObject.metadata;
             }
+
+            var command = new Command(
+                commandTarget,
+                commandRequest.issuerID,
+                commandRequest.aliasActions);
+            command.title = commandRequest.title;
+            command.description = commandRequest.description;
+            command.metadata = commandRequest.metadata;
 
             this.postTrigger(requestBody).then((res:Response)=>{
                 var trigger = new Trigger(requestObject.predicate, command, null);
@@ -213,14 +215,7 @@ export default class TriggerOps extends BaseOp {
                     reject(new ThingIFError(Errors.ArgumentError, "issuerID is null"));
                     return;
                 }
-                var command = new Command(
-                    commandRequest.targetID,
-                    commandRequest.issuerID,
-                    commandRequest.aliasActions);
-                command.title = commandRequest.title;
-                command.description = commandRequest.description;
-                command.metadata = commandRequest.metadata;
-                requestBody["command"] = command.toJson();
+                requestBody["command"] = JsonUtils.triggeredCommandToJson(commandRequest);
                 requestBody["triggersWhat"] = "COMMAND";
             }
             if(!!requestObject.title){
