@@ -1,4 +1,5 @@
 import {TriggerClause} from './TriggerClause';
+import { jsonToTriggerClause } from './internal/JsonUtilities';
 
 /**
  * Represents the condition for the StatePredicate.
@@ -21,6 +22,6 @@ export class Condition {
      * @return {Condition} Condition instance
      */
     static fromJson(obj:any): Condition {
-        return new Condition(TriggerClause.fromJson(obj));
+        return new Condition(jsonToTriggerClause(obj));
     }
 }

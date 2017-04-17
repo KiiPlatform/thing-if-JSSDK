@@ -1,5 +1,6 @@
 import {Condition} from './Condition';
 import {TriggersWhen} from './Trigger';
+import { triggerClauseToJson } from './internal/JsonUtilities';
 
 /** Represent Predicate for a Trigger */
 export abstract class Predicate {
@@ -76,7 +77,7 @@ export class StatePredicate implements Predicate {
      */
     toJson(): any {
         return {
-            condition: this.condition.clause.toJson(),
+            condition: triggerClauseToJson(this.condition.clause),
             eventSource: EventSource.STATES,
             triggersWhen: this.triggersWhen
         };

@@ -3,6 +3,14 @@ import { isObject, isArray } from './KiiUtilities';
 import { ActionResult, AliasActionResult } from '../AliasActionResult';
 import { Command } from '../Command';
 import { TypedID } from '../TypedID';
+import {
+    TriggerClause,
+    EqualsClauseInTrigger,
+    NotEqualsClauseInTrigger,
+    RangeClauseInTrigger,
+    AndClauseInTrigger,
+    OrClauseInTrigger
+} from '../TriggerClause';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -158,4 +166,118 @@ export function jsonToCommand(obj: any): Command {
         command.modified = new Date(obj.modifiedAt);
     }
     return command;
+}
+
+export function jsonToTriggerClause(obj: any): TriggerClause {
+    if (obj.type == "eq") {
+        return new EqualsClauseInTrigger(
+            obj.alias,
+            obj.field,
+            obj.value);
+    } else if (obj.type == "not") {
+        return new NotEqualsClauseInTrigger(
+            obj.clause.alias,
+            obj.clause.field,
+            obj.clause.value);
+    } else if (obj.type == "range") {
+        let field = obj.field;
+        let upperLimit = obj.upperLimit ? obj.upperLimit : null;
+        let upperIncluded =
+            (obj.upperIncluded != null && obj.upperIncluded != undefined) ?
+                obj.upperIncluded : null;
+        let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
+        let lowerIncluded =
+            (obj.lowerIncluded != null && obj.lowerIncluded != undefined) ?
+                obj.lowerIncluded : null;
+        let alias = obj.alias;
+        return new RangeClauseInTrigger(alias, field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
+    } else if (obj.type == "and") {
+        let subClauses: TriggerClause[] = [];
+        for (let subJson of obj.clauses) {
+            let subClause = jsonToTriggerClause(subJson);
+            if (!!subClause) {
+                subClauses.push(subClause);
+            }
+        }
+        let andClause = new AndClauseInTrigger();
+        andClause.clauses = subClauses;
+        return andClause;
+    } else if (obj.type == "or") {
+        let subClauses: TriggerClause[] = [];
+        for (let subJson of obj.clauses) {
+            let subClause = jsonToTriggerClause(subJson);
+            if (!!subClause) {
+                subClauses.push(subClause);
+            }
+        }
+        let orClause = new OrClauseInTrigger();
+        orClause.clauses = subClauses;
+        return orClause;
+    }
+    return null;
+}
+export function triggerClauseToJson(clause: TriggerClause): Object {
+    if (clause instanceof EqualsClauseInTrigger) {
+        return {
+            type: "eq",
+            alias: clause.alias,
+            field: clause.field,
+            value: clause.value
+        };
+    } else if (clause instanceof NotEqualsClauseInTrigger) {
+        let equalsJson = triggerClauseToJson(
+            new EqualsClauseInTrigger(
+                clause.alias,
+                clause.field,
+                clause.value));
+        return {
+            type: "not",
+            clause: equalsJson
+        };
+    } else if (clause instanceof RangeClauseInTrigger) {
+        let json: any = {
+            type: "range",
+            alias: clause.alias,
+            field: clause.field
+        };
+
+        if (!!clause.upperLimit) {
+            json["upperLimit"] = clause.upperLimit;
+        }
+        if (clause.upperIncluded != null && clause.upperIncluded != undefined) {
+            json["upperIncluded"] = clause.upperIncluded;
+        }
+        if (!!clause.lowerLimit) {
+            json["lowerLimit"] = clause.lowerLimit;
+        }
+        if (clause.lowerIncluded != null && clause.lowerIncluded != undefined) {
+            json["lowerIncluded"] = clause.lowerIncluded;
+        }
+        return json;
+    } else if (clause instanceof AndClauseInTrigger) {
+        let jsonArray = [];
+        for (let subClause of clause.clauses) {
+            let subJson = triggerClauseToJson(subClause);
+            if (!!subJson) {
+                jsonArray.push(subJson);
+            }
+        }
+        return {
+            type: "and",
+            clauses: jsonArray
+        };
+    } else if (clause instanceof OrClauseInTrigger) {
+        let jsonArray = [];
+        for (let subClause of clause.clauses) {
+            let subJson = triggerClauseToJson(subClause);
+            if (!!subJson) {
+                jsonArray.push(subJson);
+            }
+        }
+        return {
+            type: "or",
+            clauses: jsonArray
+        };
+    }
+    return null;
 }
