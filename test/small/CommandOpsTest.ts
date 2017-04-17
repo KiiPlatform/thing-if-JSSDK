@@ -61,7 +61,7 @@ describe("Test CommandOps", function() {
         describe("handle http response", function() {
             let path = `/thing-if/apps/${testApp.appID}/targets/${targetID.toString()}/commands`;
             let expectedReqHeaders = {
-                "Content-Type": "application/json",
+                "Content-Type": "application/vnd.kii.CommandCreationRequest+json",
                 "Authorrization": `Bearer ${au.token}`
             };
             let issuerUserID = "123456"

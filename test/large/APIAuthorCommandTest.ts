@@ -3,6 +3,8 @@
 import {expect} from 'chai';
 import {apiHelper, KiiUser, KiiThing} from './utils/APIHelper';
 import {testApp} from './utils/TestApp';
+import { TestInfo } from './utils/TestInfo';
+import { AliasAction, Action } from '../../src/AliasAction';
 
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
@@ -20,7 +22,12 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             var vendorThingID = "vendor-" + new Date().getTime();
             var password = "password";
             var owner = new thingIFSDK.TypedID(thingIFSDK.Types.User, newUser.userID);
-            var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+            var request = new thingIFSDK.OnboardWithVendorThingIDRequest(
+                vendorThingID,
+                password,
+                owner,
+                TestInfo.DefaultThingType,
+                TestInfo.DefaultFirmwareVersion);
             return au.onboardWithVendorThingID(request)
         }).then((res)=>{
             target = res.thingID;
@@ -48,9 +55,11 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
             var postCommandRequest =
                 new thingIFSDK.PostCommandRequest(
-                    "led",
-                    1,
-                    [{turnPower: {power:true}}],
+                    [
+                        new AliasAction(TestInfo.AirConditionerAlias, [
+                            new Action("turnPower", true)
+                        ])
+                    ],
                     issuerID,
                     "title of led",
                     "represent led light",
@@ -81,9 +90,11 @@ describe("Large Tests for Command Ops(APIAuthor):", function () {
             var targetID = new thingIFSDK.TypedID(thingIFSDK.Types.Thing, target);
             var postCommandRequest =
                 new thingIFSDK.PostCommandRequest(
-                    "led",
-                    1,
-                    [{turnPower: {power:true}}],
+                    [
+                        new AliasAction(TestInfo.AirConditionerAlias, [
+                            new Action("turnPower", true)
+                        ])
+                    ],
                     issuerID,
                     "title of led",
                     "represent led light",
