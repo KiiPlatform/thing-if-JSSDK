@@ -18,35 +18,36 @@ import { AliasActionResult } from './AliasActionResult';
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class Command {
-    public commandID: string;
-    public targetID: TypedID;
-    public issuerID: TypedID;
-    public aliasActions: Array<AliasAction>;
-    public aliasActionResults: Array<AliasActionResult>;
-    public commandState:string;
-    public firedByTriggerID:string;
-    public created:Date;
-    public modified:Date;
-    public title:string;
-    public description:string;
-    public metadata:Object;
-
     /**
      * Create a command.
      * @constructor
      * @param {TypedID} targetID ID of the target thing.
      * @param {TypedID} issuerID ID of the command issuer.
      * @param {AliasAction[]} aliasActions Array of actions of the command.
+     * @param {string} [commandID] ID of command.
+     * @param {AliasActionResult[]} [aliasActionResults] Array of action results of the command.
+     * @param {string} [commandState] State of the command.
+     * @param {string} [firedByTriggerID] ID of the trigger if command invoked by trigger.
+     * @param {Date} [created] Timestamp of the creation of the command.
+     * @param {Date} [modified] Timestamp of the modification of the command.
+     * @param {string} [title] Title of the command.
+     * @param {string} [description] Description of the command.
+     * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        targetID: TypedID,
-        issuerID: TypedID,
-        aliasActions: Array<AliasAction>
-    ) {
-        this.targetID = targetID;
-        this.issuerID = issuerID;
-        this.aliasActions = aliasActions;
-    }
+        public targetID: TypedID,
+        public issuerID: TypedID,
+        public aliasActions: Array<AliasAction>,
+        public commandID?: string,
+        public aliasActionResults?: Array<AliasActionResult>,
+        public commandState?:string,
+        public firedByTriggerID?:string,
+        public created?:Date,
+        public modified?:Date,
+        public title?:string,
+        public description?:string,
+        public metadata?:Object
+    ) {}
 
     /**
      * This method is for internal use only.
