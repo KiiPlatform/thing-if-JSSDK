@@ -7,9 +7,9 @@ import { expect } from 'chai';
 import { APIAuthor } from '../../src/APIAuthor';
 import { AliasActionResult, ActionResult } from '../../src/AliasActionResult';
 
-describe('Test Command', ()=>{
+describe('Test Command', () => {
     it('constructor with required attributes', () => {
-       let target = new TypedID(Types.Thing, "thing-1");
+        let target = new TypedID(Types.Thing, "thing-1");
         let issuer = new TypedID(Types.User, "user-1");
         let aas = [
             new AliasAction("alias1", [
@@ -27,7 +27,7 @@ describe('Test Command', ()=>{
             target,
             issuer,
             aas
-            );
+        );
 
         expect(cmd.targetID).not.undefined;
         expect(cmd.targetID.type).equals(Types.Thing);
@@ -94,13 +94,13 @@ describe('Test Command', ()=>{
         let aars = [
             new AliasActionResult("alias1", [
                 new ActionResult("turnPower", true),
-                new ActionResult("setPresetTemp", false, {key: "value"}, "invalid value")
+                new ActionResult("setPresetTemp", false, { key: "value" }, "invalid value")
             ]),
             new AliasActionResult("alias2", [
                 new ActionResult("setPresetHum", false, null, "invalid value")
             ]),
             new AliasActionResult("alias1", [
-                new ActionResult("turnPower", false, {key: "value"})
+                new ActionResult("turnPower", false, { key: "value" })
             ])
         ];
         let createdAt = new Date();
@@ -117,8 +117,8 @@ describe('Test Command', ()=>{
             modifiedAt,
             "command title",
             "command description",
-            {key1: "value1"}
-            );
+            { key1: "value1" }
+        );
 
         expect(cmd.targetID).not.undefined;
         expect(cmd.targetID.type).equals(Types.Thing);
@@ -135,7 +135,7 @@ describe('Test Command', ()=>{
         expect(cmd.modified).deep.equal(modifiedAt);
         expect(cmd.title).equals("command title");
         expect(cmd.description).equals("command description");
-        expect(cmd.metadata).deep.equal({key1: "value1"});
+        expect(cmd.metadata).deep.equal({ key1: "value1" });
         expect(cmd.commandID).equals("command-1");
 
         // check aliasActions
@@ -180,7 +180,7 @@ describe('Test Command', ()=>{
         let ar12 = aar1.actionResults[1];
         expect(ar12.actionName).equals("setPresetTemp");
         expect(ar12.succeeded).false;
-        expect(ar12.data).deep.equal({key: "value"});
+        expect(ar12.data).deep.equal({ key: "value" });
         expect(ar12.errorMessage).equals("invalid value");
 
         let aar2 = cmd.aliasActionResults[1];
@@ -198,11 +198,11 @@ describe('Test Command', ()=>{
         let ar31 = aar3.actionResults[0];
         expect(ar31.actionName).equals("turnPower");
         expect(ar31.succeeded).false;
-        expect(ar31.data).deep.equal({key: "value"});
+        expect(ar31.data).deep.equal({ key: "value" });
         expect(ar31.errorMessage).undefined;
     })
 
-    it('test getAliasActions()', ()=>{
+    it('test getAliasActions()', () => {
         let target = new TypedID(Types.Thing, "thing-1");
         let issuer = new TypedID(Types.User, "user-1");
         let aas = [
@@ -242,7 +242,7 @@ describe('Test Command', ()=>{
         expect(a51.value).false;
     })
 
-    it('test getAliasActionResults()', ()=>{
+    it('test getAliasActionResults()', () => {
         let target = new TypedID(Types.Thing, "thing-1");
         let issuer = new TypedID(Types.User, "user-1");
         let aas = [
@@ -260,13 +260,13 @@ describe('Test Command', ()=>{
         let aars = [
             new AliasActionResult("alias1", [
                 new ActionResult("turnPower", true),
-                new ActionResult("setPresetTemp", false, {key: "value"}, "invalid value")
+                new ActionResult("setPresetTemp", false, { key: "value" }, "invalid value")
             ]),
             new AliasActionResult("alias2", [
                 new ActionResult("setPresetHum", false, null, "invalid value")
             ]),
             new AliasActionResult("alias1", [
-                new ActionResult("turnPower", false, {key: "value"})
+                new ActionResult("turnPower", false, { key: "value" })
             ])
         ];
         let createdAt = new Date();
@@ -283,8 +283,8 @@ describe('Test Command', ()=>{
             modifiedAt,
             "command title",
             "command description",
-            {key1: "value1"}
-            );
+            { key1: "value1" }
+        );
 
         let foundAARs = cmd.getAliasActionResults("alias1");
         expect(foundAARs.length).equals(2);
@@ -300,7 +300,7 @@ describe('Test Command', ()=>{
         let ar12 = aar1.actionResults[1];
         expect(ar12.actionName).equals("setPresetTemp");
         expect(ar12.succeeded).false;
-        expect(ar12.data).deep.equal({key: "value"});
+        expect(ar12.data).deep.equal({ key: "value" });
         expect(ar12.errorMessage).equals("invalid value");
 
         let aar3 = foundAARs[1];
@@ -309,7 +309,7 @@ describe('Test Command', ()=>{
         let ar31 = aar3.actionResults[0];
         expect(ar31.actionName).equals("turnPower");
         expect(ar31.succeeded).false;
-        expect(ar31.data).deep.equal({key: "value"});
+        expect(ar31.data).deep.equal({ key: "value" });
         expect(ar31.errorMessage).undefined;
     })
 })
