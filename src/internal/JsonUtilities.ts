@@ -12,9 +12,10 @@ import {
     OrClauseInTrigger
 } from '../TriggerClause';
 import { TriggerCommandObject } from '../RequestObjects';
-import { Trigger } from '../Trigger';
-import { Predicate } from '../Predicate';
+import { Trigger, TriggersWhen } from '../Trigger';
+import { Predicate, EventSource, StatePredicate, SchedulePredicate, ScheduleOncePredicate } from '../Predicate';
 import { ServerCode } from '../ServerCode';
+import { Condition } from '../Condition';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -310,7 +311,6 @@ export function jsonToTrigger(obj: any): Trigger {
     if (!!obj.triggerID
         && !!obj.predicate
         && (obj.disabled != undefined && obj.disabled != null)) {
-        // TODO: need to move Predicate.fromJson
         let predicate: Predicate = Predicate.fromJson(obj.predicate);
         let trigger = new Trigger(obj.triggerID, predicate, obj.disabled);
         if (!!obj.command) {
@@ -327,5 +327,40 @@ export function jsonToTrigger(obj: any): Trigger {
         return trigger;
     }
     return null;
+}
 
+export function jsonToPredicate(obj: any): Predicate {
+    if (obj.eventSource == EventSource.STATES) {
+        let condition: Condition = Condition.fromJson(obj.condition);
+        let triggersWhen = (<any>TriggersWhen)[obj.triggersWhen];
+        return new StatePredicate(condition, triggersWhen);
+    } else if (obj.eventSource == EventSource.SCHEDULE) {
+        let schedule = obj.schedule;
+        return new SchedulePredicate(schedule);
+    } else if (obj.eventSource == EventSource.SCHEDULE_ONCE) {
+        let scheduleAt = obj.scheduleAt;
+        return new ScheduleOncePredicate(scheduleAt);
+    }
+    return null;
+}
+
+export function predicateToJson(predicate: Predicate): Object {
+    if(predicate instanceof StatePredicate) {
+        return {
+            condition: triggerClauseToJson(predicate.condition.clause),
+            eventSource: EventSource.STATES,
+            triggersWhen: predicate.triggersWhen
+        };
+    } else if (predicate instanceof SchedulePredicate) {
+        return {
+            schedule: predicate.schedule,
+            eventSource: EventSource.SCHEDULE
+        };
+    } else if (predicate instanceof ScheduleOncePredicate) {
+        return {
+            scheduleAt: predicate.scheduleAt,
+            eventSource: EventSource.SCHEDULE_ONCE
+        };
+    }
+    return null;
 }

@@ -1,7 +1,7 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 import { expect } from 'chai';
-import { actionToJson, jsonToAction, aliasActionToJson, jsonToAliasAction, jsonToActionResult, jsonToAliasActionResult, triggerClauseToJson, jsonToTriggerClause, triggeredCommandToJson, jsonToTrigger } from '../../src/internal/JsonUtilities';
+import { actionToJson, jsonToAction, aliasActionToJson, jsonToAliasAction, jsonToActionResult, jsonToAliasActionResult, triggerClauseToJson, jsonToTriggerClause, triggeredCommandToJson, jsonToTrigger, predicateToJson, jsonToPredicate } from '../../src/internal/JsonUtilities';
 import { Action, AliasAction } from '../../src/AliasAction';
 import { ActionResult, AliasActionResult } from '../../src/AliasActionResult';
 import { EqualsClauseInTrigger, NotEqualsClauseInTrigger, RangeClauseInTrigger, AndClauseInTrigger, OrClauseInTrigger } from '../../src/TriggerClause';
@@ -403,7 +403,7 @@ describe('Test JsonUtilities for Trigger', () => {
         })
     })
     describe("Test jsonToTrigger()", () => {
-    let testApp = new TestApp();
+        let testApp = new TestApp();
         let command = new  Command(
             new TypedID(Types.Thing, "thing-1"),
             new TypedID(Types.User, "user-1"),
@@ -590,6 +590,95 @@ describe('Test JsonUtilities for Trigger', () => {
                     key: "value"
                 }
             })).deep.equal(expectedTrigger);
+        })
+    })
+})
+
+describe("Test JsonUtilities for Predicate", () => {
+    describe("Test predicateToJson()", () => {
+        it("provides not suppert object should return null", () => {
+            expect(predicateToJson(<any>{})).null;
+        })
+        it("provides statePredicate expected json should be returned", () => {
+            expect(predicateToJson(new StatePredicate(
+                new Condition(new EqualsClauseInTrigger("alias", "turnPower", true)),
+                TriggersWhen.CONDITION_CHANGED
+            ))).deep.equal({
+                condition: { alias: "alias", type: "eq", field: "turnPower", value: true },
+                triggersWhen: "CONDITION_CHANGED",
+                eventSource: "STATES"
+            })
+            expect(predicateToJson(new StatePredicate(
+                new Condition(new EqualsClauseInTrigger("alias", "turnPower", true)),
+                TriggersWhen.CONDITION_FALSE_TO_TRUE
+            ))).deep.equal({
+                condition: { alias: "alias", type: "eq", field: "turnPower", value: true },
+                triggersWhen: "CONDITION_FALSE_TO_TRUE",
+                eventSource: "STATES"
+            })
+            expect(predicateToJson(new StatePredicate(
+                new Condition(new EqualsClauseInTrigger("alias", "turnPower", true)),
+                TriggersWhen.CONDITION_TRUE
+            ))).deep.equal({
+                condition: { alias: "alias", type: "eq", field: "turnPower", value: true },
+                triggersWhen: "CONDITION_TRUE",
+                eventSource: "STATES"
+            })
+        })
+        it("provides schedulePredicate expected json should be returned", () => {
+            expect(predicateToJson(new SchedulePredicate("0 12 1 * *"))).deep.equal({
+                eventSource: "SCHEDULE",
+                schedule: "0 12 1 * *"
+            })
+        })
+        it("provides scheduleOncePredicate expected json should be returned", () => {
+            expect(predicateToJson(new ScheduleOncePredicate(10))).deep.equal({
+                eventSource: "SCHEDULE_ONCE",
+                scheduleAt: 10
+            })
+        })
+    })
+    describe("Test jsonToPredicate()", () => {
+        it("provides invalid json should return null", () => {
+            expect(jsonToPredicate({})).null;
+        })
+        it("provides statePredicate json expected predicate should be returned", () => {
+            expect(jsonToPredicate({
+                condition: { alias: "alias", type: "eq", field: "turnPower", value: true },
+                triggersWhen: "CONDITION_CHANGED",
+                eventSource: "STATES"
+            })).deep.equal(new StatePredicate(
+                new Condition(new EqualsClauseInTrigger("alias", "turnPower", true)),
+                TriggersWhen.CONDITION_CHANGED
+            ))
+            expect(jsonToPredicate({
+                condition: { alias: "alias", type: "eq", field: "turnPower", value: true },
+                triggersWhen: "CONDITION_FALSE_TO_TRUE",
+                eventSource: "STATES"
+            })).deep.equal(new StatePredicate(
+                new Condition(new EqualsClauseInTrigger("alias", "turnPower", true)),
+                TriggersWhen.CONDITION_FALSE_TO_TRUE
+            ))
+            expect(jsonToPredicate({
+                condition: { alias: "alias", type: "eq", field: "turnPower", value: true },
+                triggersWhen: "CONDITION_TRUE",
+                eventSource: "STATES"
+            })).deep.equal(new StatePredicate(
+                new Condition(new EqualsClauseInTrigger("alias", "turnPower", true)),
+                TriggersWhen.CONDITION_TRUE
+            ))
+        })
+        it("provides schedulePredicate json expected predicate should be returned", () => {
+            expect(jsonToPredicate({
+                eventSource: "SCHEDULE",
+                schedule: "0 12 1 * *"
+            })).deep.equal(new SchedulePredicate("0 12 1 * *"))
+        })
+        it("provides scheduleOncePredicate expected json should be returned", () => {
+            expect(jsonToPredicate({
+                eventSource: "SCHEDULE_ONCE",
+                scheduleAt: 10
+            })).deep.equal(new ScheduleOncePredicate(10))
         })
     })
 })
