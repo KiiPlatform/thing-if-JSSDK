@@ -14,10 +14,11 @@ import {Trigger, TriggersWhen, TriggersWhat} from '../../../src/Trigger';
 import {Command, CommandState} from '../../../src/Command';
 import {Predicate, StatePredicate, SchedulePredicate, ScheduleOncePredicate, EventSource} from '../../../src/Predicate';
 import {Condition} from '../../../src/Condition';
-import {Clause, Equals, NotEquals, Range, And, Or} from '../../../src/Clause';
 import {ThingIFError, HttpRequestError, Errors} from '../../../src/ThingIFError';
 import {ServerCode} from '../../../src/ServerCode'
 import * as simple from 'simple-mock';
+import { EqualsClauseInTrigger } from '../../../src/TriggerClause';
+import { AliasAction, Action } from '../../../src/AliasAction';
 
 let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
@@ -25,13 +26,21 @@ let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
 let schema = "LED";
 let schemaVersion = 1;
-let condition = new Condition(new Equals("power", "false"));
-let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
+let condition = new Condition(new EqualsClauseInTrigger("alias1", "power", "false"));
+let actions = [
+    new AliasAction("alias1", [
+        new Action("turnPower", true),
+        new Action("setPresetTemp", 23)
+    ]),
+    new AliasAction("alias2", [
+        new Action("setPresetHum", 45)
+    ])
+];
 let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 
 describe("Small Test ThingIFAPI#postCommandTrigger", function() {
-    let request = new PostCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, target, owner), predicate);
+    let request = new PostCommandTriggerRequest(new TriggerCommandObject(actions, target, owner), predicate);
     describe("handle IllegalStateError", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",
@@ -65,9 +74,7 @@ describe("Small Test ThingIFAPI#postCommandTrigger", function() {
             let command = new Command(
                 target,
                 owner,
-                "LED",
-                1,
-                [{"turnPower": {"power": true}}]);
+                actions);
             command.commandID = "dummy-command-id";
 
             let expectedTrigger = new Trigger(predicate, command, null);
