@@ -307,17 +307,25 @@ export function triggeredCommandToJson(cmd: TriggerCommandObject): Object {
 }
 
 export function jsonToTrigger(obj: any): Trigger {
-    // TODO: need to move Predicate.fromJson
-    let predicate: Predicate = Predicate.fromJson(obj.predicate);
-    let command: Command = obj.command ? jsonToCommand(obj.command) : null;
-    // TODO: need to move ServerCode.fromJson
-    let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
-    let trigger = new Trigger(predicate, command, serverCode);
-    trigger.triggerID = obj.triggerID ? obj.triggerID : null;
-    trigger.disabled = obj.disabled === undefined ? null : obj.disabled;
-    trigger.disabledReason = obj.disabledReason ? obj.disabledReason : null;
-    trigger.title = obj.title ? obj.title : null;
-    trigger.description = obj.description ? obj.description : null;
-    trigger.metadata = obj.metadata ? obj.metadata : null;
-    return trigger;
+    if (!!obj.triggerID
+        && !!obj.predicate
+        && (obj.disabled != undefined && obj.disabled != null)) {
+        // TODO: need to move Predicate.fromJson
+        let predicate: Predicate = Predicate.fromJson(obj.predicate);
+        let trigger = new Trigger(obj.triggerID, predicate, obj.disabled);
+        if (!!obj.command) {
+            trigger.command = jsonToCommand(obj.command);
+        }
+        if (!!obj.serverCode) {
+            // TODO: need to move ServerCode.fromJson
+            trigger.serverCode = ServerCode.fromJson(obj.serverCode)
+        }
+        trigger.disabledReason = obj.disabledReason;
+        trigger.title = obj.title;
+        trigger.description = obj.description;
+        trigger.metadata = obj.metadata;
+        return trigger;
+    }
+    return null;
+
 }
