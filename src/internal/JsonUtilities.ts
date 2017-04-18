@@ -330,7 +330,7 @@ export function jsonToTrigger(obj: any): Trigger {
 
 export function jsonToPredicate(obj: any): Predicate {
     if (obj.eventSource == EventSource.STATES) {
-        let condition: Condition = Condition.fromJson(obj.condition);
+        let condition: Condition = new Condition(jsonToTriggerClause(obj.condition));
         let triggersWhen = (<any>TriggersWhen)[obj.triggersWhen];
         return new StatePredicate(condition, triggersWhen);
     } else if (obj.eventSource == EventSource.SCHEDULE) {

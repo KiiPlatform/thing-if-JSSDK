@@ -16,12 +16,4 @@ export class Condition {
     constructor(clause: TriggerClause) {
         this.clause = clause;
     }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a condition.
-     * @return {Condition} Condition instance
-     */
-    static fromJson(obj:any): Condition {
-        return new Condition(jsonToTriggerClause(obj));
-    }
 }
