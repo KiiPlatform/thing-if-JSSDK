@@ -13,29 +13,36 @@ import {Trigger, TriggersWhen, TriggersWhat} from '../../../src/Trigger';
 import {Command, CommandState} from '../../../src/Command';
 import {Predicate, StatePredicate, SchedulePredicate, ScheduleOncePredicate, EventSource} from '../../../src/Predicate';
 import {Condition} from '../../../src/Condition';
-import {Clause, Equals, NotEquals, Range, And, Or} from '../../../src/Clause';
 import {ThingIFError, HttpRequestError, Errors} from '../../../src/ThingIFError';
 import {ServerCode} from '../../../src/ServerCode'
-import {QueryResult} from '../../../src/QueryResult'
 import * as simple from 'simple-mock';
+import { EqualsClauseInTrigger } from '../../../src/TriggerClause';
+import { AliasAction, Action } from '../../../src/AliasAction';
 
 let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-let schema = "LED";
-let schemaVersion = 1;
-let condition = new Condition(new Equals("power", "false"));
-let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
+let condition = new Condition(new EqualsClauseInTrigger("alias", "power", "false"));
+let actions = [
+    new AliasAction("alias1", [
+        new Action("turnPower", true),
+        new Action("setPresetTemp", 23)
+    ]),
+    new AliasAction("alias2", [
+        new Action("setPresetHum", 45)
+    ])
+];
 let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
-describe("Small Test ThingIFAPI#listTriggers", function() {
+let triggerID = "dummy-trigger-id";
+describe("Small Test ThingIFAPI#enableTrigger", function() {
     describe("handle IllegalStateError", function() {
         let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
         it("when targe is null, IllegalStateError should be returned(promise)",
             function (done) {
-            thingIFAPI.listTriggers()
-            .then((result)=>{
+            thingIFAPI.enableTrigger(triggerID, true)
+            .then((trigger: Trigger)=>{
                 done("should fail");
             }).catch((err)=>{
                 expect(err.name).to.equal(Errors.IlllegalStateError);
@@ -51,34 +58,15 @@ describe("Small Test ThingIFAPI#listTriggers", function() {
             let command = new Command(
                 target,
                 owner,
-                "LED",
-                1,
-                [{"turnPower": {"power": true}}]);
+                actions);
             command.commandID = "dummy-command-id";
 
-            let serverCode = new ServerCode(
-                "server_function",
-                 ownerToken,
-                 testApp.appID,
-                 {brightness : 100, color : "#FFF"});
+            let expectedTrigger = new Trigger("trigger-1",predicate, false, command, null);
 
-            let trigger1 = new Trigger(predicate, command, null);
-            trigger1.triggerID = "dummy-trigger-id1";
-            trigger1.disabled = false;
-
-            let trigger2 = new Trigger(predicate, null, serverCode);
-            trigger2.triggerID = "dummy-trigger-id2";
-            trigger2.disabled = true;
-
-            let trigger3 = new Trigger(predicate, command, null);
-            trigger3.triggerID = "dummy-trigger-id3";
-            trigger3.disabled = false;
-
-            let expectedResults = new QueryResult<Trigger>([trigger1, trigger2, trigger3], "200/1")
             beforeEach(function() {
-                simple.mock(TriggerOps.prototype, 'listTriggers').returnWith(
-                    new P<QueryResult<Trigger>>((resolve, reject)=>{
-                        resolve(expectedResults);
+                simple.mock(TriggerOps.prototype, 'enableTrigger').returnWith(
+                    new P<Trigger>((resolve, reject)=>{
+                        resolve(expectedTrigger);
                     })
                 );
             })
@@ -86,19 +74,19 @@ describe("Small Test ThingIFAPI#listTriggers", function() {
                 simple.restore();
             })
             it("test promise", function (done) {
-                thingIFAPI.listTriggers()
-                .then((results: QueryResult<Trigger>)=>{
-                    expect(results).to.be.deep.equal(expectedResults);
+                thingIFAPI.enableTrigger(triggerID, true)
+                .then((trigger)=>{
+                    expect(trigger).to.be.deep.equal(expectedTrigger);
                     done();
                 }).catch((err)=>{
                     done(err);
                 })
             })
             it("test callback", function (done) {
-                thingIFAPI.listTriggers(null, (err, results)=>{
+                thingIFAPI.enableTrigger(triggerID, true,(err, trigger)=>{
                     try{
                         expect(err).to.null;
-                        expect(results).to.be.deep.equal(expectedResults);
+                        expect(trigger).to.be.deep.equal(expectedTrigger);
                         done();
                     }catch(err){
                         done(err);
@@ -108,14 +96,14 @@ describe("Small Test ThingIFAPI#listTriggers", function() {
         })
 
         describe("handle err reponse", function() {
-            let expectedError = new HttpRequestError(401, Errors.HttpError, {
-                "errorCode": "WRONG_TOKEN",
-                "message": "The provided token is not valid"
+            let expectedError = new HttpRequestError(404, Errors.HttpError, {
+                "errorCode": "TRIGGER_NOT_FOUND",
+                "message": "The trigger is not found"
             })
 
             beforeEach(function() {
-                simple.mock(TriggerOps.prototype, 'listTriggers').returnWith(
-                    new P<QueryResult<Trigger>>((resolve, reject)=>{
+                simple.mock(TriggerOps.prototype, 'enableTrigger').returnWith(
+                    new P<Trigger>((resolve, reject)=>{
                         reject(expectedError);
                     })
                 );
@@ -124,8 +112,8 @@ describe("Small Test ThingIFAPI#listTriggers", function() {
                 simple.restore();
             })
             it("test promise", function (done) {
-                thingIFAPI.listTriggers()
-                .then((results)=>{
+                thingIFAPI.enableTrigger(triggerID, true)
+                .then((cmd)=>{
                     done("should fail");
                 }).catch((err: HttpRequestError)=>{
                     expect(err).to.be.deep.equal(expectedError);
@@ -133,10 +121,10 @@ describe("Small Test ThingIFAPI#listTriggers", function() {
                 })
             })
             it("test callback", function (done) {
-                thingIFAPI.listTriggers(null, (err, results)=>{
+                thingIFAPI.enableTrigger(triggerID, true,(err, cmd)=>{
                     try{
                         expect(err).to.be.deep.equal(expectedError);
-                        expect(results).to.null;
+                        expect(cmd).to.null;
                         done();
                     }catch(err){
                         done(err);

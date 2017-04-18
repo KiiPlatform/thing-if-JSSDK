@@ -24,8 +24,6 @@ let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-let schema = "LED";
-let schemaVersion = 1;
 let condition = new Condition(new EqualsClauseInTrigger("alias1", "power", "false"));
 let actions = [
     new AliasAction("alias1", [
@@ -77,9 +75,7 @@ describe("Small Test ThingIFAPI#postCommandTrigger", function() {
                 actions);
             command.commandID = "dummy-command-id";
 
-            let expectedTrigger = new Trigger(predicate, command, null);
-            expectedTrigger.triggerID = "dummy-trigger-id";
-            expectedTrigger.disabled = false;
+            let expectedTrigger = new Trigger("trigger-1", predicate, false, command, null);
 
             beforeEach(function() {
                 simple.mock(TriggerOps.prototype, 'postCommandTrigger').returnWith(
@@ -174,9 +170,7 @@ describe("Small Test ThingIFAPI#postServerCodeTrigger", function() {
 
         describe("hanle success response", function(){
 
-            let expectedTrigger = new Trigger(predicate, null, serverCode);
-            expectedTrigger.triggerID = "dummy-trigger-id";
-            expectedTrigger.disabled = false;
+            let expectedTrigger = new Trigger("trigger-1", predicate, false, null, serverCode);
 
             beforeEach(function() {
                 simple.mock(TriggerOps.prototype, 'postServerCodeTrigger').returnWith(
