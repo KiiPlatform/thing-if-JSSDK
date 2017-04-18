@@ -1,3 +1,5 @@
+/// <reference path="../../typings/globals/mocha/index.d.ts" />
+/// <reference path="../../typings/globals/chai/index.d.ts" />
 import { expect } from 'chai';
 import { actionToJson, jsonToAction, aliasActionToJson, jsonToAliasAction, jsonToActionResult, jsonToAliasActionResult, triggerClauseToJson, jsonToTriggerClause, triggeredCommandToJson, jsonToTrigger } from '../../src/internal/JsonUtilities';
 import { Action, AliasAction } from '../../src/AliasAction';
@@ -5,6 +7,12 @@ import { ActionResult, AliasActionResult } from '../../src/AliasActionResult';
 import { EqualsClauseInTrigger, NotEqualsClauseInTrigger, RangeClauseInTrigger, AndClauseInTrigger, OrClauseInTrigger } from '../../src/TriggerClause';
 import { TriggerCommandObject } from '../../src/RequestObjects';
 import { TypedID, Types } from '../../src/TypedID';
+import { Trigger, TriggersWhen } from '../../src/Trigger';
+import { StatePredicate, SchedulePredicate, ScheduleOncePredicate } from '../../src/Predicate';
+import { Condition } from '../../src/Condition';
+import { Command } from '../../src/Command';
+import TestApp from './TestApp';
+import { ServerCode } from '../../src/ServerCode';
 
 describe('Test JsonUtilities', () => {
     it('Test actionToJson()', () => {
@@ -381,17 +389,207 @@ describe('Test JsonUtilities for Trigger', () => {
                 new TypedID(Types.User, "user-1"),
                 "title",
                 "description",
-                {key: "value"}
+                { key: "value" }
             ))).deep.equal({
                 actions: [
-                    {alias: [{turnPower: true}]}
+                    { alias: [{ turnPower: true }] }
                 ],
                 target: "thing:thing-1",
                 issuer: "user:user-1",
                 title: "title",
                 description: "description",
-                metadata: {key: "value"}
+                metadata: { key: "value" }
             })
+        })
+    })
+    describe("Test jsonToTrigger()", () => {
+    let testApp = new TestApp();
+        let command = new  Command(
+            new TypedID(Types.Thing, "thing-1"),
+            new TypedID(Types.User, "user-1"),
+            [new AliasAction("alias", [new Action("turnPower", true)])]
+        );
+        let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
+        let endpoint = "server_function";
+        let parameters = {brightness : 100, color : "#FFF"};
+        let serverCode = new ServerCode(endpoint, ownerToken, testApp.appID, parameters);
+
+        let commandJson = {
+            actions: [
+                { alias: [{ turnPower: true }] }
+            ],
+            target: "thing:thing-1",
+            issuer: "user:user-1"
+        }
+        let serverCodeJson = {
+            endpoint: endpoint,
+            executorAccessToken: ownerToken,
+            targetAppID: testApp.appID,
+            parameters: parameters
+        }
+        it("provide with invalid json null should be returned", () =>{
+            expect(jsonToTrigger({})).null;
+        })
+        it("provides command trigger(StatePredicate) expected trigger should be returned", () => {
+            let trigger = new Trigger(
+                "trigger-1",
+                new StatePredicate(
+                    new Condition(new EqualsClauseInTrigger("alias", "power", true)),
+                    TriggersWhen.CONDITION_FALSE_TO_TRUE
+                ),
+                false,
+                command,
+                undefined);
+
+            expect(jsonToTrigger({
+                triggerID: "trigger-1",
+                predicate: {
+                    eventSource: "STATES",
+                    condition: { type: "eq", alias: "alias", field: "power", value: true },
+                    triggersWhen: "CONDITION_FALSE_TO_TRUE"
+                },
+                command: commandJson,
+                disabled: false
+            })).deep.equal(trigger);
+        })
+
+        it("provides command trigger(schedulePredicate), excepted trigger should be returned", () => {
+            let expectedTrigger = new Trigger(
+                "trigger-1",
+                new SchedulePredicate("0 12 1 * *"),
+                true,
+                command,
+                undefined,
+                "invalid trigger",
+                "title",
+                "description",
+                {key: "value"}
+            );
+            expect(jsonToTrigger({
+                triggerID: "trigger-1",
+                predicate: {
+                    eventSource: "SCHEDULE",
+                    schedule: "0 12 1 * *"
+                },
+                command: commandJson,
+                disabled: true,
+                disabledReason: "invalid trigger",
+                title: "title",
+                description: "description",
+                metadata: {
+                    key: "value"
+                }
+            })).deep.equal(expectedTrigger);
+        })
+        it("provides command trigger(scheduleOncePredicate), excepted trigger should be returned", () => {
+            let scheduleAt = new Date(1000);
+            let expectedTrigger = new Trigger(
+                "trigger-1",
+                new ScheduleOncePredicate(scheduleAt.getTime()),
+                true,
+                command,
+                undefined,
+                "invalid trigger",
+                "title",
+                "description",
+                {key: "value"}
+            );
+            expect(jsonToTrigger({
+                triggerID: "trigger-1",
+                predicate: {
+                    eventSource: "SCHEDULE_ONCE",
+                    scheduleAt: scheduleAt.getTime()
+                },
+                command: commandJson,
+                disabled: true,
+                disabledReason: "invalid trigger",
+                title: "title",
+                description: "description",
+                metadata: {
+                    key: "value"
+                }
+            })).deep.equal(expectedTrigger);
+        })
+
+        it("provides servercode trigger(StatePredicate) expected trigger should be returned", () => {
+            let trigger = new Trigger(
+                "trigger-1",
+                new StatePredicate(
+                    new Condition(new EqualsClauseInTrigger("alias", "power", true)),
+                    TriggersWhen.CONDITION_FALSE_TO_TRUE
+                ),
+                false,
+                undefined,
+                serverCode);
+
+            expect(jsonToTrigger({
+                triggerID: "trigger-1",
+                predicate: {
+                    eventSource: "STATES",
+                    condition: { type: "eq", alias: "alias", field: "power", value: true },
+                    triggersWhen: "CONDITION_FALSE_TO_TRUE"
+                },
+                serverCode: serverCodeJson,
+                disabled: false
+            })).deep.equal(trigger);
+        })
+
+        it("provides serverCode trigger(schedulePredicate), excepted trigger should be returned", () => {
+            let expectedTrigger = new Trigger(
+                "trigger-1",
+                new SchedulePredicate("0 12 1 * *"),
+                true,
+                undefined,
+                serverCode,
+                "invalid trigger",
+                "title",
+                "description",
+                {key: "value"}
+            );
+            expect(jsonToTrigger({
+                triggerID: "trigger-1",
+                predicate: {
+                    eventSource: "SCHEDULE",
+                    schedule: "0 12 1 * *"
+                },
+                serverCode: serverCodeJson,
+                disabled: true,
+                disabledReason: "invalid trigger",
+                title: "title",
+                description: "description",
+                metadata: {
+                    key: "value"
+                }
+            })).deep.equal(expectedTrigger);
+        })
+        it("provides server code trigger(scheduleOncePredicate), excepted trigger should be returned", () => {
+            let scheduleAt = new Date(1000);
+            let expectedTrigger = new Trigger(
+                "trigger-1",
+                new ScheduleOncePredicate(scheduleAt.getTime()),
+                true,
+                undefined,
+                serverCode,
+                "invalid trigger",
+                "title",
+                "description",
+                {key: "value"}
+            );
+            expect(jsonToTrigger({
+                triggerID: "trigger-1",
+                predicate: {
+                    eventSource: "SCHEDULE_ONCE",
+                    scheduleAt: scheduleAt.getTime()
+                },
+                serverCode: serverCodeJson,
+                disabled: true,
+                disabledReason: "invalid trigger",
+                title: "title",
+                description: "description",
+                metadata: {
+                    key: "value"
+                }
+            })).deep.equal(expectedTrigger);
         })
     })
 })
