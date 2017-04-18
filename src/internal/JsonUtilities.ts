@@ -311,7 +311,7 @@ export function jsonToTrigger(obj: any): Trigger {
     if (!!obj.triggerID
         && !!obj.predicate
         && (obj.disabled != undefined && obj.disabled != null)) {
-        let predicate: Predicate = Predicate.fromJson(obj.predicate);
+        let predicate: Predicate = jsonToPredicate(obj.predicate);
         let trigger = new Trigger(obj.triggerID, predicate, obj.disabled);
         if (!!obj.command) {
             trigger.command = jsonToCommand(obj.command);
