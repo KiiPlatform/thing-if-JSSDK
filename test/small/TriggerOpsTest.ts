@@ -212,7 +212,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -257,7 +257,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -302,7 +302,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -434,7 +434,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(commandTarget);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -484,7 +484,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -531,7 +531,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -578,7 +578,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -728,7 +728,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -779,7 +779,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -833,7 +833,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -995,7 +995,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(commandTarget);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -1058,7 +1058,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1114,7 +1114,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1170,7 +1170,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1302,7 +1302,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -1347,7 +1347,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -1603,7 +1603,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1614,7 +1614,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1625,7 +1625,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1672,7 +1672,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
 
                     trigger = result.results[1];
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1682,7 +1682,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
 
                     trigger = result.results[2];
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -1692,7 +1692,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                 } catch (err) {
                     done(err);
                 }
@@ -1708,7 +1708,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1719,7 +1719,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1730,7 +1730,7 @@ describe('Test TriggerOps', () => {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1846,10 +1846,10 @@ describe('Test TriggerOps', () => {
                     expect(serverCodeResults.executedAt).to.equal(1469102511274);
                     expect(serverCodeResults.returnedValue).to.deep.equal({score:1000, bonus:400});
                     expect(serverCodeResults.error).to.be.null;
+                    done();
                 } catch (err) {
                     done(err);
                 }
-                done();
             }).catch((err:ThingIFError)=>{
                 done(err);
             });
