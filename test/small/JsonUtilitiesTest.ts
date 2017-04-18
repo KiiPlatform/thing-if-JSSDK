@@ -1,8 +1,10 @@
 import { expect } from 'chai';
-import { actionToJson, jsonToAction, aliasActionToJson, jsonToAliasAction, jsonToActionResult, jsonToAliasActionResult, triggerClauseToJson, jsonToTriggerClause } from '../../src/internal/JsonUtilities';
+import { actionToJson, jsonToAction, aliasActionToJson, jsonToAliasAction, jsonToActionResult, jsonToAliasActionResult, triggerClauseToJson, jsonToTriggerClause, triggeredCommandToJson, jsonToTrigger } from '../../src/internal/JsonUtilities';
 import { Action, AliasAction } from '../../src/AliasAction';
 import { ActionResult, AliasActionResult } from '../../src/AliasActionResult';
 import { EqualsClauseInTrigger, NotEqualsClauseInTrigger, RangeClauseInTrigger, AndClauseInTrigger, OrClauseInTrigger } from '../../src/TriggerClause';
+import { TriggerCommandObject } from '../../src/RequestObjects';
+import { TypedID, Types } from '../../src/TypedID';
 
 describe('Test JsonUtilities', () => {
     it('Test actionToJson()', () => {
@@ -350,4 +352,46 @@ describe('Test JsonUtilities for TriggerClause', () => {
         });
     })
 
+})
+
+describe('Test JsonUtilities for Trigger', () => {
+    describe("Test triggeredCommandToJson()", () => {
+        it("provide with invalid parameters should return null", () => {
+            expect(triggeredCommandToJson(new TriggerCommandObject(null))).null;
+            expect(triggeredCommandToJson(new TriggerCommandObject(
+                [new AliasAction("alias", [new Action("turnPower", true)])],
+                null,
+                null
+            ))).null;
+            expect(triggeredCommandToJson(new TriggerCommandObject(
+                [new AliasAction("alias", [new Action("turnPower", true)])],
+                new TypedID(Types.Thing, "thing-1"),
+                null
+            ))).null;
+            expect(triggeredCommandToJson(new TriggerCommandObject(
+                [new AliasAction("alias", [new Action("turnPower", true)])],
+                null,
+                new TypedID(Types.User, "user-1")
+            ))).null;
+        })
+        it("provide with parameters, json should be returned as expection", () => {
+            expect(triggeredCommandToJson(new TriggerCommandObject(
+                [new AliasAction("alias", [new Action("turnPower", true)])],
+                new TypedID(Types.Thing, "thing-1"),
+                new TypedID(Types.User, "user-1"),
+                "title",
+                "description",
+                {key: "value"}
+            ))).deep.equal({
+                actions: [
+                    {alias: [{turnPower: true}]}
+                ],
+                target: "thing:thing-1",
+                issuer: "user:user-1",
+                title: "title",
+                description: "description",
+                metadata: {key: "value"}
+            })
+        })
+    })
 })
