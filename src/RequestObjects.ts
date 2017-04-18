@@ -210,13 +210,6 @@ export class ListQueryOptions {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class TriggerCommandObject {
-    public aliasActions: Array<AliasAction>;
-    public issuerID: TypedID;
-    public targetID: TypedID;
-    public title: string;
-    public description: string;
-    public metadata: Object;
-
     /**
      * Create a PostCommandRequest.
      * @constructor
@@ -228,19 +221,12 @@ export class TriggerCommandObject {
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        aliasActions: Array<AliasAction>,
-        targetID?: TypedID,
-        issuerID?: TypedID,
-        title?: string,
-        description?: string,
-        metadata?: Object) {
-            this.aliasActions = aliasActions;
-            this.targetID = targetID;
-            this.issuerID = issuerID;
-            this.title = title;
-            this.description = description;
-            this.metadata = metadata;
-        }
+        public aliasActions: Array<AliasAction>,
+        public targetID?: TypedID,
+        public issuerID?: TypedID,
+        public title?: string,
+        public description?: string,
+        public metadata?: Object) {}
 }
 /**
  * Represents the request for creating a command trigger.

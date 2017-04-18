@@ -9,7 +9,7 @@
     "LICENSE.txt"
   ],
   "scripts": {
-    "build-test": "npm run build-src && tsc test/*/*Test.ts ./typings/globals/node/index.d.ts --target es5 --module commonjs --outDir built",
+    "build-test": "rm -fr built && npm run build-src && tsc test/*/*Test.ts ./typings/globals/node/index.d.ts --target es5 --module commonjs --outDir built",
     "pretest": "npm run build-test",
     "test": "mocha 'built/test/*/*.js' 'built/test/*/*/*.js' --timeout 20000",
     "test-cov": "npm run build-test && istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec 'built/test/small/*.js' 'built/test/small/*/*.js' && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",

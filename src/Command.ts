@@ -50,39 +50,6 @@ export class Command {
     ) {}
 
     /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        var jsonObject: any ={};
-        if(!!this.commandID){
-            jsonObject.commandID = this.commandID
-        }
-        if(!!this.targetID){
-            jsonObject.target = this.targetID.toString();
-        }
-        if(!!this.issuerID){
-            jsonObject.issuer = this.issuerID.toString();
-        }
-        if(!!this.aliasActions){
-            jsonObject.actions = this.aliasActions;
-        }
-        if(!!this.aliasActionResults){
-            jsonObject.actionResults = this.aliasActionResults;
-        }
-        if(!!this.title){
-            jsonObject.title = this.title;
-        }
-        if(!!this.description){
-            jsonObject.description = this.description;
-        }
-        if(!!this.metadata){
-            jsonObject.metadata = this.metadata;
-        }
-        return jsonObject;
-    }
-
-    /**
      * Retrieve aliasAction with specified alias.
      * @param {string} alias alias name.
      * @return {Array<AliasAction>} Found array of AliasAction object. If there is not
