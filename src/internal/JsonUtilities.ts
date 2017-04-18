@@ -12,9 +12,10 @@ import {
     OrClauseInTrigger
 } from '../TriggerClause';
 import { TriggerCommandObject } from '../RequestObjects';
-import { Trigger } from '../Trigger';
-import { Predicate } from '../Predicate';
+import { Trigger, TriggersWhen } from '../Trigger';
+import { Predicate, EventSource, StatePredicate, SchedulePredicate, ScheduleOncePredicate } from '../Predicate';
 import { ServerCode } from '../ServerCode';
+import { Condition } from '../Condition';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -310,15 +311,13 @@ export function jsonToTrigger(obj: any): Trigger {
     if (!!obj.triggerID
         && !!obj.predicate
         && (obj.disabled != undefined && obj.disabled != null)) {
-        // TODO: need to move Predicate.fromJson
-        let predicate: Predicate = Predicate.fromJson(obj.predicate);
+        let predicate: Predicate = jsonToPredicate(obj.predicate);
         let trigger = new Trigger(obj.triggerID, predicate, obj.disabled);
         if (!!obj.command) {
             trigger.command = jsonToCommand(obj.command);
         }
         if (!!obj.serverCode) {
-            // TODO: need to move ServerCode.fromJson
-            trigger.serverCode = ServerCode.fromJson(obj.serverCode)
+            trigger.serverCode = jsonToServerCode(obj.serverCode)
         }
         trigger.disabledReason = obj.disabledReason;
         trigger.title = obj.title;
@@ -327,5 +326,65 @@ export function jsonToTrigger(obj: any): Trigger {
         return trigger;
     }
     return null;
+}
 
+export function jsonToPredicate(obj: any): Predicate {
+    if (obj.eventSource == EventSource.STATES) {
+        let condition: Condition = new Condition(jsonToTriggerClause(obj.condition));
+        let triggersWhen = (<any>TriggersWhen)[obj.triggersWhen];
+        return new StatePredicate(condition, triggersWhen);
+    } else if (obj.eventSource == EventSource.SCHEDULE) {
+        let schedule = obj.schedule;
+        return new SchedulePredicate(schedule);
+    } else if (obj.eventSource == EventSource.SCHEDULE_ONCE) {
+        let scheduleAt = obj.scheduleAt;
+        return new ScheduleOncePredicate(scheduleAt);
+    }
+    return null;
+}
+
+export function predicateToJson(predicate: Predicate): Object {
+    if (predicate instanceof StatePredicate) {
+        return {
+            condition: triggerClauseToJson(predicate.condition.clause),
+            eventSource: EventSource.STATES,
+            triggersWhen: predicate.triggersWhen
+        };
+    } else if (predicate instanceof SchedulePredicate) {
+        return {
+            schedule: predicate.schedule,
+            eventSource: EventSource.SCHEDULE
+        };
+    } else if (predicate instanceof ScheduleOncePredicate) {
+        return {
+            scheduleAt: predicate.scheduleAt,
+            eventSource: EventSource.SCHEDULE_ONCE
+        };
+    }
+    return null;
+}
+
+export function serverCodeToJson(serverCode: ServerCode): Object {
+    var json: any = { endpoint: serverCode.endpoint };
+    if (!!serverCode.executorAccessToken) {
+        json["executorAccessToken"] = serverCode.executorAccessToken;
+    }
+    if (!!serverCode.targetAppID) {
+        json["targetAppID"] = serverCode.targetAppID;
+    }
+    if (!!serverCode.parameters) {
+        json["parameters"] = serverCode.parameters;
+    }
+    return json;
+}
+
+export function jsonToServerCode(obj: any): ServerCode {
+    if (!!obj.endpoint) {
+        return new ServerCode(
+            obj.endpoint,
+            obj.executorAccessToken,
+            obj.targetAppID,
+            obj.parameters);
+    }
+    return null;
 }
