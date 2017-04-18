@@ -317,8 +317,7 @@ export function jsonToTrigger(obj: any): Trigger {
             trigger.command = jsonToCommand(obj.command);
         }
         if (!!obj.serverCode) {
-            // TODO: need to move ServerCode.fromJson
-            trigger.serverCode = ServerCode.fromJson(obj.serverCode)
+            trigger.serverCode = jsonToServerCode(obj.serverCode)
         }
         trigger.disabledReason = obj.disabledReason;
         trigger.title = obj.title;
@@ -345,7 +344,7 @@ export function jsonToPredicate(obj: any): Predicate {
 }
 
 export function predicateToJson(predicate: Predicate): Object {
-    if(predicate instanceof StatePredicate) {
+    if (predicate instanceof StatePredicate) {
         return {
             condition: triggerClauseToJson(predicate.condition.clause),
             eventSource: EventSource.STATES,
@@ -361,6 +360,31 @@ export function predicateToJson(predicate: Predicate): Object {
             scheduleAt: predicate.scheduleAt,
             eventSource: EventSource.SCHEDULE_ONCE
         };
+    }
+    return null;
+}
+
+export function serverCodeToJson(serverCode: ServerCode): Object {
+    var json: any = { endpoint: serverCode.endpoint };
+    if (!!serverCode.executorAccessToken) {
+        json["executorAccessToken"] = serverCode.executorAccessToken;
+    }
+    if (!!serverCode.targetAppID) {
+        json["targetAppID"] = serverCode.targetAppID;
+    }
+    if (!!serverCode.parameters) {
+        json["parameters"] = serverCode.parameters;
+    }
+    return json;
+}
+
+export function jsonToServerCode(obj: any): ServerCode {
+    if (!!obj.endpoint) {
+        return new ServerCode(
+            obj.endpoint,
+            obj.executorAccessToken,
+            obj.targetAppID,
+            obj.parameters);
     }
     return null;
 }

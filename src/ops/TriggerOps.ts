@@ -119,7 +119,7 @@ export default class TriggerOps extends BaseOp {
             var requestBody:any = {
                 predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.SERVER_CODE,
-                serverCode: requestObject.serverCode.toJson()
+                serverCode: JsonUtils.serverCodeToJson(requestObject.serverCode)
             }
             if(!!requestObject.title){
                 requestBody["title"]= requestObject.title;
@@ -264,7 +264,7 @@ export default class TriggerOps extends BaseOp {
             var requestBody: any = {
                 predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.SERVER_CODE,
-                serverCode: requestObject.serverCode.toJson()
+                serverCode: JsonUtils.serverCodeToJson(requestObject.serverCode)
             }
             if(!!requestObject.title){
                 requestBody["title"]= requestObject.title;

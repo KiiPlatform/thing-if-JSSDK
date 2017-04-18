@@ -1,7 +1,21 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 import { expect } from 'chai';
-import { actionToJson, jsonToAction, aliasActionToJson, jsonToAliasAction, jsonToActionResult, jsonToAliasActionResult, triggerClauseToJson, jsonToTriggerClause, triggeredCommandToJson, jsonToTrigger, predicateToJson, jsonToPredicate } from '../../src/internal/JsonUtilities';
+import {
+    actionToJson,
+    jsonToAction,
+    aliasActionToJson,
+    jsonToAliasAction,
+    jsonToActionResult,
+    jsonToAliasActionResult,
+    triggerClauseToJson,
+    jsonToTriggerClause,
+    triggeredCommandToJson,
+    jsonToTrigger,
+    predicateToJson,
+    jsonToPredicate,
+    serverCodeToJson,
+    jsonToServerCode } from '../../src/internal/JsonUtilities';
 import { Action, AliasAction } from '../../src/AliasAction';
 import { ActionResult, AliasActionResult } from '../../src/AliasActionResult';
 import { EqualsClauseInTrigger, NotEqualsClauseInTrigger, RangeClauseInTrigger, AndClauseInTrigger, OrClauseInTrigger } from '../../src/TriggerClause';
@@ -679,6 +693,34 @@ describe("Test JsonUtilities for Predicate", () => {
                 eventSource: "SCHEDULE_ONCE",
                 scheduleAt: 10
             })).deep.equal(new ScheduleOncePredicate(10))
+        })
+    })
+})
+
+describe("Test JsonUtilities for ServerCode", () => {
+    describe("Test serverCodeToJson()", () => {
+        it("provides serverCode object expected json should be returned", () => {
+            expect(serverCodeToJson(new ServerCode("endpoint-1", "token", "app", { param1: "value" })))
+                .deep.equal({
+                    endpoint: "endpoint-1",
+                    executorAccessToken: "token",
+                    targetAppID: "app",
+                    parameters: { param1: "value" }
+                })
+        })
+    })
+
+    describe("Test jsonToServerCode()", () => {
+        it("provide invalid json should return null", () => {
+            expect(jsonToServerCode({})).null;
+        })
+        it("provide valid json expected server code should be returned", () => {
+            expect(jsonToServerCode({
+                endpoint: "endpoint-1",
+                executorAccessToken: "token",
+                targetAppID: "app",
+                parameters: { param1: "value" }
+            })).deep.equal(new ServerCode("endpoint-1", "token", "app", { param1: "value" }));
         })
     })
 })
