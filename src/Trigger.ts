@@ -15,33 +15,29 @@ import {Predicate} from './Predicate'
  * @prop {Object} metadata Metadata of the trigger
  */
 export class Trigger {
-
-    public triggerID: string;
-    public predicate: Predicate;
-    public command: Command;
-    public serverCode: ServerCode;
-    public disabled: boolean;
-    public disabledReason: string;
-    public title: string;
-    public description: string;
-    public metadata: any;
-
     /**
      * Create a Trigger.
      * @constructor
+     * @param {string} triggerID ID of trigger.
      * @param {Predicate} Predicate of the condition met for the trigger to execute.
-     * @param {Command} Definition of the command to execute.
-     * @param {ServerCode} Details of the server code to execute.
+     * @param {boolean} disabled Whether the trigger is disabled or not.
+     * @param {Command} [command] Definition of the command to execute.
+     * @param {ServerCode} [serverCode] Details of the server code to execute.
+     * @param {string} [disabledReason] Reasons for disabled trigger
+     * @param {string} [title] Title of the trigger
+     * @param {string} [description] Description of the trigger
+     * @param {Object} [metadata] Metadata of the trigger
      */
     constructor(
-        predicate: Predicate,
-        command: Command,
-        serverCode: ServerCode
-    ) {
-        this.predicate = predicate;
-        this.command = command;
-        this.serverCode = serverCode;
-    }
+        public triggerID: string,
+        public predicate: Predicate,
+        public disabled: boolean,
+        public command?: Command,
+        public serverCode?: ServerCode,
+        public disabledReason?: string,
+        public title?: string,
+        public description?: string,
+        public metadata?: any) {}
     /**
      * Gets the string represented TriggersWhat
      * @return {string} TriggersWhat

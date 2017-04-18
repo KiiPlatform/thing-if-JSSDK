@@ -88,9 +88,11 @@ export default class TriggerOps extends BaseOp {
             command.metadata = commandRequest.metadata;
 
             this.postTrigger(requestBody).then((res:Response)=>{
-                var trigger = new Trigger(requestObject.predicate, command, null);
-                trigger.triggerID = (<any>res).body.triggerID;
-                trigger.disabled = false;
+                var trigger = new Trigger(
+                    (<any>res).body.triggerID,
+                    requestObject.predicate,
+                    false,
+                    command);
                 trigger.title = requestObject.title;
                 trigger.description = requestObject.description;
                 trigger.metadata = requestObject.metadata;
@@ -131,9 +133,12 @@ export default class TriggerOps extends BaseOp {
                 requestBody["metadata"] = requestObject.metadata;
             }
             this.postTrigger(requestBody).then((res:Response)=>{
-                var trigger:Trigger = new Trigger(requestObject.predicate, null, requestObject.serverCode);
-                trigger.triggerID = (<any>res).body.triggerID;
-                trigger.disabled = false;
+                var trigger:Trigger = new Trigger(
+                    (<any>res).body.triggerID,
+                    requestObject.predicate,
+                    false,
+                    undefined,
+                    requestObject.serverCode);
                 trigger.title = requestObject.title;
                 trigger.description = requestObject.description;
                 trigger.metadata = requestObject.metadata;
