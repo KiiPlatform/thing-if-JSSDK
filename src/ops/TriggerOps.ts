@@ -178,7 +178,7 @@ export default class TriggerOps extends BaseOp {
                 url: url
             };
             request(req).then((res: Response)=>{
-                resolve(Trigger.fromJson((<any>res).body));
+                resolve(JsonUtils.jsonToTrigger((<any>res).body));
             }).catch((err)=>{
                 reject(err);
             });
@@ -382,7 +382,7 @@ export default class TriggerOps extends BaseOp {
                 var triggers: Array<Trigger> = [];
                 var paginationKey = (<any>res).body.nextPaginationKey ? (<any>res).body.nextPaginationKey : null;
                 for (var json of (<any>res).body.triggers) {
-                    triggers.push(Trigger.fromJson(json));
+                    triggers.push(JsonUtils.jsonToTrigger(json));
                 }
                 resolve(new QueryResult(triggers, paginationKey))
             }).catch((err)=>{

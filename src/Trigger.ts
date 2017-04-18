@@ -52,28 +52,6 @@ export class Trigger {
         }
         return TriggersWhat.SERVER_CODE;
     }
-
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a trigger.
-     * @return {Trigger} Trigger instance
-     */
-    static fromJson(obj: any): Trigger {
-        //TODO: will move this method to JsonUtilities
-        // let predicate: Predicate = Predicate.fromJson(obj.predicate);
-        // let command: Command = obj.command ? Command.fromJson(obj.command) : null;
-        // let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
-        // let trigger = new Trigger(predicate, command, serverCode);
-        // trigger.triggerID = obj.triggerID ? obj.triggerID : null;
-        // trigger.disabled = obj.disabled === undefined ?  null : obj.disabled;
-        // trigger.disabledReason = obj.disabledReason ? obj.disabledReason : null;
-        // trigger.title = obj.title ? obj.title : null;
-        // trigger.description = obj.description ? obj.description : null;
-        // trigger.metadata = obj.metadata ? obj.metadata : null;
-        // return trigger;
-        return null;
-    }
-
 }
 /** Represents the type of condition to fire a trigger.
 <ul>

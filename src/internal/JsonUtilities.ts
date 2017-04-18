@@ -12,6 +12,9 @@ import {
     OrClauseInTrigger
 } from '../TriggerClause';
 import { TriggerCommandObject } from '../RequestObjects';
+import { Trigger } from '../Trigger';
+import { Predicate } from '../Predicate';
+import { ServerCode } from '../ServerCode';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -301,4 +304,18 @@ export function triggeredCommandToJson(cmd: TriggerCommandObject): Object {
         return jsonObject;
     }
     return null;
+}
+
+export function jsonToTrigger(obj: any): Trigger {
+        let predicate: Predicate = Predicate.fromJson(obj.predicate);
+        let command: Command = obj.command ? jsonToCommand(obj.command) : null;
+        let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
+        let trigger = new Trigger(predicate, command, serverCode);
+        trigger.triggerID = obj.triggerID ? obj.triggerID : null;
+        trigger.disabled = obj.disabled === undefined ?  null : obj.disabled;
+        trigger.disabledReason = obj.disabledReason ? obj.disabledReason : null;
+        trigger.title = obj.title ? obj.title : null;
+        trigger.description = obj.description ? obj.description : null;
+        trigger.metadata = obj.metadata ? obj.metadata : null;
+        return trigger;
 }
