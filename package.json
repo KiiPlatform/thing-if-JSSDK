@@ -15,7 +15,7 @@
     "test-cov": "npm run build-test && istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec 'built/test/small/*.js' 'built/test/small/*/*.js' && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "test-cov-local": "npm run build-test && istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec 'built/test/small/*.js' 'built/test/small/*/*.js'&& open coverage/lcov-report/index.html",
     "small-test": "npm run build-test && mocha 'built/test/small/*.js' 'built/test/small/*/*.js'",
-    "large-test": "npm run build-test && mocha 'built/test/large/*.js' --timeout 20000",
+    "large-test": "npm run build-src && npm run build-test && mocha 'built/test/large/*.js' --timeout 20000",
     "build-lib": "rm -fr built && rm -fr lib && tsc && cp -fr built lib",
     "prepublish": "typings install && npm run build-lib",
     "build-src-for-doc": "tsc src/*.ts typings/globals/node/index.d.ts --target es6 --module commonjs --outDir built-for-doc",
