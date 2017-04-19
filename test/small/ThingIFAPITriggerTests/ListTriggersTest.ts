@@ -70,7 +70,7 @@ describe("Small Test ThingIFAPI#listTriggers", function() {
                  {brightness : 100, color : "#FFF"});
 
             let trigger1 = new Trigger("trigger-1", predicate, false, command, null);
-            let trigger2 = new Trigger("trigger-2", predicate, false, null, serverCode);
+            let trigger2 = new Trigger("trigger-2", predicate, true, null, serverCode);
             let trigger3 = new Trigger("trigger-3", predicate, false, command, null);
 
             let expectedResults = new QueryResult<Trigger>([trigger1, trigger2, trigger3], "200/1")
