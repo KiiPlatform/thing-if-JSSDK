@@ -62,7 +62,7 @@ export default class TriggerOps extends BaseOp {
             }
 
             var requestBody: any = {
-                predicate: requestObject.predicate.toJson(),
+                predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.COMMAND,
                 command: JsonUtils.triggeredCommandToJson(commandRequest)
             }
@@ -117,9 +117,9 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
             var requestBody:any = {
-                predicate: requestObject.predicate.toJson(),
+                predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.SERVER_CODE,
-                serverCode: requestObject.serverCode.toJson()
+                serverCode: JsonUtils.serverCodeToJson(requestObject.serverCode)
             }
             if(!!requestObject.title){
                 requestBody["title"]= requestObject.title;
@@ -207,7 +207,7 @@ export default class TriggerOps extends BaseOp {
             }
             let requestBody:any = {}
             if(!!requestObject.predicate){
-                requestBody["predicate"] = requestObject.predicate.toJson();
+                requestBody["predicate"] = JsonUtils.predicateToJson(requestObject.predicate);
             }
 
             if(!!requestObject.command){
@@ -262,9 +262,9 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
             var requestBody: any = {
-                predicate: requestObject.predicate.toJson(),
+                predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.SERVER_CODE,
-                serverCode: requestObject.serverCode.toJson()
+                serverCode: JsonUtils.serverCodeToJson(requestObject.serverCode)
             }
             if(!!requestObject.title){
                 requestBody["title"]= requestObject.title;
