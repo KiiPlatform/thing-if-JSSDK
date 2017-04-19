@@ -27,7 +27,7 @@ export const EventSource = {
  * @param {Condition} condition Condition to fire trigger.
  * @param {string} triggersWhen Defined when trigger will be fired
  */
-export class StatePredicate implements Predicate {
+export class StatePredicate extends Predicate {
     public condition: Condition;
     public triggersWhen: string;
 
@@ -41,6 +41,7 @@ export class StatePredicate implements Predicate {
         condition: Condition,
         triggersWhen: string
     ) {
+        super();
         this.condition = condition;
         this.triggersWhen = triggersWhen;
     }
@@ -56,7 +57,7 @@ export class StatePredicate implements Predicate {
  * Represent SchedulePredicate for a Trigger
  * @param {string} schedule Cron expression to fire trigger.
  */
-export class SchedulePredicate implements Predicate {
+export class SchedulePredicate extends Predicate {
     public schedule: string;
 
     /**
@@ -65,6 +66,7 @@ export class SchedulePredicate implements Predicate {
      * @param {string} schedule Cron expression to fire trigger.
      */
     constructor(schedule: string) {
+        super();
         this.schedule = schedule;
     }
     /**
@@ -79,7 +81,7 @@ export class SchedulePredicate implements Predicate {
  * Represent ScheduleOncePredicate for a Trigger
  * @param {number} scheduleAt Timestamp to fire trigger.
  */
-export class ScheduleOncePredicate implements Predicate {
+export class ScheduleOncePredicate extends Predicate {
     public scheduleAt: number;
 
     /**
@@ -88,6 +90,7 @@ export class ScheduleOncePredicate implements Predicate {
      * @param {number} scheduleAt Timestamp to fire trigger.
      */
     constructor(scheduleAt: number) {
+        super();
         this.scheduleAt = scheduleAt;
     }
     /**

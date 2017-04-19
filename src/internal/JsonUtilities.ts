@@ -1,5 +1,5 @@
 import { Action, AliasAction } from '../AliasAction';
-import { isObject, isArray } from './KiiUtilities';
+import { isObject, isArray, isFunc } from './KiiUtilities';
 import { ActionResult, AliasActionResult } from '../AliasActionResult';
 import { Command } from '../Command';
 import { TypedID } from '../TypedID';
@@ -344,22 +344,24 @@ export function jsonToPredicate(obj: any): Predicate {
 }
 
 export function predicateToJson(predicate: Predicate): Object {
-    if (predicate instanceof StatePredicate) {
-        return {
-            condition: triggerClauseToJson(predicate.condition.clause),
-            eventSource: EventSource.STATES,
-            triggersWhen: predicate.triggersWhen
-        };
-    } else if (predicate instanceof SchedulePredicate) {
-        return {
-            schedule: predicate.schedule,
-            eventSource: EventSource.SCHEDULE
-        };
-    } else if (predicate instanceof ScheduleOncePredicate) {
-        return {
-            scheduleAt: predicate.scheduleAt,
-            eventSource: EventSource.SCHEDULE_ONCE
-        };
+    if(isFunc(predicate.getEventSource)){
+        if (predicate.getEventSource() === EventSource.STATES) {
+            return {
+                condition: triggerClauseToJson((<StatePredicate>predicate).condition.clause),
+                eventSource: EventSource.STATES,
+                triggersWhen: (<StatePredicate>predicate).triggersWhen
+            };
+        } else if (predicate.getEventSource() === EventSource.SCHEDULE) {
+            return {
+                schedule: (<SchedulePredicate>predicate).schedule,
+                eventSource: EventSource.SCHEDULE
+            };
+        } else if (predicate.getEventSource() === EventSource.SCHEDULE_ONCE) {
+            return {
+                scheduleAt: (<ScheduleOncePredicate>predicate).scheduleAt,
+                eventSource: EventSource.SCHEDULE_ONCE
+            };
+        }
     }
     return null;
 }

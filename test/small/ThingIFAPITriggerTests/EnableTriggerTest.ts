@@ -5,7 +5,7 @@
 import {Promise as P} from 'es6-promise'
 import {expect} from 'chai';
 import TestApp from '../TestApp'
-import {APIAuthor} from '../../../src/APIAuthor';
+import {ThingIFAPI} from '../../../src/ThingIFAPI';
 import {TypedID} from '../../../src/TypedID';
 import {Types} from '../../../src/TypedID';
 import TriggerOps from '../../../src/ops/TriggerOps'
@@ -13,38 +13,55 @@ import {Trigger, TriggersWhen, TriggersWhat} from '../../../src/Trigger';
 import {Command, CommandState} from '../../../src/Command';
 import {Predicate, StatePredicate, SchedulePredicate, ScheduleOncePredicate, EventSource} from '../../../src/Predicate';
 import {Condition} from '../../../src/Condition';
-import {Clause, Equals, NotEquals, Range, And, Or} from '../../../src/Clause';
 import {ThingIFError, HttpRequestError, Errors} from '../../../src/ThingIFError';
 import {ServerCode} from '../../../src/ServerCode'
 import * as simple from 'simple-mock';
+import { EqualsClauseInTrigger } from '../../../src/TriggerClause';
+import { AliasAction, Action } from '../../../src/AliasAction';
 
 let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-let schemaName = "LED";
-let schemaVersion = 1;
-let condition = new Condition(new Equals("power", "false"));
-let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
+let condition = new Condition(new EqualsClauseInTrigger("alias", "power", "false"));
+let actions = [
+    new AliasAction("alias1", [
+        new Action("turnPower", true),
+        new Action("setPresetTemp", 23)
+    ]),
+    new AliasAction("alias2", [
+        new Action("setPresetHum", 45)
+    ])
+];
 let predicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
 let serverCode = new ServerCode("server_function", ownerToken, testApp.appID, {brightness : 100, color : "#FFF"});
 let triggerID = "dummy-trigger-id";
-describe("Small Test APIAuthor#enableTrigger", function() {
+describe("Small Test ThingIFAPI#enableTrigger", function() {
+    describe("handle IllegalStateError", function() {
+        let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app);
+        it("when targe is null, IllegalStateError should be returned(promise)",
+            function (done) {
+            thingIFAPI.enableTrigger(triggerID, true)
+            .then((trigger: Trigger)=>{
+                done("should fail");
+            }).catch((err)=>{
+                expect(err.name).to.equal(Errors.IlllegalStateError);
+                done();
+            })
+        })
+    })
+
     describe("handle http response", function() {
-        let au = new APIAuthor(ownerToken, testApp.app);
+        let thingIFAPI = new ThingIFAPI(owner, ownerToken, testApp.app, target);
 
         describe("hanle success response", function(){
             let command = new Command(
                 target,
                 owner,
-                "LED",
-                1,
-                [{"turnPower": {"power": true}}]);
+                actions);
             command.commandID = "dummy-command-id";
 
-            let expectedTrigger = new Trigger(predicate, command, null);
-            expectedTrigger.triggerID = "dummy-trigger-id";
-            expectedTrigger.disabled = false;
+            let expectedTrigger = new Trigger("trigger-1",predicate, false, command, null);
 
             beforeEach(function() {
                 simple.mock(TriggerOps.prototype, 'enableTrigger').returnWith(
@@ -57,7 +74,7 @@ describe("Small Test APIAuthor#enableTrigger", function() {
                 simple.restore();
             })
             it("test promise", function (done) {
-                au.enableTrigger(target, triggerID, true)
+                thingIFAPI.enableTrigger(triggerID, true)
                 .then((trigger)=>{
                     expect(trigger).to.be.deep.equal(expectedTrigger);
                     done();
@@ -66,7 +83,7 @@ describe("Small Test APIAuthor#enableTrigger", function() {
                 })
             })
             it("test callback", function (done) {
-                au.enableTrigger(target, triggerID, true,(err, trigger)=>{
+                thingIFAPI.enableTrigger(triggerID, true,(err, trigger)=>{
                     try{
                         expect(err).to.null;
                         expect(trigger).to.be.deep.equal(expectedTrigger);
@@ -95,7 +112,7 @@ describe("Small Test APIAuthor#enableTrigger", function() {
                 simple.restore();
             })
             it("test promise", function (done) {
-                au.enableTrigger(target, triggerID, true)
+                thingIFAPI.enableTrigger(triggerID, true)
                 .then((cmd)=>{
                     done("should fail");
                 }).catch((err: HttpRequestError)=>{
@@ -104,7 +121,7 @@ describe("Small Test APIAuthor#enableTrigger", function() {
                 })
             })
             it("test callback", function (done) {
-                au.enableTrigger(target, triggerID, true,(err, cmd)=>{
+                thingIFAPI.enableTrigger(triggerID, true,(err, cmd)=>{
                     try{
                         expect(err).to.be.deep.equal(expectedError);
                         expect(cmd).to.null;

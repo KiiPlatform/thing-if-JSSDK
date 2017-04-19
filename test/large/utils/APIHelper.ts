@@ -241,7 +241,7 @@ export class APIHelper {
                 return request.put(<any>{
                     url: `${this.thingIFBaseUrl}/targets/${typedID}/states`,
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type": "application/vnd.kii.MultipleTraitState+json",
                         "Authorization": `Bearer ${adminToken}`
                     },
                     body: state
