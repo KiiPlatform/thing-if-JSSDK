@@ -15,10 +15,15 @@ import {
     predicateToJson,
     jsonToPredicate,
     serverCodeToJson,
-    jsonToServerCode } from '../../src/internal/JsonUtilities';
+    jsonToServerCode,
+    jsonToQueryClause,
+    queryClauseToJson
+ } from '../../src/internal/JsonUtilities';
 import { Action, AliasAction } from '../../src/AliasAction';
 import { ActionResult, AliasActionResult } from '../../src/AliasActionResult';
 import { EqualsClauseInTrigger, NotEqualsClauseInTrigger, RangeClauseInTrigger, AndClauseInTrigger, OrClauseInTrigger } from '../../src/TriggerClause';
+import { EqualsClauseInQuery, NotEqualsClauseInQuery, RangeClauseInQuery, AndClauseInQuery, OrClauseInQuery } from '../../src/QueryClause';
+
 import { TriggerCommandObject } from '../../src/RequestObjects';
 import { TypedID, Types } from '../../src/TypedID';
 import { Trigger, TriggersWhen } from '../../src/Trigger';
@@ -723,4 +728,251 @@ describe("Test JsonUtilities for ServerCode", () => {
             })).deep.equal(new ServerCode("endpoint-1", "token", "app", { param1: "value" }));
         })
     })
+})
+
+describe('Test JsonUtilities for QueryClause', () => {
+    describe("Test queryClauseToJson()", () => {
+        describe("Equals", () => {
+            it("string value", () => {
+                var clause = new EqualsClauseInQuery("field1", "hoge");
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "eq", field: "field1", value: "hoge" });
+            });
+            it("number value", () => {
+                var clause = new EqualsClauseInQuery("field2", 1234.5);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "eq", field: "field2", value: 1234.5 });
+            });
+            it("boolean value", () => {
+                var clause = new EqualsClauseInQuery("field3", false);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "eq", field: "field3", value: false });
+            });
+        });
+        describe("NotEquals", () => {
+            it("string value", () => {
+                var clause = new NotEqualsClauseInQuery("field1", "hoge");
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "not", clause: { type: "eq", field: "field1", value: "hoge" } });
+            });
+            it("number value", () => {
+                var clause = new NotEqualsClauseInQuery("field2", 1234.5);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "not", clause: { type: "eq", field: "field2", value: 1234.5 } });
+            });
+            it("boolean value", () => {
+                var clause = new NotEqualsClauseInQuery("field3", false);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "not", clause: { type: "eq", field: "field3", value: false } });
+            });
+        });
+        describe("Range", () => {
+            it("greaterThan", () => {
+                var clause = RangeClauseInQuery.greaterThan("field1", 1234);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "range", field: "field1", lowerLimit: 1234, lowerIncluded: false });
+            });
+            it("greaterThanEquals", () => {
+                var clause = RangeClauseInQuery.greaterThanEquals("field2", 1234);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "range", field: "field2", lowerLimit: 1234, lowerIncluded: true });
+            });
+            it("lessThan", () => {
+                var clause = RangeClauseInQuery.lessThan("field3", 1234);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "range", field: "field3", upperLimit: 1234, upperIncluded: false });
+            });
+            it("lessThanEquals", () => {
+                var clause = RangeClauseInQuery.lessThanEquals("field4", 1234);
+                expect(queryClauseToJson(clause)).to.deep.equal({ type: "range", field: "field4", upperLimit: 1234, upperIncluded: true });
+            });
+        });
+        describe("And", () => {
+            it("multiple clauses", () => {
+                var clause1 = new EqualsClauseInQuery("field1", "hoge");
+                var clause2 = new NotEqualsClauseInQuery("field2", 1234.5);
+                var clause3 = RangeClauseInQuery.lessThan("field3", 1234);
+                var clause4 = RangeClauseInQuery.lessThanEquals("field4", 1234);
+                var clause = new AndClauseInQuery(clause1, clause2, clause3, clause4);
+                expect(queryClauseToJson(clause)).to.deep.equal(
+                    {
+                        type: "and",
+                        clauses: [
+                            { type: "eq", field: "field1", value: "hoge" },
+                            { type: "not", clause: { type: "eq", field: "field2", value: 1234.5 } },
+                            { type: "range", field: "field3", upperLimit: 1234, upperIncluded: false },
+                            { type: "range", field: "field4", upperLimit: 1234, upperIncluded: true }
+                        ]
+                    });
+            });
+        });
+        describe("Or", () => {
+            it("multiple clauses", () => {
+                var clause1 = new EqualsClauseInQuery("field1", "hoge");
+                var clause2 = new NotEqualsClauseInQuery("field2", 1234.5);
+                var clause3 = RangeClauseInQuery.lessThan("field3", 1234);
+                var clause4 = RangeClauseInQuery.lessThanEquals("field4", 1234);
+                var clause = new OrClauseInQuery(clause1, clause2, clause3, clause4);
+                expect(queryClauseToJson(clause)).to.deep.equal(
+                    {
+                        type: "or",
+                        clauses: [
+                            { type: "eq", field: "field1", value: "hoge" },
+                            { type: "not", clause: { type: "eq", field: "field2", value: 1234.5 } },
+                            { type: "range", field: "field3", upperLimit: 1234, upperIncluded: false },
+                            { type: "range", field: "field4", upperLimit: 1234, upperIncluded: true }
+                        ]
+                    });
+            });
+        });
+        describe("return null", () => {
+            it("provide with non QueryClause object should return null", () => {
+                expect(queryClauseToJson(<any>{})).null;
+            })
+        })
+    })
+
+    describe("Test jsonToQueryClause()", () => {
+        describe("Equals", () => {
+            it("string value", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "eq",
+                        field: "field1",
+                        value: "hoge"
+                    }))
+                    .deep.equal(new EqualsClauseInQuery("field1", "hoge"));
+            });
+            it("number value", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "eq",
+                        field: "field2",
+                        value: 1234.5
+                    }))
+                    .deep.equal(new EqualsClauseInQuery("field2", 1234.5));
+            });
+            it("boolean value", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "eq",
+                        field: "field3",
+                        value: false
+                    }))
+                    .deep.equal(new EqualsClauseInQuery("field3", false));
+            });
+        });
+        describe("NotEquals", () => {
+            it("string value", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "not",
+                        clause: {
+                            type: "eq",
+                            field: "field1",
+                            value: "hoge"
+                        }
+                    }))
+                    .deep.equal(new NotEqualsClauseInQuery("field1", "hoge"));
+            });
+            it("number value", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "not",
+                        clause:
+                        {
+                            type: "eq",
+                            field: "field2",
+                            value: 1234.5
+                        }
+                    }))
+                    .deep.equal(new NotEqualsClauseInQuery("field2", 1234.5));
+            });
+            it("boolean value", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "not",
+                        clause:
+                        {
+                            type: "eq",
+                            field: "field3",
+                            value: false
+                        }
+                    }))
+                    .deep.equal(new NotEqualsClauseInQuery("field3", false));
+            });
+        });
+        describe("Range", () => {
+            it("greaterThan", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "range",
+                        field: "field1",
+                        lowerLimit: 1234,
+                        lowerIncluded: false
+                    }))
+                    .deep.equal(RangeClauseInQuery.greaterThan("field1", 1234));
+            });
+            it("greaterThanEquals", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "range",
+                        field: "field2",
+                        lowerLimit: 1234,
+                        lowerIncluded: true
+                    }))
+                    .deep.equal(RangeClauseInQuery.greaterThanEquals("field2", 1234));
+            });
+            it("lessThan", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "range",
+                        field: "field3",
+                        upperLimit: 1234,
+                        upperIncluded: false
+                    }))
+                    .deep.equal(RangeClauseInQuery.lessThan("field3", 1234));
+            });
+            it("lessThanEquals", () => {
+                expect(jsonToQueryClause(
+                    {
+                        type: "range",
+                        field: "field4",
+                        upperLimit: 1234,
+                        upperIncluded: true
+                    }))
+                    .deep.equal(RangeClauseInQuery.lessThanEquals("field4", 1234));
+            });
+        });
+        describe("And", () => {
+            it("multiple clauses", () => {
+                var clause1 = new EqualsClauseInQuery("field1", "hoge");
+                var clause2 = new NotEqualsClauseInQuery("field2", 1234.5);
+                var clause3 = RangeClauseInQuery.lessThan("field3", 1234);
+                var clause4 = RangeClauseInQuery.lessThanEquals("field4", 1234);
+                var clause = new AndClauseInQuery(clause1, clause2, clause3, clause4);
+                expect(jsonToQueryClause(
+                    {
+                        type: "and",
+                        clauses: [
+                            { type: "eq", field: "field1", value: "hoge" },
+                            { type: "not", clause: { type: "eq", field: "field2", value: 1234.5 } },
+                            { type: "range", field: "field3", upperLimit: 1234, upperIncluded: false },
+                            { type: "range", field: "field4", upperLimit: 1234, upperIncluded: true }
+                        ]
+                    })).deep.equal(clause);
+            });
+        });
+        describe("Or", () => {
+            it("multiple clauses", () => {
+                var clause1 = new EqualsClauseInQuery("field1", "hoge");
+                var clause2 = new NotEqualsClauseInQuery("field2", 1234.5);
+                var clause3 = RangeClauseInQuery.lessThan("field3", 1234);
+                var clause4 = RangeClauseInQuery.lessThanEquals("field4", 1234);
+                var clause = new OrClauseInQuery(clause1, clause2, clause3, clause4);
+                expect(jsonToQueryClause(
+                    {
+                        type: "or",
+                        clauses: [
+                            { type: "eq", field: "field1", value: "hoge" },
+                            { type: "not", clause: { type: "eq", field: "field2", value: 1234.5 } },
+                            { type: "range", field: "field3", upperLimit: 1234, upperIncluded: false },
+                            { type: "range", field: "field4", upperLimit: 1234, upperIncluded: true }
+                        ]
+                    })).deep.equal(clause);
+            });
+        });
+    })
+
 })

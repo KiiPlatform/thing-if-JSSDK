@@ -16,6 +16,7 @@ import { Trigger, TriggersWhen } from '../Trigger';
 import { Predicate, EventSource, StatePredicate, SchedulePredicate, ScheduleOncePredicate } from '../Predicate';
 import { ServerCode } from '../ServerCode';
 import { Condition } from '../Condition';
+import { QueryClause, EqualsClauseInQuery, NotEqualsClauseInQuery, AndClauseInQuery, OrClauseInQuery, RangeClauseInQuery, AllClause } from '../QueryClause';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -387,6 +388,113 @@ export function jsonToServerCode(obj: any): ServerCode {
             obj.executorAccessToken,
             obj.targetAppID,
             obj.parameters);
+    }
+    return null;
+}
+
+export function jsonToQueryClause(obj: any): QueryClause {
+    if (obj.type == "eq") {
+        return new EqualsClauseInQuery(
+            obj.field,
+            obj.value);
+    } else if (obj.type == "not") {
+        return new NotEqualsClauseInQuery(
+            obj.clause.field,
+            obj.clause.value);
+    } else if (obj.type == "and") {
+        let clauses: Array<QueryClause> = new Array<QueryClause>();
+        let array: Array<any> = obj.clauses;
+        for (var json of array) {
+            clauses.push(jsonToQueryClause(json));
+        }
+        let and = new AndClauseInQuery();
+        and.clauses = clauses;
+        return and;
+    } else if (obj.type == "or") {
+        let clauses: Array<QueryClause> = new Array<QueryClause>();
+        let array: Array<any> = obj.clauses;
+        for (var json of array) {
+            clauses.push(jsonToQueryClause(json));
+        }
+        let or = new OrClauseInQuery();
+        or.clauses = clauses;
+        return or;
+    } else if (obj.type == "range") {
+        let field = obj.field;
+        let upperLimit = obj.upperLimit ? obj.upperLimit : null;
+        let upperIncluded =
+            (obj.upperIncluded != null && obj.upperIncluded != undefined) ?
+                obj.upperIncluded : null;
+        let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
+        let lowerIncluded =
+            (obj.lowerIncluded != null && obj.lowerIncluded != undefined) ?
+                obj.lowerIncluded : null;
+        return new RangeClauseInQuery(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
+    } else if (obj.type == "all") {
+        return new AllClause();
+    }
+    return null;
+}
+
+export function queryClauseToJson(clause: QueryClause): Object {
+    if (clause instanceof EqualsClauseInQuery) {
+        return {
+            type: "eq",
+            field: clause.field,
+            value: clause.value
+        };
+    } else if (clause instanceof NotEqualsClauseInQuery) {
+        let equalsJson = queryClauseToJson(
+            new EqualsClauseInQuery(
+                clause.field,
+                clause.value));
+        return {
+            type: "not",
+            clause: equalsJson
+        };
+    } else if (clause instanceof RangeClauseInQuery) {
+        let json: any = {
+            type: "range",
+            field: clause.field
+        };
+
+        if (!!clause.upperLimit) {
+            json["upperLimit"] = clause.upperLimit;
+        }
+        if (clause.upperIncluded != null && clause.upperIncluded != undefined) {
+            json["upperIncluded"] = clause.upperIncluded;
+        }
+        if (!!clause.lowerLimit) {
+            json["lowerLimit"] = clause.lowerLimit;
+        }
+        if (clause.lowerIncluded != null && clause.lowerIncluded != undefined) {
+            json["lowerIncluded"] = clause.lowerIncluded;
+        }
+        return json;
+    } else if (clause instanceof AndClauseInQuery) {
+        let jsonArray = [];
+        for (let subClause of clause.clauses) {
+            let subJson = queryClauseToJson(subClause);
+            if (!!subJson) {
+                jsonArray.push(subJson);
+            }
+        }
+        return {
+            type: "and",
+            clauses: jsonArray
+        };
+    } else if (clause instanceof OrClauseInQuery) {
+        let jsonArray = [];
+        for (let subClause of clause.clauses) {
+            let subJson = queryClauseToJson(subClause);
+            if (!!subJson) {
+                jsonArray.push(subJson);
+            }
+        }
+        return {
+            type: "or",
+            clauses: jsonArray
+        };
     }
     return null;
 }
