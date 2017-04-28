@@ -1,30 +1,7 @@
 /**
  * Base QueryClause implementation.
  */
-export abstract class QueryClause {
-    abstract toJson(): any;
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a clause.
-     * @return {QueryClause} a QueryClause instance
-     */
-    static fromJson(obj:any): QueryClause {
-        if (obj.type == "eq") {
-            return EqualsClauseInQuery.fromJson(obj);
-        } else if (obj.type == "not") {
-            return NotEqualsClauseInQuery.fromJson(obj);
-        } else if (obj.type == "and") {
-            return AndClauseInQuery.fromJson(obj);
-        } else if (obj.type == "or") {
-            return OrClauseInQuery.fromJson(obj);
-        } else if (obj.type == "range") {
-            return RangeClauseInQuery.fromJson(obj);
-        } else if (obj.type == "all") {
-            return new AllClause();
-        }
-        return null;
-    }
-}
+export class QueryClause {}
 /**
  * Represents equals clause when query history states.
  * @prop {string} field Field name of comparison.
@@ -47,27 +24,6 @@ export class EqualsClauseInQuery extends QueryClause {
         super();
         this.field = field;
         this.value = value;
-    }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        return {
-            type: "eq",
-            field: this.field,
-            value: this.value
-        };
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a equals clause.
-     * @return {EqualsClauseInQuery} EqualsClauseInQuery instance
-     */
-    static fromJson(obj:any): EqualsClauseInQuery {
-        let field = obj.field;
-        let value = obj.value;
-        return new EqualsClauseInQuery(field, value);
     }
 }
 /**
@@ -93,30 +49,6 @@ export class NotEqualsClauseInQuery extends QueryClause {
         this.field = field;
         this.value = value;
     }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        return {
-            type: "not",
-            clause: {
-                type: "eq",
-                field: this.field,
-                value: this.value
-            }
-        };
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a not equals clause.
-     * @return {NotEqualsClauseInQuery} NotEqualsClauseInQuery instance
-     */
-    static fromJson(obj:any): NotEqualsClauseInQuery {
-        let field = obj.clause.field;
-        let value = obj.clause.value;
-        return new NotEqualsClauseInQuery(field, value);
-    }
 }
 /**
  * Represents the And clause when query history states.
@@ -134,34 +66,6 @@ export class AndClauseInQuery extends QueryClause {
         super();
         this.clauses = clauses;
     }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        var json: any = {type: "and"};
-        var clauses :Array<QueryClause> = new Array<QueryClause>();
-        for (var clause of this.clauses) {
-            clauses.push(clause.toJson());
-        }
-        json["clauses"] = clauses;
-        return json;
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a AND clause.
-     * @return {AndClauseInQuery} AndClauseInQuery instance
-     */
-    static fromJson(obj:any): AndClauseInQuery {
-        let clauses: Array<QueryClause> = new Array<QueryClause>();
-        let array: Array<any> = obj.clauses;
-        for (var json of array) {
-            clauses.push(QueryClause.fromJson(json));
-        }
-        let and = new AndClauseInQuery();
-        and.clauses = clauses;
-        return and;
-    }
 }
 /**
  * Represents the OR clause when query history states.
@@ -178,34 +82,6 @@ export class OrClauseInQuery extends QueryClause {
     constructor(...clauses: QueryClause[]) {
         super();
         this.clauses = clauses;
-    }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        var json: any = {type: "or"};
-        var clauses :Array<QueryClause> = new Array<QueryClause>();
-        for (var clause of this.clauses) {
-            clauses.push(clause.toJson());
-        }
-        json["clauses"] = clauses;
-        return json;
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a OR clause.
-     * @return {OrClauseInQuery} Or instance
-     */
-    static fromJson(obj:any): OrClauseInQuery {
-        let clauses: Array<QueryClause> = new Array<QueryClause>();
-        let array: Array<any> = obj.clauses;
-        for (var json of array) {
-            clauses.push(QueryClause.fromJson(json));
-        }
-        let or = new OrClauseInQuery();
-        or.clauses = clauses;
-        return or;
     }
 }
 /**
@@ -282,46 +158,13 @@ export class RangeClauseInQuery extends QueryClause {
     static lessThanEquals(field: string, upperLimit: number): RangeClauseInQuery {
         return new RangeClauseInQuery(field, upperLimit, true, null, null);
     }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        var json: any = {type: "range", field: this.field};
-        if (this.upperLimit != null && this.upperLimit != undefined) {
-            json["upperLimit"] = this.upperLimit;
-        }
-        if (this.upperIncluded != null && this.upperIncluded != undefined) {
-            json["upperIncluded"] = this.upperIncluded;
-        }
-        if (this.lowerLimit != null && this.lowerLimit != undefined) {
-            json["lowerLimit"] = this.lowerLimit;
-        }
-        if (this.lowerIncluded != null && this.lowerIncluded != undefined) {
-            json["lowerIncluded"] = this.lowerIncluded;
-        }
-        return json;
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a range condition.
-     * @return {RangeClauseInQuery} RangeClauseInQuery instance
-     */
-    static fromJson(obj:any): RangeClauseInQuery {
-        let field = obj.field;
-        let upperLimit = obj.upperLimit ? obj.upperLimit : null;
-        let upperIncluded = obj.upperIncluded ? obj.upperIncluded : null;
-        let lowerLimit = obj.lowerLimit ? obj.lowerLimit : null;
-        let lowerIncluded = obj.lowerIncluded ? obj.lowerIncluded : null;
-        return new RangeClauseInQuery(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded);
-    }
 }
 
 /**
  * Represents all clause.
  */
 export class AllClause extends QueryClause {
-    
+
     /**
      * This method is for internal use only.
      * @return {Object} JSON object that represented this instance.
