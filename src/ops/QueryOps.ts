@@ -33,7 +33,7 @@ export class QueryOps extends BaseOp {
                 reject(new ThingIFError(Errors.ArgumentError, "clause is not object"));
             } else {
                 let url = `${this.baseUrl}/aliases/${requestObject.alias}/query`
-                let requestBody = {};
+                let requestBody:any = {};
                 if (!!requestObject.bestEffortLimit) {
                     requestBody["bestEffortLimit"] = requestObject.bestEffortLimit;
                 }
@@ -44,7 +44,7 @@ export class QueryOps extends BaseOp {
                     requestBody["paginationKey"] = requestObject.paginationKey;
                 }
 
-                let queryObj = {};
+                let queryObj:any = {};
                 queryObj["clause"] = JsonUtil.queryClauseToJson(requestObject.clause);
                 requestBody["query"] = queryObj;
 
