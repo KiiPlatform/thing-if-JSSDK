@@ -75,7 +75,7 @@ describe("Test QueryOps#ungroupedQuery", () => {
                             }
                         })
                         .reply(
-                        201,
+                        200,
                         {
                             results: []
                         },
@@ -100,7 +100,7 @@ describe("Test QueryOps#ungroupedQuery", () => {
                             }
                         })
                         .reply(
-                        201,
+                        200,
                         {
                             results: [
                                 {
@@ -136,7 +136,7 @@ describe("Test QueryOps#ungroupedQuery", () => {
                             }
                         })
                         .reply(
-                        201,
+                        200,
                         {
                             results: [
                                 {
@@ -193,7 +193,7 @@ describe("Test QueryOps#ungroupedQuery", () => {
                                     return body.bestEffortLimit === testCase.bestEffortLimit &&
                                         body.paginationKey === testCase.paginationKey &&
                                         body.firmwareVersion === testCase.firmwareVersion;
-                                }).reply(201, { results: [] }, { "Content-Type": "application/json" });
+                                }).reply(200, { results: [] }, { "Content-Type": "application/json" });
 
                             queryOps.ungroupedQuery(requestObj).then((result: QueryResult<HistoryState>) => {
                                 expect(result.hasNext).false;
