@@ -91,8 +91,8 @@ describe("Small Test ThingIFAPI#query", function() {
     describe("handle err reponse", function() {
         let api = new ThingIFAPI(owner, ownerToken, testApp.app, target);
         let expectedError = new HttpRequestError(404, Errors.HttpError, {
-            "errorCode": "TRIGGER_NOT_FOUND",
-            "message": "The trigger is not found"
+            "errorCode": "TARGET_NOT_FOUND",
+            "message": "The target is not found"
         })
 
         beforeEach(function() {
