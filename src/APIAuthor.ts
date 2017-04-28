@@ -17,6 +17,9 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
+import { HistoryState } from './HistoryState';
+import { QueryOps } from './ops/QueryOps';
+import * as request from 'popsicle';
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -473,5 +476,19 @@ export class APIAuthor {
         installationID: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
         return PromiseWrapper.voidPromise((new PushOps(this)).uninstall(installationID), onCompletion);
+    }
+
+    /** Query history states of specified target.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param  {QueryHistoryStatesRequest} request parameters to do query.
+     * @param  {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    query(
+        target: TypedID,
+        request: Options.QueryHistoryStatesRequest,
+        onCompletion?: (err: Error, results: QueryResult<HistoryState>) => void
+    ): Promise<QueryResult<HistoryState>> {
+        return PromiseWrapper.promise(new QueryOps(this, target).ungroupedQuery(request), onCompletion);
     }
 }

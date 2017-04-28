@@ -22,6 +22,8 @@ import { QueryResult } from './QueryResult';
 import { QueryHistoryStatesRequest } from './RequestObjects';
 import { AggregatedResults } from './AggregatedResult';
 import { HistoryState, GroupedHistoryStates } from './HistoryState';
+import { QueryOps } from './ops/QueryOps';
+import * as request from 'popsicle';
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
@@ -803,10 +805,18 @@ export class ThingIFAPI {
         request: Options.QueryHistoryStatesRequest,
         onCompletion?: (err: Error, results: QueryResult<HistoryState>) => void
         ): Promise<QueryResult<HistoryState>>{
-        //TODO: implement me
-        return new Promise<QueryResult<HistoryState>>((resolve, reject)=>{
-            resolve();
-        })
+        let orgPromise = new Promise<QueryResult<HistoryState>>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new QueryOps(this._au, this._target)).ungroupedQuery(request).then((results)=>{
+                resolve(results);
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /**
@@ -823,7 +833,7 @@ export class ThingIFAPI {
         return new Promise<Array<GroupedHistoryStates>>((resolve, reject)=>{
             resolve();
         })
-    }   
+    }
 
     /**
      * Aggregate history states of thing.

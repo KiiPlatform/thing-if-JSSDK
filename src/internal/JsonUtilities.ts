@@ -17,6 +17,7 @@ import { Predicate, EventSource, StatePredicate, SchedulePredicate, ScheduleOnce
 import { ServerCode } from '../ServerCode';
 import { Condition } from '../Condition';
 import { QueryClause, EqualsClauseInQuery, NotEqualsClauseInQuery, AndClauseInQuery, OrClauseInQuery, RangeClauseInQuery, AllClause } from '../QueryClause';
+import { HistoryState } from '../HistoryState';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -501,4 +502,10 @@ export function queryClauseToJson(clause: QueryClause): Object {
         };
     }
     return null;
+}
+
+export function jsonToHistoryState(json: any): HistoryState {
+    let createdAt = new Date(json["_created"]);
+    delete json["_created"];
+    return new HistoryState(json, createdAt);
 }
