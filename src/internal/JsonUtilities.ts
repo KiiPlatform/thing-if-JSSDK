@@ -495,6 +495,10 @@ export function queryClauseToJson(clause: QueryClause): Object {
             type: "or",
             clauses: jsonArray
         };
+    } else if (clause instanceof AllClause) {
+        return {
+            type: "all"
+        };
     }
     return null;
 }

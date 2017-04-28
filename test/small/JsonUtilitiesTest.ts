@@ -22,7 +22,7 @@ import {
 import { Action, AliasAction } from '../../src/AliasAction';
 import { ActionResult, AliasActionResult } from '../../src/AliasActionResult';
 import { EqualsClauseInTrigger, NotEqualsClauseInTrigger, RangeClauseInTrigger, AndClauseInTrigger, OrClauseInTrigger } from '../../src/TriggerClause';
-import { EqualsClauseInQuery, NotEqualsClauseInQuery, RangeClauseInQuery, AndClauseInQuery, OrClauseInQuery } from '../../src/QueryClause';
+import { EqualsClauseInQuery, NotEqualsClauseInQuery, RangeClauseInQuery, AndClauseInQuery, OrClauseInQuery, AllClause } from '../../src/QueryClause';
 
 import { TriggerCommandObject } from '../../src/RequestObjects';
 import { TypedID, Types } from '../../src/TypedID';
@@ -816,6 +816,11 @@ describe('Test JsonUtilities for QueryClause', () => {
                     });
             });
         });
+        describe("AllClause", () => {
+            it("provide AllClause instance should return expected json", () => {
+                expect(queryClauseToJson(new AllClause())).to.deep.equal({ type: "all" });
+            })
+        })
         describe("return null", () => {
             it("provide with non QueryClause object should return null", () => {
                 expect(queryClauseToJson(<any>{})).null;
@@ -973,6 +978,11 @@ describe('Test JsonUtilities for QueryClause', () => {
                     })).deep.equal(clause);
             });
         });
+        describe("AllClause", () => {
+            expect(jsonToQueryClause({
+                type: "all"
+            })).deep.equal(new AllClause());
+        })
     })
 
 })
