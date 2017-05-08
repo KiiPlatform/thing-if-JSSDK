@@ -100,8 +100,7 @@ export class QueryOps extends BaseOp {
                     let jsonResults = (<any>res.body)["groupedResults"];
                     let groupedResults: Array<GroupedHistoryStates> = [];
 
-                    for (var i = 0; i < jsonResults.length; i++) {
-                        let groupedStates = jsonResults[i];
+                    for (let groupedStates of jsonResults) {
                         groupedResults.push(JsonUtil.jsonToGroupedHistoryStates(groupedStates));
                     }
                     resolve(groupedResults);
