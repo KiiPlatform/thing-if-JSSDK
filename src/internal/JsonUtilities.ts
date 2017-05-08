@@ -553,8 +553,8 @@ export function jsonToTimeRange(json: any): TimeRange {
 export function jsonToGroupedHistoryStates(json: any): GroupedHistoryStates {
     let states: Array<HistoryState> = [];
     let stateJsons = json["objects"];
-    for (var i = 0; i < stateJsons.length; i++) {
-        states.push(jsonToHistoryState(stateJsons[i]));
+    for (let stateJson of stateJsons) {
+        states.push(jsonToHistoryState(stateJson));
     }
     return new GroupedHistoryStates(jsonToTimeRange(json["range"]), states);
 }
