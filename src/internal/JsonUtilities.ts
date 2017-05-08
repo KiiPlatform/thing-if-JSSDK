@@ -11,13 +11,14 @@ import {
     AndClauseInTrigger,
     OrClauseInTrigger
 } from '../TriggerClause';
-import { TriggerCommandObject } from '../RequestObjects';
+import { TriggerCommandObject, QueryGroupedHistoryStatesRequest } from '../RequestObjects';
 import { Trigger, TriggersWhen } from '../Trigger';
 import { Predicate, EventSource, StatePredicate, SchedulePredicate, ScheduleOncePredicate } from '../Predicate';
 import { ServerCode } from '../ServerCode';
 import { Condition } from '../Condition';
 import { QueryClause, EqualsClauseInQuery, NotEqualsClauseInQuery, AndClauseInQuery, OrClauseInQuery, RangeClauseInQuery, AllClause } from '../QueryClause';
-import { HistoryState } from '../HistoryState';
+import { HistoryState, GroupedHistoryStates } from '../HistoryState';
+import { TimeRange } from '../TimeRange';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -508,4 +509,52 @@ export function jsonToHistoryState(json: any): HistoryState {
     let createdAt = new Date(json["_created"]);
     delete json["_created"];
     return new HistoryState(json, createdAt);
+}
+
+export function timeRangeToQueryJson(obj: TimeRange): Object {
+    return {
+        type: "withinTimeRange",
+        lowerLimit: obj.from.getTime(),
+        upperLimit: obj.to.getTime()
+    }
+}
+
+export function groupedQueryToJson(obj: QueryGroupedHistoryStatesRequest): Object {
+    let retJson: any = {};
+    let queryJson: any = {
+        grouped: true,
+    };
+
+    let clauseJson: any;
+    if (!!obj.clause) {
+        clauseJson = {
+            type: "and",
+            clauses: [
+                queryClauseToJson(obj.clause),
+                timeRangeToQueryJson(obj.range),
+            ]
+        }
+    } else {
+        clauseJson = timeRangeToQueryJson(obj.range)
+    }
+    queryJson["clause"] = clauseJson;
+
+    retJson["query"] = queryJson;
+    if (!!obj.firmwareVersion) {
+        retJson["firmwareVersion"] = obj.firmwareVersion;
+    }
+    return retJson;
+}
+
+export function jsonToTimeRange(json: any): TimeRange {
+    return new TimeRange(new Date(json["from"]), new Date(json["to"]));
+}
+
+export function jsonToGroupedHistoryStates(json: any): GroupedHistoryStates {
+    let states: Array<HistoryState> = [];
+    let stateJsons = json["objects"];
+    for (var i = 0; i < stateJsons.length; i++) {
+        states.push(jsonToHistoryState(stateJsons[i]));
+    }
+    return new GroupedHistoryStates(jsonToTimeRange(json["range"]), states);
 }
