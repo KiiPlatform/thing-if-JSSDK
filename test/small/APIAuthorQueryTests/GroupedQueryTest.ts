@@ -1,13 +1,12 @@
 import TestApp from '../TestApp';
 import { TypedID, Types } from '../../../src/TypedID';
 import { APIAuthor } from '../../../src/APIAuthor';
-import { ThingIFAPI } from '../../../src/ThingIFAPI';
 import * as simple from 'simple-mock';
 import { QueryOps } from '../../../src/ops/QueryOps';
-import { Promise as P } from 'es6-promise'
+import {Promise as P} from 'es6-promise'
 import { QueryResult } from '../../../src/QueryResult';
 import { HistoryState, GroupedHistoryStates } from '../../../src/HistoryState';
-import { QueryHistoryStatesRequest, QueryGroupedHistoryStatesRequest } from '../../../src/RequestObjects';
+import { QueryGroupedHistoryStatesRequest } from '../../../src/RequestObjects';
 import { AllClause } from '../../../src/QueryClause';
 import { expect } from 'chai';
 import { Errors, HttpRequestError } from '../../../src/ThingIFError';
@@ -17,29 +16,15 @@ let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-describe("Small Test ThingIFAPI#groupedQuery", function () {
+describe("Small Test ThingIFAPI#groupedQuery", function() {
     let defaultRequest = new QueryGroupedHistoryStatesRequest(
         "alias1",
         new TimeRange(new Date(10), new Date(100)),
         "v1"
     )
+    let au = new APIAuthor(ownerToken, testApp.app);
 
-    describe("handle IllegalStateError", function () {
-        let api = new ThingIFAPI(owner, ownerToken, testApp.app);
-        it("when targe is null, IllegalStateError should be returned(promise)",
-            function (done) {
-                api.groupedQuery(defaultRequest)
-                    .then((result) => {
-                        done("should fail");
-                    }).catch((err) => {
-                        expect(err.name).to.equal(Errors.IlllegalStateError);
-                        done();
-                    })
-            })
-    })
-
-    describe("hanle success response", function () {
-        let api = new ThingIFAPI(owner, ownerToken, testApp.app, target);
+    describe("hanle success response", function(){
         let expectedResults: Array<GroupedHistoryStates> =
             [
                 new GroupedHistoryStates(
@@ -57,72 +42,72 @@ describe("Small Test ThingIFAPI#groupedQuery", function () {
                 )
 
             ];
-        beforeEach(function () {
+        beforeEach(function() {
             simple.mock(QueryOps.prototype, 'groupedQuery').returnWith(
-                new P<Array<GroupedHistoryStates>>((resolve, reject) => {
+                new P<Array<GroupedHistoryStates>>((resolve, reject)=>{
                     resolve(expectedResults);
                 })
             );
         })
-        afterEach(function () {
+        afterEach(function() {
             simple.restore();
         })
         it("test promise", function (done) {
-            api.groupedQuery(defaultRequest)
-                .then((results: Array<GroupedHistoryStates>) => {
+            au.groupedQuery(target, defaultRequest)
+            .then((results: Array<GroupedHistoryStates>)=>{
+                expect(results).length(2);
+                expect(results).deep.equal(expectedResults);
+                done();
+            }).catch((err)=>{
+                done(err);
+            })
+        })
+        it("test callback", function (done) {
+            au.groupedQuery(target, defaultRequest, (err, results)=>{
+                try{
+                    expect(err).to.null;
                     expect(results).length(2);
                     expect(results).deep.equal(expectedResults);
                     done();
-                }).catch((err) => {
-                    done(err);
-                })
-        })
-        it("test callback", function (done) {
-            api.groupedQuery(defaultRequest, (err, results) => {
-                try {
-                    expect(err).to.null;
-                    expect(results).deep.equal(expectedResults);
-                    done();
-                } catch (err) {
+                }catch(err){
                     done(err);
                 }
             })
         })
     })
 
-    describe("handle err reponse", function () {
-        let api = new ThingIFAPI(owner, ownerToken, testApp.app, target);
+    describe("handle err reponse", function() {
         let expectedError = new HttpRequestError(404, Errors.HttpError, {
             "errorCode": "TARGET_NOT_FOUND",
             "message": "The target is not found"
         })
 
-        beforeEach(function () {
+        beforeEach(function() {
             simple.mock(QueryOps.prototype, 'groupedQuery').returnWith(
-                new P<Array<GroupedHistoryStates>>((resolve, reject) => {
+                new P<Array<GroupedHistoryStates>>((resolve, reject)=>{
                     reject(expectedError);
                 })
             );
         })
-        afterEach(function () {
+        afterEach(function() {
             simple.restore();
         })
         it("test promise", function (done) {
-            api.groupedQuery(defaultRequest)
-                .then((cmd) => {
-                    done("should fail");
-                }).catch((err: HttpRequestError) => {
-                    expect(err).to.be.deep.equal(expectedError);
-                    done();
-                })
+            au.groupedQuery(target, defaultRequest)
+            .then((cmd)=>{
+                done("should fail");
+            }).catch((err: HttpRequestError)=>{
+                expect(err).to.be.deep.equal(expectedError);
+                done();
+            })
         })
         it("test callback", function (done) {
-            api.groupedQuery(defaultRequest, (err, cmd) => {
-                try {
+            au.groupedQuery(target, defaultRequest,(err, cmd)=>{
+                try{
                     expect(err).to.be.deep.equal(expectedError);
                     expect(cmd).to.null;
                     done();
-                } catch (err) {
+                }catch(err){
                     done(err);
                 }
             })

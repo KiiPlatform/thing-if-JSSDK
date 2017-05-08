@@ -17,7 +17,7 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
-import { HistoryState } from './HistoryState';
+import { HistoryState, GroupedHistoryStates } from './HistoryState';
 import { QueryOps } from './ops/QueryOps';
 import * as request from 'popsicle';
 
@@ -490,5 +490,20 @@ export class APIAuthor {
         onCompletion?: (err: Error, results: QueryResult<HistoryState>) => void
     ): Promise<QueryResult<HistoryState>> {
         return PromiseWrapper.promise(new QueryOps(this, target).ungroupedQuery(request), onCompletion);
+    }
+
+    /**
+     * Query grouped history states of specified target based on data grouping intervals.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param {QueryGroupedHistoryStatesRequest} request request object.
+     * @param {fuction} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    groupedQuery(
+        target: TypedID,
+        request: Options.QueryGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<GroupedHistoryStates>) => void
+    ): Promise<Array<GroupedHistoryStates>> {
+        return PromiseWrapper.promise(new QueryOps(this, target).groupedQuery(request), onCompletion);
     }
 }
