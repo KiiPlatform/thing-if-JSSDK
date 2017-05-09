@@ -828,11 +828,19 @@ export class ThingIFAPI {
     groupedQuery(
         request: Options.QueryGroupedHistoryStatesRequest,
         onCompletion?: (err: Error, results: Array<GroupedHistoryStates>) => void
-        ): Promise<Array<GroupedHistoryStates>>{
-        //TODO: implement me
-        return new Promise<Array<GroupedHistoryStates>>((resolve, reject)=>{
-            resolve();
-        })
+    ): Promise<Array<GroupedHistoryStates>> {
+        let orgPromise = new Promise<Array<GroupedHistoryStates>>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new QueryOps(this._au, this._target)).groupedQuery(request).then((results) => {
+                resolve(results);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /**
