@@ -20,6 +20,7 @@ import * as PromiseWrapper from './internal/PromiseWrapper'
 import { HistoryState, GroupedHistoryStates } from './HistoryState';
 import { QueryOps } from './ops/QueryOps';
 import * as request from 'popsicle';
+import { AggregatedResults } from './AggregatedResult';
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -505,5 +506,20 @@ export class APIAuthor {
         onCompletion?: (err: Error, results: Array<GroupedHistoryStates>) => void
     ): Promise<Array<GroupedHistoryStates>> {
         return PromiseWrapper.promise(new QueryOps(this, target).groupedQuery(request), onCompletion);
+    }
+
+    /**
+     * Aggregate history states of specified target.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param {AggregateGroupedHistoryStatesRequest} request request object.
+     * @param {function} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    aggregate(
+        target: TypedID,
+        request: Options.AggregateGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<AggregatedResults>) => void
+        ): Promise<Array<AggregatedResults>>{
+        return PromiseWrapper.promise(new QueryOps(this, target).aggregateQuery(request), onCompletion);
     }
 }

@@ -853,9 +853,17 @@ export class ThingIFAPI {
         request: Options.AggregateGroupedHistoryStatesRequest,
         onCompletion?: (err: Error, results: Array<AggregatedResults>) => void
         ): Promise<Array<AggregatedResults>>{
-        //TODO: implement me
-        return new Promise<Array<AggregatedResults>>((resolve, reject)=>{
-            resolve();
-        })
+        let orgPromise = new Promise<Array<AggregatedResults>>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new QueryOps(this._au, this._target)).aggregateQuery(request).then((results) => {
+                resolve(results);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 }
