@@ -163,8 +163,8 @@ describe("Test QueryOps#aggregateQuery", () => {
             ),
         ]
         testCases.forEach((testCase) => {
-            it(`when groupedQuery is ${JSON.stringify(testCase.groupedQuery)},`+
-            `aggregation is ${JSON.stringify(testCase.aggregation)},` +
+            it(`when groupedQuery is ${JSON.stringify(testCase.groupedQuery)},` +
+                `aggregation is ${JSON.stringify(testCase.aggregation)},` +
                 `${testCase.expectedError} error should be returned`, (done) => {
                     queryOps.aggregateQuery(new AggregateGroupedHistoryStatesRequest(testCase.groupedQuery, testCase.aggregation))
                         .then(() => {
