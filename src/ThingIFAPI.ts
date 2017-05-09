@@ -614,7 +614,7 @@ export class ThingIFAPI {
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
-            (new StateOps(this._au, this._target)).getState().then((state)=>{
+            (new StateOps(this._au, this._target)).getState(alias).then((state)=>{
                 resolve(state);
             }).catch((err)=>{
                 reject(err);
