@@ -19,6 +19,8 @@ import { Condition } from '../Condition';
 import { QueryClause, EqualsClauseInQuery, NotEqualsClauseInQuery, AndClauseInQuery, OrClauseInQuery, RangeClauseInQuery, AllClause } from '../QueryClause';
 import { HistoryState, GroupedHistoryStates } from '../HistoryState';
 import { TimeRange } from '../TimeRange';
+import { Aggregation } from '../Aggregation';
+import { AggregatedResults } from '../AggregatedResult';
 
 export function actionToJson(action: Action): Object {
     if (!!action && !!action.name) {
@@ -557,4 +559,27 @@ export function jsonToGroupedHistoryStates(json: any): GroupedHistoryStates {
         states.push(jsonToHistoryState(stateJson));
     }
     return new GroupedHistoryStates(jsonToTimeRange(json["range"]), states);
+}
+
+export function aggregationToJson(aggregation: Aggregation): Object {
+    return {
+        type: aggregation.type,
+        field: aggregation.field,
+        fieldType: aggregation.fieldType,
+        putAggregationInto: aggregation.type.toLowerCase()
+    };
+}
+
+export function jsonToAggregatedResults(json: any): AggregatedResults {
+    let range = jsonToTimeRange(json.range);
+    if(json.aggregations.length === 0) {
+        return new AggregatedResults(range)
+    }
+    let arJson = json.aggregations[0];
+    let aggregateStates;
+    if(!!arJson.object) {
+        aggregateStates = [];
+        aggregateStates.push(jsonToHistoryState(arJson.object));
+    }
+    return new AggregatedResults(range, arJson.value, aggregateStates);
 }
