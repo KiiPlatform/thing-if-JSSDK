@@ -4,6 +4,7 @@ import {expect} from 'chai';
 import {apiHelper, KiiUser, KiiThing} from './utils/APIHelper';
 import {testApp} from './utils/TestApp';
 import {ThingIFAPI} from '../../src/ThingIFAPI'
+import { TestInfo } from './utils/TestInfo';
 
 declare var require: any
 let thingIFSDK = require('../../../dist/thing-if-sdk.js');
@@ -13,7 +14,8 @@ describe("Large Tests for ThingIFAPI#getState:", function () {
     let user: KiiUser;
     let api: ThingIFAPI;
     let target: string;
-    let expectedState = {power:true};
+    let simpleState = {power: true}
+    let expectedState = {AirConditionerAlias: simpleState};
 
     before(function(done) {
         apiHelper.createKiiUser().then((newUser: KiiUser) => {
@@ -22,7 +24,12 @@ describe("Large Tests for ThingIFAPI#getState:", function () {
             api = new thingIFSDK.ThingIFAPI(owner, newUser.token, testApp);
             var vendorThingID = "vendor-" + new Date().getTime();
             var password = "password";
-            var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+            var request = new thingIFSDK.OnboardWithVendorThingIDRequest(
+                vendorThingID,
+                password,
+                owner,
+                TestInfo.DefaultThingType,
+                TestInfo.DefaultFirmwareVersion);
             // onboarding to get ownership
             return api.onboardWithVendorThingID(request)
         }).then((res)=>{
@@ -51,6 +58,9 @@ describe("Large Tests for ThingIFAPI#getState:", function () {
         it("handle success response", function (done) {
             api.getState().then((state)=>{
                 expect(state).to.deep.equal(expectedState);
+                return api.getState(TestInfo.AirConditionerAlias);
+            }).then((state) => {
+                expect(state).deep.equal(simpleState);
                 done();
             }).catch((err)=>{
                 done(err);
