@@ -18,7 +18,7 @@ let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
-describe.only("Small Test APIAuthor#aggregate", function () {
+describe("Small Test APIAuthor#aggregate", function () {
     let defaultRequest = new AggregateGroupedHistoryStatesRequest(
         new QueryGroupedHistoryStatesRequest(
             "alias1",
