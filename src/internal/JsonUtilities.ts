@@ -572,6 +572,9 @@ export function aggregationToJson(aggregation: Aggregation): Object {
 
 export function jsonToAggregatedResults(json: any): AggregatedResults {
     let range = jsonToTimeRange(json.range);
+    if(json.aggregations.length === 0) {
+        return new AggregatedResults(range)
+    }
     let arJson = json.aggregations[0];
     let aggregateStates;
     if(!!arJson.object) {
