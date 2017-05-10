@@ -750,11 +750,19 @@ export class ThingIFAPI {
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
      */
-    getFirmwareVersion(onCompletion?: (err: Error, firmwareVersion: string)=> void): Promise<string>{
-        //TODO: implement me
-        return new Promise<string>((resolve, reject)=>{
-            resolve();
-        })
+    getFirmwareVersion(onCompletion?: (err: Error, firmwareVersion: string | null) => void): Promise<string> {
+        let orgPromise = new Promise<string | null>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).getFirmwareVersion().then((fwVersion) => {
+                resolve(fwVersion);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Update firmware version of the thing
@@ -764,11 +772,19 @@ export class ThingIFAPI {
      */
     updateFirmwareVersion(
         firmwareVersion: string,
-        onCompletion?: (err: Error)=> void): Promise<void>{
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+        onCompletion?: (err: Error) => void): Promise<void> {
+        let orgPromise = new Promise<void>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateFirmwareVersion(firmwareVersion).then(() => {
+                resolve();
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
     /** Get thingType to use trait for the thing. If thing type is not set, null is returned.
