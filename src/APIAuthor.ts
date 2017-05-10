@@ -13,7 +13,7 @@ import OnboardingOps from './ops/OnboardingOps'
 import CommandOps from './ops/CommandOps'
 import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
-import ThingOps from './ops/ThingOps';
+import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
@@ -526,7 +526,7 @@ export class APIAuthor {
     }
 
     /** Get thingType to use trait for specified target thing.
-     * If thing type is not set, null is returned.
+     * If thing type is not set, then null is resolved.
      * @param {string} thingID ID of thing.
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
@@ -548,7 +548,7 @@ export class APIAuthor {
         return PromiseWrapper.voidPromise(new ThingOps(this, thingID).updateThingType(thingType), onCompletion);
     }
 
-    /** Get firmware version of specified target thing. If firmware versoin is not set, then null is returned.
+    /** Get firmware version of specified target thing. If firmware versoin is not set, then null is resolved.
      * @param {string} thingID ID of thing.
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.

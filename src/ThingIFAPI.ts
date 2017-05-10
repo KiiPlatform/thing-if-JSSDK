@@ -746,7 +746,7 @@ export class ThingIFAPI {
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
-    /** Get firmware version of the thing
+    /** Get firmware version of the thing. If firmware version is not set, then null is resolved.
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
      */
@@ -787,7 +787,7 @@ export class ThingIFAPI {
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
-    /** Get thingType to use trait for the thing. If thing type is not set, null is returned.
+    /** Get thingType to use trait for the thing. If thing type is not set, null is resolved.
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
      */
