@@ -13,7 +13,7 @@ import OnboardingOps from './ops/OnboardingOps'
 import CommandOps from './ops/CommandOps'
 import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
-import ThingOps from './ops/ThingOps';
+import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
