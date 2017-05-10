@@ -115,5 +115,50 @@ export default class ThingOps extends BaseOp {
             });
         });
     }
+
+   updateFirmwareVersion(fwVersion: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            if (!fwVersion) {
+                reject(new ThingIFError(Errors.ArgumentError, "firmwareVersion is null or empty"));
+            } else if (!KiiUtil.isString(fwVersion)) {
+                reject(new ThingIFError(Errors.ArgumentError, "firmwareVersion is not string"));
+            } else {
+                var req = {
+                    method: "PUT",
+                    headers: this.addHeader("Content-Type", "application/vnd.kii.ThingFirmwareVersionUpdateRequest+json"),
+                    url: `${this.thingifUrl}/firmware-version`,
+                    body: {
+                        "firmwareVersion": fwVersion
+                    }
+                };
+                request(req).then((res) => {
+                    resolve();
+                }).catch((err) => {
+                    reject(err);
+                });
+            }
+        });
+    }
+
+    getFirmwareVersion(): Promise<string|null> {
+        return new Promise<string|null>((resolve, reject)=>{
+            var req = {
+                method: "GET",
+                headers: this.getHeaders(),
+                url: `${this.thingifUrl}/firmware-version`
+            };
+            request(req).then((res)=>{
+                resolve((<any>res.body)["firmwareVersion"]);
+            }).catch((err)=>{
+                if (err instanceof HttpRequestError) {
+                    if (err.status === 404 && err.body.errorCode === "THING_WITHOUT_THING_TYPE") {
+                        resolve(null);
+                        return;
+                    }
+                }
+                reject(err);
+            });
+        });
+    }
 }
 
