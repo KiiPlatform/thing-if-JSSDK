@@ -775,11 +775,19 @@ export class ThingIFAPI {
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
      */
-    getThingType(onCompletion?: (err: Error, thingType: string)=> void): Promise<string>{
-        //TODO: implement me
-        return new Promise<string>((resolve, reject)=>{
-            resolve();
-        })
+    getThingType(onCompletion?: (err: Error, thingType: string|null)=> void): Promise<string|null>{
+        let orgPromise = new Promise<string|null>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).getThingType().then((thingType)=>{
+                resolve(thingType);
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 
     /** Update thingType to use trait for the thing.
@@ -790,10 +798,18 @@ export class ThingIFAPI {
     updateThingType(
         thingType: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
-        //TODO: implement me
-        return new Promise<void>((resolve, reject)=>{
-            resolve();
-        })
+        let orgPromise = new Promise<void>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateThingType(thingType).then(()=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
     }
 
     /** Query history states of thing.
