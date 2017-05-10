@@ -522,4 +522,27 @@ export class APIAuthor {
         ): Promise<Array<AggregatedResults>>{
         return PromiseWrapper.promise(new QueryOps(this, target).aggregateQuery(request), onCompletion);
     }
+
+    /** Get thingType to use trait for specified target thing.
+     * If thing type is not set, null is returned.
+     * @param {string} thingID ID of thing.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getThingType(thingID: string, onCompletion?: (err: Error, thingType: string|null)=> void): Promise<string|null>{
+        return PromiseWrapper.promise(new ThingOps(this, thingID).getThingType(), onCompletion);
+    }
+
+    /** Update thingType to use trait for a specified target thing.
+     * @param {string} thingID ID of thing.
+     * @param {string} thingType Name of ThingType, which should be already defined.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateThingType(
+        thingID: string,
+        thingType: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        return PromiseWrapper.voidPromise(new ThingOps(this, thingID).updateThingType(thingType), onCompletion);
+    }
 }
