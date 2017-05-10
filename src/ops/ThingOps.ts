@@ -8,12 +8,14 @@ import * as KiiUtil from '../internal/KiiUtilities'
 import { Errors, ThingIFError, HttpRequestError } from '../ThingIFError';
 export default class ThingOps extends BaseOp {
     private baseUrl: string;
+    private thingifUrl: string;
     constructor(
         public au: APIAuthor,
         public thingID: string
     ){
         super(au);
         this.baseUrl = `${this.au.app.getKiiCloudBaseUrl()}/things/${this.thingID}`;
+        this.thingifUrl = `${this.au.app.getThingIFBaseUrl()}/things/${this.thingID}`;
     }
 
     getVendorThingID(): Promise<string> {
@@ -79,7 +81,7 @@ export default class ThingOps extends BaseOp {
                 var req = {
                     method: "PUT",
                     headers: this.addHeader("Content-Type", "application/vnd.kii.ThingTypeUpdateRequest+json"),
-                    url: `${this.baseUrl}/thing-type`,
+                    url: `${this.thingifUrl}/thing-type`,
                     body: {
                         "thingType": thingType
                     }
@@ -98,7 +100,7 @@ export default class ThingOps extends BaseOp {
             var req = {
                 method: "GET",
                 headers: this.getHeaders(),
-                url: `${this.baseUrl}/thing-type`
+                url: `${this.thingifUrl}/thing-type`
             };
             request(req).then((res)=>{
                 resolve((<any>res.body)["thingType"]);

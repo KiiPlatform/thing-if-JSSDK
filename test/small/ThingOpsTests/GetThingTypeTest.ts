@@ -15,7 +15,7 @@ let au = new APIAuthor("dummy-token", testApp.app);
 let thingID = "th.7b3f20b00022-414b-6e11-0374-03ab0cf8";
 let thingOp = new ThingOps(au, thingID);
 describe('Test ThingOps#getThingType', function () {
-    let path = `/api/apps/${testApp.appID}/things/${thingID}/thing-type`;
+    let path = `/thing-if/apps/${testApp.appID}/things/${thingID}/thing-type`;
     let reqHeaders = {
         "Authorrization": `Bearer ${au.token}`
     };
