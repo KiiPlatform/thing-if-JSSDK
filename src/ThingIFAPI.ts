@@ -771,7 +771,7 @@ export class ThingIFAPI {
         })
     }
 
-    /** Get thingType to use trait for the thing.
+    /** Get thingType to use trait for the thing. If thing type is not set, null is returned.
      * @param {function} [onCompletion] Callback function when completed
      * @return {Promise} promise object.
      */
