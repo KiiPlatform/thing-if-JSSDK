@@ -387,6 +387,7 @@ export class APIAuthor {
 
     /** Get State of specified target.
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param {string} [alias] Trait alias of state to query. If provided, only states of the specified alias returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -399,8 +400,9 @@ export class APIAuthor {
      */
     getState(
         target: TypedID,
+        alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        return PromiseWrapper.promise((new StateOps(this, target)).getState(), onCompletion);
+        return PromiseWrapper.promise((new StateOps(this, target)).getState(alias), onCompletion);
     }
 
     /** Get vendorThingID of specified target

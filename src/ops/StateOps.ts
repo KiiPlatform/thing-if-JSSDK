@@ -5,6 +5,7 @@ import {App} from '../App';
 import {APIAuthor} from '../APIAuthor';
 import BaseOp from './BaseOp'
 import {TypedID} from '../TypedID'
+import { isString } from '../internal/KiiUtilities';
 
 export default class StateOps extends BaseOp {
     private baseUrl: string
@@ -16,12 +17,16 @@ export default class StateOps extends BaseOp {
         this.baseUrl = `${this.au.app.getThingIFBaseUrl()}/targets/${this.targetID.toString()}/states`;
     }
 
-    getState(): Promise<Object> {
+    getState(alias?: string): Promise<Object> {
         return new Promise<Object>((resolve, reject)=>{
+            let url = this.baseUrl;
+            if(!!alias) {
+                url += `/aliases/${alias}`
+            }
             var req = {
                 method: "GET",
                 headers: this.getHeaders(),
-                url: this.baseUrl
+                url: url
             };
             request(req).then((res)=>{
                 resolve(res.body);
