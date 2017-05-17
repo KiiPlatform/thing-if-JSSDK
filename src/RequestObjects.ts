@@ -4,6 +4,8 @@ import {ServerCode} from './ServerCode'
 import {TypedID} from './TypedID'
 import {DataGroupingInterval} from './DataGroupingInterval'
 import {LayoutPosition} from './LayoutPosition'
+import {Clause} from './Clause'
+import {Aggregation} from './Aggregation'
 
 /**
  * Represents the request for onboarding with vendorThingID with owner.
@@ -13,7 +15,7 @@ import {LayoutPosition} from './LayoutPosition'
  * @prop {string} thingType Type of the thing. This is optional and ignored if Thing is already registered.
  * @prop {Object} thingProperties Thing properties includes predefined and custom properties.
  * @prop {string} firmwareVersion Firmware version of thing.
- * @prop {string} dataGroupingInterval Internal used to group state history of thing.
+ * @prop {string} dataGroupingInterval Internal used to group state history of thing, when the thing is not using trait.
  * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithVendorThingIDRequest {
@@ -35,7 +37,7 @@ export class OnboardWithVendorThingIDRequest {
      * @param {string} [thingType] Type of the thing. This is optional and ignored if Thing is already registered.
      * @param {Object} [thingProperties] Thing properties includes predefined and custom properties.
      * @param {string} [firmwareVersion] Firmware version of thing.
-     * @param {string} [dataGroupingInterval] Internal used to group state history of thing. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
+     * @param {string} [dataGroupingInterval] Internal used to group state history of thing, when the thing is not using trait. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
      * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(
@@ -72,7 +74,7 @@ export class OnboardWithVendorThingIDRequest {
  * @prop {string} thingID ID of the thing given by IoT Cloud.
  * @prop {string} thingPassword Password of the thing.
  * @prop {string} owner ID of the owner. UserID or GroupID.
- * @prop {string} dataGroupingInterval Internal used to group state history of thing.
+ * @prop {string} dataGroupingInterval Internal used to group state history of thing, when the thing is not using trait.
  * @prop {string} layoutPosition Layout position of thing.
  */
 export class OnboardWithThingIDRequest {
@@ -87,7 +89,7 @@ export class OnboardWithThingIDRequest {
      * @param {string} thingID ID of the thing given by IoT Cloud.
      * @param {string} thingPassword Password of the thing.
      * @param {TypedID} [ownerID] ID of the owner. UserID or GroupID.
-     * @param {string} [dataGroupingInterval] Internal used to group state history of thing. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
+     * @param {string} [dataGroupingInterval] Internal used to group state history of thing, when the thing is not using trait. Only the values of [DataGroupingInterval]{@link DataGroupingInterval} should be used.
      * @param {string} [layoutPosition] Layout position of thing. Only the values of [LayoutPosition]{@link LayoutPosition} should be used.
      */
     constructor(
@@ -151,8 +153,6 @@ export class OnboardWithThingIDRequest {
 
 /**
  * Represents the request for creating a command.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
  * @prop {string} issuer ID of the command issuer.
  * @prop {string} title Title of the command.
@@ -160,35 +160,31 @@ export class OnboardWithThingIDRequest {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class PostCommandRequest {
-    public schema: string;
-    public schemaVersion: number;
     public actions: Array<Object>;
     public issuer: string;
     public title: string;
     public description: string;
     public metadata: Object;
+    public useTrait: boolean;
 
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
-     * @param {number[]} actions Array of actions of the command.
+     * @param {Object[]} actions Array of actions of the command.
      * @param {TypedID} [issuerID] ID of the command issuer.
      * @param {string} [title] Title of the command.
      * @param {string} [description] Description of the command.
      * @param {Object} [metadata] Key-value list to store within command definition.
+     * @param {boolean} [useTrait] If true passed will post trait formatted command,
+     *  otherwise, false/null passed will post non trait formatted command.
      */
     constructor(
-        schema: string,
-        schemaVersion: number,
         actions: Array<Object>,
         issuerID?: TypedID,
         title?: string,
         description?: string,
-        metadata?: Object) {
-            this.schema = schema;
-            this.schemaVersion = schemaVersion;
+        metadata?: Object,
+        useTrait?: boolean) {
             this.actions = actions;
             if(!!issuerID && !!issuerID.id && !!issuerID.type){
                 this.issuer = issuerID.toString();
@@ -196,6 +192,7 @@ export class PostCommandRequest {
             this.title = title;
             this.description = description;
             this.metadata = metadata;
+            this.useTrait = useTrait;
         }
 }
 
@@ -240,8 +237,6 @@ export class ListQueryOptions {
 
 /**
  * Represents the fields to construct command for creating/updating command trigger.
- * @prop {string} schema Name of schema.
- * @prop {number} schemaVersion Version number of schema.
  * @prop {Object[]} actions Array of actions of the command.
  * @prop {TypedID} issuerID instance of TypedID to represent issuer of command.
  * @prop {TypedID} targetID instance of TypedID to represent target of command.
@@ -250,8 +245,6 @@ export class ListQueryOptions {
  * @prop {Object} metadata Key-value list to store within command definition.
  */
 export class TriggerCommandObject {
-    public schema: string;
-    public schemaVersion: number;
     public actions: Array<Object>;
     public issuerID: TypedID;
     public targetID: TypedID;
@@ -262,9 +255,7 @@ export class TriggerCommandObject {
     /**
      * Create a PostCommandRequest.
      * @constructor
-     * @param {string} schema Name of schema.
-     * @param {number} schemaVersion Version number of schema.
-     * @param {number[]} actions Array of actions of the command.
+     * @param {Object[]} actions Array of actions of the command.
      * @param {TypedID} [targetID] instance of TypedID to represent target of command.
      * @param {TypedID} [issuerID] instance of TypedID to represent issuer of command.
      * @param {string} [title] Title of the command.
@@ -272,16 +263,12 @@ export class TriggerCommandObject {
      * @param {Object} [metadata] Key-value list to store within command definition.
      */
     constructor(
-        schema: string,
-        schemaVersion: number,
         actions: Array<Object>,
         targetID?: TypedID,
         issuerID?: TypedID,
         title?: string,
         description?: string,
         metadata?: Object) {
-            this.schema = schema;
-            this.schemaVersion = schemaVersion;
             this.actions = actions;
             this.targetID = targetID;
             this.issuerID = issuerID;
@@ -440,4 +427,29 @@ export class PatchServerCodeTriggerRequest{
         this.description = description;
         this.metadata = metadata;
     }
+}
+
+/** Represents the request for querying history state of thing
+ * @prop {Clause} clause Clause to query history states.
+ * @prop {boolean} grouped False by default. If true provided, will require history states by data grouping intervals
+ * @prop {Aggregation} aggregation Aggregation for grouped result.
+ * @prop {string} traitAlias Name of trait alias of states.
+ * @prop {string} firmwareVersion Firmware version of thingType of current thing to query.
+*/
+export class QueryHistoryStatesRequest{
+
+    /** Initialize QueryHistoryStatesRequest
+     * @param {Clause} clause Clause to query history states.
+     * @param {boolean} [grouped] False by default. If true provided, will require history states by data grouping intervals
+     * @param {Aggregation} [aggregation] Aggregation for grouped result.
+     * @param {string} [traitAlias] Name of trait alias of states.
+     * @param {string} [firmwareVersion] Firmware version of thingType of current thing to query.
+     */
+    constructor(
+        public clause: Clause,
+        public grouped?: boolean,
+        public aggregation?: Aggregation,
+        public traitAlias?: string,
+        public firmwareVersion?: string
+    ){}
 }

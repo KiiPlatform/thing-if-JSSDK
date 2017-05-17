@@ -19,7 +19,9 @@ import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
-
+import {Aggregation} from './Aggregation'
+import {Clause} from './Clause'
+import {HistoryStateResults} from './HistoryStateResults'
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
     private _owner: TypedID;
@@ -145,7 +147,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
-     * var request = new ThingIF.PostCommandRequest("led", 1, [{turnPower: {power:true}}]);
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias: [{"turnPower": true}]}];
+     * var request = new ThingIF.PostCommandRequest(actions);
      * api.postNewCommand(request).then(function(command) {
      *   // Do something
      * }).catch(function(err){
@@ -256,10 +260,12 @@ export class ThingIFAPI {
      * @return {Promise} promise object
      * @example
      * // commandTargetID can be different with api.target.
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias: [{"turnPower": true}]}];
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
-     * var triggerCommandObject = new ThingIF.TriggerCommandObject("Schema name", 1, [{turnPower: {power:true}}], commandTargetID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject(actions, commandTargetID);
      * var request = new ThingIF.PostCommandTriggerRequest(triggerCommandObject, statePredicate);
      * api.postCommandTrigger(request).then(function(trigger) {
      *   // Do something
@@ -298,8 +304,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * var request = new ThingIF.ServerCodeTriggerRequest(serverCode, statePredicate);
      * api.postServerCodeTrigger(request).then(function(trigger) {
@@ -372,11 +379,13 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var traitAlias = "BasicFeatureAlias";
+     * var actions = [{traitAlias:[{"turnPower": true}]}];
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * // if commandTargetID can be different with api.target
      * var commandTargetID = new ThingIF.TypedID(ThingIF.Types.Thing, "another thing to receive command");
-     * var triggerCommandObject = new ThingIF.TriggerCommandObject("led2", 2, [{setBrightness: {brightness:50}}], commandTargetID);
+     * var triggerCommandObject = new ThingIF.TriggerCommandObject(actions, commandTargetID);
      * var request = new ThingIF.PatchCommandTriggerRequest(triggerCommandObject, statePredicate);
      * api.patchCommandTrigger("Trigger ID", request).then(function(trigger) {
      *   // Do something
@@ -417,8 +426,9 @@ export class ThingIFAPI {
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
+     * var traitAlias = "BasicFeatureAlias";
      * var serverCode = new ThingIF.ServerCode("function_name", null, null, {param1: "hoge"});
-     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false"));
+     * var condition = new ThingIF.Condition(new ThingIF.Equals("power", "false", traitAlias));
      * var statePredicate = new ThingIF.StatePredicate(condition, ThingIF.TriggersWhen.CONDITION_CHANGED);
      * var request = new ThingIF.PatchServerCodeTriggerRequest(serverCode, statePredicate);
      * api.patchServerCodeTrigger("Trigger ID", request).then(function(trigger) {
@@ -590,6 +600,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * @param {string} [alias] Trait alias of state to query. If provided, only states of the specified alias returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -600,7 +611,9 @@ export class ThingIFAPI {
      * });
      */
     getState(
+        alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
+        //TODO: need to implement alias query
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
@@ -736,5 +749,49 @@ export class ThingIFAPI {
             })
         })
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
+    }
+
+    /** Update firmware version of the thing
+     * @param {string} newFwVersion New firmware version.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateFirmwareVersion(
+        newFwVersion: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
+    }
+
+    /** Query History state of the thing.
+     * @param {QueryHistoryStatesRequest} request {@link QueryHistoryStatesRequest} instance.
+     * @param [function] onCompletion Callback function when completed
+     * @return {Promise} promise object.
+    */
+    queryStates(
+        request: Options.QueryHistoryStatesRequest,
+        onCompletion?: (err: Error, result: HistoryStateResults)=> void): Promise<HistoryStateResults>{
+
+        //TODO: implement me
+        return new Promise<HistoryStateResults>((resolve, reject)=>{
+            resolve(new HistoryStateResults("", request.grouped));
+        })
+    }
+
+    /** Update thingType to use trait for the thing.
+     * @param {string} thingType Name of ThingType, which should be already defined.
+     * @param [function] onCompletion Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateThingType(
+        thingType: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+
+        //TODO: implement me
+        return new Promise<void>((resolve, reject)=>{
+            resolve();
+        })
     }
 }
