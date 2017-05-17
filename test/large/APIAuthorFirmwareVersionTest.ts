@@ -7,7 +7,7 @@ import { TestInfo } from './utils/TestInfo';
 import { APIAuthor } from '../../src/APIAuthor';
 
 declare var require: any
-let thingIFSDK = require('../../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if.js');
 
 describe("Large Tests for get/update firmwareVersion of APIAuthor:", function () {
 

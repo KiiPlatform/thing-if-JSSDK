@@ -3,7 +3,7 @@ var webpack = require('webpack'),
     yargs = require('yargs');
 
 var libraryName = 'ThingIF',
-    libraryFileName = 'thing-if-sdk',
+    libraryFileName = 'thing-if',
     plugins = [],
     outputFile = libraryFileName + '.js';
 

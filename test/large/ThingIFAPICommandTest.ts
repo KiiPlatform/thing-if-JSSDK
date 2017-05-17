@@ -9,7 +9,7 @@ import { TestInfo } from './utils/TestInfo';
 import { AliasAction, Action } from '../../src/AliasAction';
 
 declare var require: any
-let thingIFSDK = require('../../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if.js');
 
 describe("Large Tests for Command APIs(ThingIFAPI):", function () {
 

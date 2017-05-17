@@ -7,7 +7,7 @@ import {APIAuthor} from '../../src/APIAuthor'
 import { TestInfo } from './utils/TestInfo';
 
 declare var require: any
-let thingIFSDK = require('../../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if.js');
 
 describe("Large Tests for APIAuthor#getState:", function () {
 
