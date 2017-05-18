@@ -5,7 +5,7 @@ import {apiHelper, KiiUser, KiiThing} from './utils/APIHelper';
 import {testApp} from './utils/TestApp';
 
 declare var require: any
-let thingIFSDK = require('../../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if.js');
 
 describe("Large Tests for thing APIs(APIAuthor):", function () {
 

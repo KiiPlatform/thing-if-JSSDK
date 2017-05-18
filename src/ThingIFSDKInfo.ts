@@ -1,3 +1,3 @@
 export function getSDKVersion(): string {
-    return "0.2.6";
+    return "1.0.0";
 }

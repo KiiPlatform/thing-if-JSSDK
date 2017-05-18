@@ -12,7 +12,7 @@ import { RangeClauseInTrigger } from '../../src/TriggerClause';
 import { TimeRange } from '../../src/TimeRange';
 
 declare var require: any
-let thingIFSDK = require('../../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if.js');
 thingIFSDK.Logger.getInstance().setLogLevel("debug");
 
 describe("Large Tests for ThingIFAPI#groupedQuery:", function () {

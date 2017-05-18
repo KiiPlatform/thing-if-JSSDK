@@ -14,7 +14,7 @@ import { TypedID } from '../../src/TypedID';
 
 
 declare var require: any
-let thingIFSDK = require('../../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if.js');
 thingIFSDK.Logger.getInstance().setLogLevel("debug");
 
 describe("Large Tests for APIAuthor#groupedQuery:", function () {
