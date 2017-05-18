@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Condition - Documentation</title>
+    <title>NotEqualsClauseInTrigger - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Condition</h1>
+    <h1 class="page-title">NotEqualsClauseInTrigger</h1>
     
 
     
@@ -41,10 +41,10 @@
 <header>
     
         <h2>
-        Condition
+        NotEqualsClauseInTrigger
         </h2>
         
-            <div class="class-description">Represents the condition for the StatePredicate.</div>
+            <div class="class-description">Represents the clause of not equals condition.</div>
         
     
 </header>
@@ -58,14 +58,14 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="Condition"><span class="type-signature"></span>new Condition<span class="signature">(clause)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="NotEqualsClauseInTrigger"><span class="type-signature"></span>new NotEqualsClauseInTrigger<span class="signature">(alias, field, value)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Create a condition.
+    Create a not equals condition.
 </div>
 
 
@@ -101,13 +101,13 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>alias</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">string</span>
 
 
             
@@ -117,7 +117,53 @@
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">alias.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>field</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value to be compared.</td>
         </tr>
 
     
@@ -155,13 +201,13 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>alias</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">string</span>
 
 
             
@@ -171,7 +217,59 @@
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">alias.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>field</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value to be compared.</td>
         </tr>
 
     

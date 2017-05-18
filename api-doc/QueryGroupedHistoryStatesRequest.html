@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Condition - Documentation</title>
+    <title>QueryGroupedHistoryStatesRequest - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Condition</h1>
+    <h1 class="page-title">QueryGroupedHistoryStatesRequest</h1>
     
 
     
@@ -41,10 +41,10 @@
 <header>
     
         <h2>
-        Condition
+        QueryGroupedHistoryStatesRequest
         </h2>
         
-            <div class="class-description">Represents the condition for the StatePredicate.</div>
+            <div class="class-description">Represents the request for querying grouped history state of thing based on data grouping intervals.</div>
         
     
 </header>
@@ -58,14 +58,14 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="Condition"><span class="type-signature"></span>new Condition<span class="signature">(clause)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="QueryGroupedHistoryStatesRequest"><span class="type-signature"></span>new QueryGroupedHistoryStatesRequest<span class="signature">(alias, range, clause<span class="signature-attributes">opt</span>, firmwareVersion<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Create a condition.
+    Initialize QueryHistoryStatesRequest
 </div>
 
 
@@ -89,6 +89,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -101,23 +103,128 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>alias</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">string</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">Name of alias of states.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>range</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="TimeRange.html">TimeRange</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Time range of query results.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clause</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="QueryClause.html">QueryClause</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Clause to query history states.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>firmwareVersion</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Firmware version of thingType of current thing to query.</td>
         </tr>
 
     
@@ -155,13 +262,13 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>alias</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">string</span>
 
 
             
@@ -171,7 +278,76 @@
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">Name of trait alias of states.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>range</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="TimeRange.html">TimeRange</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Time range of query results.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clause</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="QueryClause.html">QueryClause</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Clause to query history states.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>firmwareVersion</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Firmware version of thingType of current thing to query.</td>
         </tr>
 
     

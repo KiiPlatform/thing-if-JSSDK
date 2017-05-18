@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Condition - Documentation</title>
+    <title>RangeClauseInQuery - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Condition</h1>
+    <h1 class="page-title">RangeClauseInQuery</h1>
     
 
     
@@ -41,10 +41,10 @@
 <header>
     
         <h2>
-        Condition
+        RangeClauseInQuery
         </h2>
         
-            <div class="class-description">Represents the condition for the StatePredicate.</div>
+            <div class="class-description">Represents the clause of range clause when query history states.</div>
         
     
 </header>
@@ -58,14 +58,14 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="Condition"><span class="type-signature"></span>new Condition<span class="signature">(clause)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="RangeClauseInQuery"><span class="type-signature"></span>new RangeClauseInQuery<span class="signature">(field, upperLimit, upperIncluded, lowerLimit, lowerIncluded)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Create a condition.
+    Create a range clause.
 </div>
 
 
@@ -101,13 +101,13 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>field</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">string</span>
 
 
             
@@ -117,7 +117,99 @@
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>upperLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The upper limit of the range.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>upperIncluded</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lowerLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The upper lower of the range.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lowerIncluded</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".</td>
         </tr>
 
     
@@ -155,13 +247,13 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>field</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">string</span>
 
 
             
@@ -171,7 +263,99 @@
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>upperLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The upper limit of the range.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>upperIncluded</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Boolean field that indicates if the upper limit is contained in the range, if omitted is considered as "true".</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lowerLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The lower limit of the range.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lowerIncluded</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Boolean field that indicates if the lower limit is contained in the range, if omitted is considered as "true".</td>
         </tr>
 
     
@@ -246,6 +430,694 @@
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".greaterThan"><span class="type-signature">(static) </span>greaterThan<span class="signature">(field, lowerLimit)</span><span class="type-signature"> &rarr; {<a href="RangeClauseInQuery.html">RangeClauseInQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a Range instance of the less than.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>field</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lowerLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The upper lower of the range.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    RangeClauseInQuery instance.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="RangeClauseInQuery.html">RangeClauseInQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".greaterThanEquals"><span class="type-signature">(static) </span>greaterThanEquals<span class="signature">(field, lowerLimit)</span><span class="type-signature"> &rarr; {<a href="RangeClauseInQuery.html">RangeClauseInQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a Range instance of the less than or equals.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>field</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lowerLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The upper lower of the range.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    RangeClauseInQuery instance.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="RangeClauseInQuery.html">RangeClauseInQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".lessThan"><span class="type-signature">(static) </span>lessThan<span class="signature">(field, upperLimit)</span><span class="type-signature"> &rarr; {<a href="RangeClauseInQuery.html">RangeClauseInQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a Range instance of the greater than.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>field</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>upperLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The upper limit of the range.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    RangeClauseInQuery instance.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="RangeClauseInQuery.html">RangeClauseInQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".lessThanEquals"><span class="type-signature">(static) </span>lessThanEquals<span class="signature">(field, upperLimit)</span><span class="type-signature"> &rarr; {<a href="RangeClauseInQuery.html">RangeClauseInQuery</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a Range instance of the greater than or equals.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>field</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Field name of comparison.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>upperLimit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The upper limit of the range.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    RangeClauseInQuery instance.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="RangeClauseInQuery.html">RangeClauseInQuery</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     

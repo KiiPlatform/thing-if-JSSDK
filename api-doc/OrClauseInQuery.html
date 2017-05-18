@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Condition - Documentation</title>
+    <title>OrClauseInQuery - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Condition</h1>
+    <h1 class="page-title">OrClauseInQuery</h1>
     
 
     
@@ -41,10 +41,10 @@
 <header>
     
         <h2>
-        Condition
+        OrClauseInQuery
         </h2>
         
-            <div class="class-description">Represents the condition for the StatePredicate.</div>
+            <div class="class-description">Represents the OR clause when query history states.</div>
         
     
 </header>
@@ -58,14 +58,14 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="Condition"><span class="type-signature"></span>new Condition<span class="signature">(clause)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="OrClauseInQuery"><span class="type-signature"></span>new OrClauseInQuery<span class="signature">(&hellip;clauses)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Create a condition.
+    Create a OR operator.
 </div>
 
 
@@ -89,6 +89,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -101,23 +103,33 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>clauses</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">Array.&lt;<a href="QueryClause.html">QueryClause</a>></span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">Array of clauses to be concatenated with Or clause.</td>
         </tr>
 
     
@@ -155,13 +167,13 @@
 
         <tr>
             
-                <td class="name"><code>clause</code></td>
+                <td class="name"><code>clauses</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="TriggerClause.html">TriggerClause</a></span>
+<span class="param-type">Array.&lt;<a href="QueryClause.html">QueryClause</a>></span>
 
 
             
@@ -171,7 +183,7 @@
 
             
 
-            <td class="description last">Query condition to be applied.</td>
+            <td class="description last">Clauses to be concatenated with Or clause.</td>
         </tr>
 
     
