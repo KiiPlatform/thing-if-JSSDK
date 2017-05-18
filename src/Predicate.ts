@@ -1,5 +1,6 @@
 import {Condition} from './Condition';
 import {TriggersWhen} from './Trigger';
+import { triggerClauseToJson } from './internal/JsonUtilities';
 
 /** Represent Predicate for a Trigger */
 export abstract class Predicate {
@@ -8,26 +9,6 @@ export abstract class Predicate {
      * @return {string} EventSource
      */
     abstract getEventSource(): string;
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    abstract toJson(): any;
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a predicate.
-     * @return {Predicate} Predicate instance
-     */
-    static fromJson(obj:any): Predicate {
-        if (obj.eventSource == EventSource.STATES) {
-            return StatePredicate.fromJson(obj);
-        } else if (obj.eventSource == EventSource.SCHEDULE) {
-            return SchedulePredicate.fromJson(obj);
-        } else if (obj.eventSource == EventSource.SCHEDULE_ONCE) {
-            return ScheduleOncePredicate.fromJson(obj);
-        }
-        return null;
-    }
 }
 /** Represent source to fire trigger.
 <ul>
@@ -46,7 +27,7 @@ export const EventSource = {
  * @param {Condition} condition Condition to fire trigger.
  * @param {string} triggersWhen Defined when trigger will be fired
  */
-export class StatePredicate implements Predicate {
+export class StatePredicate extends Predicate {
     public condition: Condition;
     public triggersWhen: string;
 
@@ -60,6 +41,7 @@ export class StatePredicate implements Predicate {
         condition: Condition,
         triggersWhen: string
     ) {
+        super();
         this.condition = condition;
         this.triggersWhen = triggersWhen;
     }
@@ -70,33 +52,12 @@ export class StatePredicate implements Predicate {
     getEventSource(): string {
         return EventSource.STATES;
     }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        return {
-            condition: this.condition.clause.toJson(),
-            eventSource: EventSource.STATES,
-            triggersWhen: this.triggersWhen
-        };
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a StatePredicate.
-     * @return {StatePredicate} StatePredicate instance
-     */
-    static fromJson(obj:any): StatePredicate {
-        let condition: Condition = Condition.fromJson(obj.condition);
-        let triggersWhen = (<any>TriggersWhen)[obj.triggersWhen];
-        return new StatePredicate(condition, triggersWhen);
-    }
 }
 /**
  * Represent SchedulePredicate for a Trigger
  * @param {string} schedule Cron expression to fire trigger.
  */
-export class SchedulePredicate implements Predicate {
+export class SchedulePredicate extends Predicate {
     public schedule: string;
 
     /**
@@ -105,6 +66,7 @@ export class SchedulePredicate implements Predicate {
      * @param {string} schedule Cron expression to fire trigger.
      */
     constructor(schedule: string) {
+        super();
         this.schedule = schedule;
     }
     /**
@@ -114,31 +76,12 @@ export class SchedulePredicate implements Predicate {
     getEventSource(): string {
         return EventSource.SCHEDULE;
     }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        return {
-            schedule: this.schedule,
-            eventSource: EventSource.SCHEDULE
-        };
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a SchedulePredicate.
-     * @return {SchedulePredicate} SchedulePredicate instance
-     */
-    static fromJson(obj:any): SchedulePredicate {
-        let schedule = obj.schedule;
-        return new SchedulePredicate(schedule);
-    }
 }
 /**
  * Represent ScheduleOncePredicate for a Trigger
  * @param {number} scheduleAt Timestamp to fire trigger.
  */
-export class ScheduleOncePredicate implements Predicate {
+export class ScheduleOncePredicate extends Predicate {
     public scheduleAt: number;
 
     /**
@@ -147,6 +90,7 @@ export class ScheduleOncePredicate implements Predicate {
      * @param {number} scheduleAt Timestamp to fire trigger.
      */
     constructor(scheduleAt: number) {
+        super();
         this.scheduleAt = scheduleAt;
     }
     /**
@@ -155,25 +99,6 @@ export class ScheduleOncePredicate implements Predicate {
      */
     getEventSource(): string {
         return EventSource.SCHEDULE_ONCE;
-    }
-    /**
-     * This method is for internal use only.
-     * @return {Object} JSON object that represented this instance.
-     */
-    toJson(): any {
-        return {
-            scheduleAt: this.scheduleAt,
-            eventSource: EventSource.SCHEDULE_ONCE
-        };
-    }
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a ScheduleOncePredicate.
-     * @return {ScheduleOncePredicate} ScheduleOncePredicate instance
-     */
-    static fromJson(obj:any): ScheduleOncePredicate {
-        let scheduleAt = obj.scheduleAt;
-        return new ScheduleOncePredicate(scheduleAt);
     }
 }
 

@@ -10,6 +10,7 @@ import {ThingIFError, HttpRequestError, Errors} from '../ThingIFError'
 import * as KiiUtil from '../internal/KiiUtilities'
 import {TypedID} from '../TypedID'
 import {QueryResult} from '../QueryResult'
+import * as JsonUtil from '../internal/JsonUtilities'
 
 export default class CommandOps extends BaseOp {
     private baseUrl: string;
@@ -24,25 +25,11 @@ export default class CommandOps extends BaseOp {
     postNewCommand(requestObject: PostCommandRequest): Promise<Command> {
         return new Promise<Command>((resolve, reject)=>{
             // validate parameters
-            if(!requestObject.schema){
-                reject(new ThingIFError(Errors.ArgumentError, "schema is null or empty"));
+            if(!requestObject.aliasActions){
+                reject(new ThingIFError(Errors.ArgumentError, "aliasActions is null or empty"));
                 return;
-            }else if(!KiiUtil.isString(requestObject.schema)){
-                reject(new ThingIFError(Errors.ArgumentError, "schema is not string"));
-                return;
-            }
-            if(!requestObject.schemaVersion){
-                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is null or empty"));
-                return;
-            }else if(!KiiUtil.isNumber(requestObject.schemaVersion)){
-                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion is not number"));
-                return;
-            }
-            if(!requestObject.actions){
-                reject(new ThingIFError(Errors.ArgumentError, "actions is null or empty"));
-                return;
-            }else if(!KiiUtil.isArray(requestObject.actions)){
-                reject(new ThingIFError(Errors.ArgumentError, "actions is not array"));
+            }else if(!KiiUtil.isArray(requestObject.aliasActions)){
+                reject(new ThingIFError(Errors.ArgumentError, "aliasActions is not array"));
                 return;
             }
             if(!requestObject.issuer){
@@ -53,21 +40,24 @@ export default class CommandOps extends BaseOp {
                 return;
             }
 
-            var headers = this.addHeader("Content-Type", "application/json");
+            // delete aliasActions key, and
+            let requestBody = JSON.parse(JSON.stringify(requestObject));
+            delete requestBody["aliasActions"];
+            requestBody["actions"] = JsonUtil.aliasActonArrayToJsons(requestObject.aliasActions);
+
+            var headers = this.addHeader("Content-Type", "application/vnd.kii.CommandCreationRequest+json");
             var req = {
                 method: "POST",
                 headers: headers,
                 url: this.baseUrl,
-                body: requestObject,
+                body: requestBody,
             };
 
             request(req).then((res)=>{
                 var newCommand = new Command(
                         this.targetID,
                         TypedID.fromString(requestObject.issuer),
-                        requestObject.schema,
-                        requestObject.schemaVersion,
-                        requestObject.actions);
+                        requestObject.aliasActions);
                 newCommand.commandID = (<any>res.body).commandID;
                 if(!!requestObject.title){
                     newCommand.title = requestObject.title;
@@ -105,7 +95,7 @@ export default class CommandOps extends BaseOp {
                 var commands = new Array<Command>();
                 for (var i in rawCmds){
                     var rawCmd = rawCmds[i];
-                    var command = Command.fromJson(rawCmd);
+                    var command = JsonUtil.jsonToCommand(rawCmd);
                     commands.push(command);
                 }
                 var paginationKey = (<any>res.body)["nextPaginationKey"];
@@ -135,7 +125,7 @@ export default class CommandOps extends BaseOp {
                 url: `${this.baseUrl}/${commandID}`
             };
             request(req).then((res)=>{
-                resolve(Command.fromJson(res.body));
+                resolve(JsonUtil.jsonToCommand(res.body));
             }).catch((err)=>{
                 reject(err);
             });

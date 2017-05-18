@@ -17,6 +17,10 @@ export function isArray(mayObject: any): boolean {
     return (getType(mayObject) == "[object Array]");
 }
 
+export function isFunc(mayObject: any): boolean {
+    return (getType(mayObject) == "[object Function]");
+}
+
 export function isValueOfObject(value: any, obj: Object){
     for(var key in obj){
         var objValue = (<any>obj)[key]

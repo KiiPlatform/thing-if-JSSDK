@@ -17,6 +17,10 @@ import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
 import {QueryResult} from './QueryResult'
 import * as PromiseWrapper from './internal/PromiseWrapper'
+import { HistoryState, GroupedHistoryStates } from './HistoryState';
+import { QueryOps } from './ops/QueryOps';
+import * as request from 'popsicle';
+import { AggregatedResults } from './AggregatedResult';
 
 /**
  * APIAuthor can consume Thing-IF APIs not just for a specified target.
@@ -383,6 +387,7 @@ export class APIAuthor {
 
     /** Get State of specified target.
      * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param {string} [alias] Trait alias of state to query. If provided, only states of the specified alias returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -395,8 +400,9 @@ export class APIAuthor {
      */
     getState(
         target: TypedID,
+        alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
-        return PromiseWrapper.promise((new StateOps(this, target)).getState(), onCompletion);
+        return PromiseWrapper.promise((new StateOps(this, target)).getState(alias), onCompletion);
     }
 
     /** Get vendorThingID of specified target
@@ -473,5 +479,94 @@ export class APIAuthor {
         installationID: string,
         onCompletion?: (err: Error)=> void): Promise<void>{
         return PromiseWrapper.voidPromise((new PushOps(this)).uninstall(installationID), onCompletion);
+    }
+
+    /** Query history states of specified target.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param  {QueryHistoryStatesRequest} request parameters to do query.
+     * @param  {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    query(
+        target: TypedID,
+        request: Options.QueryHistoryStatesRequest,
+        onCompletion?: (err: Error, results: QueryResult<HistoryState>) => void
+    ): Promise<QueryResult<HistoryState>> {
+        return PromiseWrapper.promise(new QueryOps(this, target).ungroupedQuery(request), onCompletion);
+    }
+
+    /**
+     * Query grouped history states of specified target based on data grouping intervals.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param {QueryGroupedHistoryStatesRequest} request request object.
+     * @param {fuction} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    groupedQuery(
+        target: TypedID,
+        request: Options.QueryGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<GroupedHistoryStates>) => void
+    ): Promise<Array<GroupedHistoryStates>> {
+        return PromiseWrapper.promise(new QueryOps(this, target).groupedQuery(request), onCompletion);
+    }
+
+    /**
+     * Aggregate history states of specified target.
+     * @param {TypedID} target TypedID of target, only Types.THING is supported now.
+     * @param {AggregateGroupedHistoryStatesRequest} request request object.
+     * @param {function} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    aggregate(
+        target: TypedID,
+        request: Options.AggregateGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<AggregatedResults>) => void
+        ): Promise<Array<AggregatedResults>>{
+        return PromiseWrapper.promise(new QueryOps(this, target).aggregateQuery(request), onCompletion);
+    }
+
+    /** Get thingType to use trait for specified target thing.
+     * If thing type is not set, then null is resolved.
+     * @param {string} thingID ID of thing.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getThingType(thingID: string, onCompletion?: (err: Error, thingType: string|null)=> void): Promise<string|null>{
+        return PromiseWrapper.promise(new ThingOps(this, thingID).getThingType(), onCompletion);
+    }
+
+    /** Update thingType to use trait for a specified target thing.
+     * @param {string} thingID ID of thing.
+     * @param {string} thingType Name of ThingType, which should be already defined.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateThingType(
+        thingID: string,
+        thingType: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        return PromiseWrapper.voidPromise(new ThingOps(this, thingID).updateThingType(thingType), onCompletion);
+    }
+
+    /** Get firmware version of specified target thing. If firmware versoin is not set, then null is resolved.
+     * @param {string} thingID ID of thing.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getFirmwareVersion(thingID: string, onCompletion?: (err: Error, firmwareVersion: string | null) => void): Promise<string> {
+        return PromiseWrapper.promise(new ThingOps(this, thingID).getFirmwareVersion(), onCompletion);
+    }
+
+    /** Update firmware version of specified target thing.
+     * @param {string} thingID ID of thing.
+     * @param {string} firmwareVersion New firmware version.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateFirmwareVersion(
+        thingID: string,
+        firmwareVersion: string,
+        onCompletion?: (err: Error) => void): Promise<void> {
+        return PromiseWrapper.voidPromise(new ThingOps(this, thingID).updateFirmwareVersion(firmwareVersion), onCompletion);
     }
 }

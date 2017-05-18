@@ -19,6 +19,8 @@ import {TypedID} from '../TypedID'
 import {Command} from '../Command'
 import {ServerCodeResult} from '../ServerCodeResult'
 import * as KiiUtil from '../internal/KiiUtilities'
+import * as JsonUtils from '../internal/JsonUtilities'
+import { triggeredCommandToJson } from '../internal/JsonUtilities';
 
 export default class TriggerOps extends BaseOp {
     constructor(
@@ -39,19 +41,8 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
             var commandRequest = requestObject.command;
-            if (!commandRequest.schema) {
-                reject(new ThingIFError(Errors.ArgumentError, "schema of command is null or empty"));
-                return;
-            } else if (!KiiUtil.isString(commandRequest.schema)) {
-                reject(new ThingIFError(Errors.ArgumentError, "schema of command is not string"));
-                return;
-            }
-            if (commandRequest.schemaVersion === null || commandRequest.schemaVersion === undefined) {
-                reject(new ThingIFError(Errors.ArgumentError, "schemaVersion of command is null"));
-                return;
-            }
-            if (!commandRequest.actions) {
-                reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
+            if (!commandRequest.aliasActions) {
+                reject(new ThingIFError(Errors.ArgumentError, "aliasActions of command is null"));
                 return;
             }
 
@@ -70,20 +61,10 @@ export default class TriggerOps extends BaseOp {
                 commandTarget = commandRequest.targetID;
             }
 
-            var command = new Command(
-                commandTarget,
-                commandRequest.issuerID,
-                commandRequest.schema,
-                commandRequest.schemaVersion,
-                commandRequest.actions);
-            command.title = commandRequest.title;
-            command.description = commandRequest.description;
-            command.metadata = commandRequest.metadata;
-
             var requestBody: any = {
-                predicate: requestObject.predicate.toJson(),
+                predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.COMMAND,
-                command: command.toJson()
+                command: JsonUtils.triggeredCommandToJson(commandRequest)
             }
 
             if(!!requestObject.title){
@@ -98,10 +79,20 @@ export default class TriggerOps extends BaseOp {
                 requestBody["metadata"] = requestObject.metadata;
             }
 
+            var command = new Command(
+                commandTarget,
+                commandRequest.issuerID,
+                commandRequest.aliasActions);
+            command.title = commandRequest.title;
+            command.description = commandRequest.description;
+            command.metadata = commandRequest.metadata;
+
             this.postTrigger(requestBody).then((res:Response)=>{
-                var trigger = new Trigger(requestObject.predicate, command, null);
-                trigger.triggerID = (<any>res).body.triggerID;
-                trigger.disabled = false;
+                var trigger = new Trigger(
+                    (<any>res).body.triggerID,
+                    requestObject.predicate,
+                    false,
+                    command);
                 trigger.title = requestObject.title;
                 trigger.description = requestObject.description;
                 trigger.metadata = requestObject.metadata;
@@ -126,9 +117,9 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
             var requestBody:any = {
-                predicate: requestObject.predicate.toJson(),
+                predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.SERVER_CODE,
-                serverCode: requestObject.serverCode.toJson()
+                serverCode: JsonUtils.serverCodeToJson(requestObject.serverCode)
             }
             if(!!requestObject.title){
                 requestBody["title"]= requestObject.title;
@@ -142,9 +133,12 @@ export default class TriggerOps extends BaseOp {
                 requestBody["metadata"] = requestObject.metadata;
             }
             this.postTrigger(requestBody).then((res:Response)=>{
-                var trigger:Trigger = new Trigger(requestObject.predicate, null, requestObject.serverCode);
-                trigger.triggerID = (<any>res).body.triggerID;
-                trigger.disabled = false;
+                var trigger:Trigger = new Trigger(
+                    (<any>res).body.triggerID,
+                    requestObject.predicate,
+                    false,
+                    undefined,
+                    requestObject.serverCode);
                 trigger.title = requestObject.title;
                 trigger.description = requestObject.description;
                 trigger.metadata = requestObject.metadata;
@@ -189,7 +183,7 @@ export default class TriggerOps extends BaseOp {
                 url: url
             };
             request(req).then((res: Response)=>{
-                resolve(Trigger.fromJson((<any>res).body));
+                resolve(JsonUtils.jsonToTrigger((<any>res).body));
             }).catch((err)=>{
                 reject(err);
             });
@@ -213,40 +207,20 @@ export default class TriggerOps extends BaseOp {
             }
             let requestBody:any = {}
             if(!!requestObject.predicate){
-                requestBody["predicate"] = requestObject.predicate.toJson();
+                requestBody["predicate"] = JsonUtils.predicateToJson(requestObject.predicate);
             }
 
             if(!!requestObject.command){
                 var commandRequest = requestObject.command;
-                if (!commandRequest.schema) {
-                    reject(new ThingIFError(Errors.ArgumentError, "schema of command is null or empty"));
-                    return;
-                } else if (!KiiUtil.isString(commandRequest.schema)) {
-                    reject(new ThingIFError(Errors.ArgumentError, "schema of command is not string"));
-                    return;
-                }
-                if (commandRequest.schemaVersion === null || commandRequest.schemaVersion === undefined) {
-                    reject(new ThingIFError(Errors.ArgumentError, "schemaVersion of command is null"));
-                    return;
-                }
-                if (!commandRequest.actions) {
-                    reject(new ThingIFError(Errors.ArgumentError, "actions of command is null"));
+                if (!commandRequest.aliasActions) {
+                    reject(new ThingIFError(Errors.ArgumentError, "aliasActions of command is null"));
                     return;
                 }
                 if (!commandRequest.issuerID) {
                     reject(new ThingIFError(Errors.ArgumentError, "issuerID is null"));
                     return;
                 }
-                var command = new Command(
-                    commandRequest.targetID,
-                    commandRequest.issuerID,
-                    commandRequest.schema,
-                    commandRequest.schemaVersion,
-                    commandRequest.actions);
-                command.title = commandRequest.title;
-                command.description = commandRequest.description;
-                command.metadata = commandRequest.metadata;
-                requestBody["command"] = command.toJson();
+                requestBody["command"] = JsonUtils.triggeredCommandToJson(commandRequest);
                 requestBody["triggersWhat"] = "COMMAND";
             }
             if(!!requestObject.title){
@@ -288,9 +262,9 @@ export default class TriggerOps extends BaseOp {
                 return;
             }
             var requestBody: any = {
-                predicate: requestObject.predicate.toJson(),
+                predicate: JsonUtils.predicateToJson(requestObject.predicate),
                 triggersWhat: TriggersWhat.SERVER_CODE,
-                serverCode: requestObject.serverCode.toJson()
+                serverCode: JsonUtils.serverCodeToJson(requestObject.serverCode)
             }
             if(!!requestObject.title){
                 requestBody["title"]= requestObject.title;
@@ -413,7 +387,7 @@ export default class TriggerOps extends BaseOp {
                 var triggers: Array<Trigger> = [];
                 var paginationKey = (<any>res).body.nextPaginationKey ? (<any>res).body.nextPaginationKey : null;
                 for (var json of (<any>res).body.triggers) {
-                    triggers.push(Trigger.fromJson(json));
+                    triggers.push(JsonUtils.jsonToTrigger(json));
                 }
                 resolve(new QueryResult(triggers, paginationKey))
             }).catch((err)=>{

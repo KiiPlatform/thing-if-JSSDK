@@ -18,7 +18,12 @@ import TriggerOps from './ops/TriggerOps'
 import StateOps from './ops/StateOps'
 import ThingOps from './ops/ThingOps'
 import PushOps from './ops/PushOps'
-import {QueryResult} from './QueryResult'
+import { QueryResult } from './QueryResult';
+import { QueryHistoryStatesRequest } from './RequestObjects';
+import { AggregatedResults } from './AggregatedResult';
+import { HistoryState, GroupedHistoryStates } from './HistoryState';
+import { QueryOps } from './ops/QueryOps';
+import * as request from 'popsicle';
 
 /** ThingIFAPI represent an API instance to access Thing-IF APIs for a specified target */
 export class ThingIFAPI {
@@ -590,6 +595,7 @@ export class ThingIFAPI {
      *
      * **Note**: Please onboard first, or provide a target when constructor ThingIFAPI.
      *  Otherwise, error will be returned.
+     * @param {string} [alias] Trait alias of state to query. If provided, only states of the specified alias returned.
      * @param {onCompletion} [function] Callback function when completed
      * @return {Promise} promise object
      * @example
@@ -600,13 +606,15 @@ export class ThingIFAPI {
      * });
      */
     getState(
+        alias?: string,
         onCompletion?: (err: Error, state:Object)=> void): Promise<Object>{
+        // TODO: fix me
         let orgPromise = new Promise<Object>((resolve, reject)=>{
             if(!this._target){
                 reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
                 return;
             }
-            (new StateOps(this._au, this._target)).getState().then((state)=>{
+            (new StateOps(this._au, this._target)).getState(alias).then((state)=>{
                 resolve(state);
             }).catch((err)=>{
                 reject(err);
@@ -736,5 +744,158 @@ export class ThingIFAPI {
             })
         })
         return PromiseWrapper.voidPromise(orgPromise, onCompletion);
+    }
+
+    /** Get firmware version of the thing. If firmware version is not set, then null is resolved.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getFirmwareVersion(onCompletion?: (err: Error, firmwareVersion: string | null) => void): Promise<string> {
+        let orgPromise = new Promise<string | null>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).getFirmwareVersion().then((fwVersion) => {
+                resolve(fwVersion);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
+    }
+
+    /** Update firmware version of the thing
+     * @param {string} firmwareVersion New firmware version.
+     * @param {onCompletion} [function] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateFirmwareVersion(
+        firmwareVersion: string,
+        onCompletion?: (err: Error) => void): Promise<void> {
+        let orgPromise = new Promise<void>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateFirmwareVersion(firmwareVersion).then(() => {
+                resolve();
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
+    }
+
+    /** Get thingType to use trait for the thing. If thing type is not set, null is resolved.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    getThingType(onCompletion?: (err: Error, thingType: string|null)=> void): Promise<string|null>{
+        let orgPromise = new Promise<string|null>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).getThingType().then((thingType)=>{
+                resolve(thingType);
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
+    }
+
+    /** Update thingType to use trait for the thing.
+     * @param {string} thingType Name of ThingType, which should be already defined.
+     * @param {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    updateThingType(
+        thingType: string,
+        onCompletion?: (err: Error)=> void): Promise<void>{
+        let orgPromise = new Promise<void>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new ThingOps(this._au, this._target.id)).updateThingType(thingType).then(()=>{
+                resolve();
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.voidPromise(orgPromise, onCompletion);
+    }
+
+    /** Query history states of thing.
+     * @param  {QueryHistoryStatesRequest} request parameters to do query.
+     * @param  {function} [onCompletion] Callback function when completed
+     * @return {Promise} promise object.
+     */
+    query(
+        request: Options.QueryHistoryStatesRequest,
+        onCompletion?: (err: Error, results: QueryResult<HistoryState>) => void
+        ): Promise<QueryResult<HistoryState>>{
+        let orgPromise = new Promise<QueryResult<HistoryState>>((resolve, reject)=>{
+            if(!this._target){
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new QueryOps(this._au, this._target)).ungroupedQuery(request).then((results)=>{
+                resolve(results);
+            }).catch((err)=>{
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
+    }
+
+    /**
+     * Query grouped history states of thing based on data grouping intervals.
+     * @param {QueryGroupedHistoryStatesRequest} request request object.
+     * @param {fuction} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    groupedQuery(
+        request: Options.QueryGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<GroupedHistoryStates>) => void
+    ): Promise<Array<GroupedHistoryStates>> {
+        let orgPromise = new Promise<Array<GroupedHistoryStates>>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new QueryOps(this._au, this._target)).groupedQuery(request).then((results) => {
+                resolve(results);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
+    }
+
+    /**
+     * Aggregate history states of thing.
+     * @param {AggregateGroupedHistoryStatesRequest} request request object.
+     * @param {function} [onCompletion] Callback function when completed.
+     * @return {Promise} promise object.
+     */
+    aggregate(
+        request: Options.AggregateGroupedHistoryStatesRequest,
+        onCompletion?: (err: Error, results: Array<AggregatedResults>) => void
+        ): Promise<Array<AggregatedResults>>{
+        let orgPromise = new Promise<Array<AggregatedResults>>((resolve, reject) => {
+            if (!this._target) {
+                reject(new ThingIFError(Errors.IlllegalStateError, "target is null, please onboard first"));
+                return;
+            }
+            (new QueryOps(this._au, this._target)).aggregateQuery(request).then((results) => {
+                resolve(results);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+        return PromiseWrapper.promise(orgPromise, onCompletion);
     }
 }

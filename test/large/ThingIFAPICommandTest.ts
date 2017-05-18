@@ -5,9 +5,11 @@ import {apiHelper, KiiUser, KiiThing} from './utils/APIHelper';
 import {testApp} from './utils/TestApp';
 import {Command, CommandState} from '../../src/Command'
 import {QueryResult} from '../../src/QueryResult'
+import { TestInfo } from './utils/TestInfo';
+import { AliasAction, Action } from '../../src/AliasAction';
 
 declare var require: any
-let thingIFSDK = require('../../../dist/thing-if-sdk.js');
+let thingIFSDK = require('../../../dist/thing-if.js');
 
 describe("Large Tests for Command APIs(ThingIFAPI):", function () {
 
@@ -21,7 +23,12 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             thingIFAPI = new thingIFSDK.ThingIFAPI(owner, newUser.token, testApp);
             var vendorThingID = "vendor-" + new Date().getTime();
             var password = "password";
-            var request = new thingIFSDK.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+            var request = new thingIFSDK.OnboardWithVendorThingIDRequest(
+                vendorThingID,
+                password,
+                owner,
+                TestInfo.DefaultThingType,
+                TestInfo.DefaultFirmwareVersion);
             return thingIFAPI.onboardWithVendorThingID(request)
         }).then(()=>{
             expect(thingIFAPI.target).not.to.be.null;
@@ -44,23 +51,31 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
     it("handle success response by calling ThingIFAPI#postNewCommand, ThingIFAPI#getCommand, and ThingIFAPI#listCommands", function (done) {
         var postCommandRequest =
             new thingIFSDK.PostCommandRequest(
-                "led",
-                1,
-                [{turnPower: {power:true}}],
+                [
+                    new AliasAction(TestInfo.AirConditionerAlias, [
+                        new Action("turnPower", true),
+                        new Action("setPresetTemperature", 23)
+                    ]),
+                    new AliasAction(TestInfo.HumidityAlias, [
+                        new Action("setPresetHumidity", 45)
+                    ])
+                ],
                 null,
                 "title of led",
                 "represent led light",
                 {"power": "true for power on, and false for power off"});
-        var postCommandRequest2 = new thingIFSDK.PostCommandRequest("light", 2, [{turnPower: {power:false}}])
+        var postCommandRequest2 = new thingIFSDK.PostCommandRequest([
+            new AliasAction(TestInfo.AirConditionerAlias, [
+                new Action("turnPower", false)
+            ])
+        ]);
         let command1:Command;
         let command2:Command;
         thingIFAPI.postNewCommand(postCommandRequest).then((cmd:Command)=>{
             // test postNewCommand
             expect(cmd).not.null;
             expect(cmd.commandID).not.null;
-            expect(cmd.schema).to.be.equal(postCommandRequest.schema);
-            expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
-            expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
+            expect(cmd.aliasActions).to.be.deep.equal(postCommandRequest.aliasActions);
             // These three fields are assigned by server automatically.
             // postNewCommand method does not get command from server, so these fields should be undefined.
             expect(cmd.modified).to.be.undefined;
@@ -77,9 +92,8 @@ describe("Large Tests for Command APIs(ThingIFAPI):", function () {
             // tet getCommand
             expect(cmd).not.null;
             expect(cmd.commandID).not.null;
-            expect(cmd.schema).to.be.equal(postCommandRequest.schema);
-            expect(cmd.schemaVersion).to.be.equal(postCommandRequest.schemaVersion);
-            expect(cmd.actions).to.be.deep.equal(postCommandRequest.actions);
+            expect(JSON.stringify(cmd.aliasActions))
+                .equals(JSON.stringify(postCommandRequest.aliasActions));
             expect(cmd.modified).not.null;
             expect(cmd.modified).not.undefined;
             expect(cmd.created).not.null;

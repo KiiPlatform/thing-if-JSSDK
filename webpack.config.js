@@ -3,7 +3,7 @@ var webpack = require('webpack'),
     yargs = require('yargs');
 
 var libraryName = 'ThingIF',
-    libraryFileName = 'thing-if-sdk',
+    libraryFileName = 'thing-if',
     plugins = [],
     outputFile = libraryFileName + '.js';
 
@@ -20,7 +20,8 @@ var config = {
   externals: {
     "es6-promise": "es6-promise",
     "popsicle": "popsicle",
-    "make-error-cause": "make-error-cause"
+    "make-error-cause": "make-error-cause",
+    "winston": "winston"
   },
   module: {
     loaders: [

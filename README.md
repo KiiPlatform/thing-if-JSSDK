@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/thing-if-sdk.svg)](https://badge.fury.io/js/thing-if-sdk)
+[![npm version](https://badge.fury.io/js/thing-if.svg)](https://badge.fury.io/js/thing-if)
 [![CircleCI](https://circleci.com/gh/KiiPlatform/thing-if-JSSDK/tree/master.svg?style=svg)](https://circleci.com/gh/KiiPlatform/thing-if-JSSDK/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/KiiPlatform/thing-if-JSSDK/badge.svg?branch=master)](https://coveralls.io/github/KiiPlatform/thing-if-JSSDK?branch=master)
 
@@ -25,7 +25,7 @@ $ typings install
 ```
 
 ### Build SDK
-thing-if-sdk is built as UMD(Universal Module Definition) library.
+thing-if SDK is built as UMD(Universal Module Definition) library.
 So your code can load it either with CommonJS style, AMD style or script tag.
 
 #### Normal build
@@ -36,13 +36,13 @@ Built with `gulp` command
 $ npm run build-src
 ```
 
-If succeeded, library file named `thing-if-sdk.js` is available under `./dist/` folder.
+If succeeded, library file named `thing-if.js` is available under `./dist/` folder.
 
-## Use thing-if-sdk in browser app
+## Use thing-if in browser app
 
-**Note**: thing-if-sdk uses global Promise, so if the browser doesn't support Promise( like Mircrosoft IE11), it needs to polyfill promise to the browser app.
+**Note**: thing-if SDK uses global Promise, so if the browser doesn't support Promise( like Mircrosoft IE11), it needs to polyfill promise to the browser app.
 
-Basic operations of thing-if-sdk are tested and passed on the following browsers: Mozilla Firefox 49.0.1, Safari 9.1.3, Chrome 53.0, and Microsoft Edge 38.
+Basic operations of thing-if SDK are tested and passed on the following browsers: Mozilla Firefox 49.0.1, Safari 9.1.3, Chrome 53.0, and Microsoft Edge 38.
 
 1. Clone this repository
 
@@ -57,7 +57,7 @@ Basic operations of thing-if-sdk are tested and passed on the following browsers
   $ cd thing-if-JSSDK
   $ npm install
   $ npm install browserify -g
-  $ browserify . -s ThingIF > thing-if-sdk.js
+  $ browserify . -s ThingIF > thing-if.js
   ```
 
 3. Include the bundle file in your browser app
@@ -66,7 +66,7 @@ Basic operations of thing-if-sdk are tested and passed on the following browsers
   <!-- if the browser does not support promise, need to download polyfill promise library(i.e. https://raw.githubusercontent.com/taylorhakes/promise-polyfill/master/promise.js) and import like the following script -->
   <script src="path/to/promise.js"></script>
 
-  <script src="path/to/thing-if-sdk.js"></script>
+  <script src="path/to/thing-if.js"></script>
   ```
 
 ## Test
@@ -86,7 +86,7 @@ $ npm test
 ## Use cases in nodejs
 
 ### Integrate with kii-cloud-sdk
-You usally need to get user id and token from kii-cloud-sdk, you can simply integrate it with thing-if-sdk.
+You usally need to get user id and token from kii-cloud-sdk, you can simply integrate it with thing-if SDK.
 
 ```shell
 mkdir MyApp
@@ -94,14 +94,14 @@ cd MyApp
 npm install kii-cloud-sdk
 ```
 
-Copy thing-if-sdk.js in MyApp direcotry and create
+Copy thing-if.js in MyApp direcotry and create
 file named Onboarding.js in MyApp directory.
 
 ```js
 "use strict"
 var kiicloud = require("kii-cloud-sdk").create();
 
-var thingIF = require('./thing-if-sdk.js');
+var thingIF = require('./thing-if.js');
 
 var appid = "****",
     appkey = "****",
@@ -146,7 +146,7 @@ node Onboarding.js
 Create file named Command.js in YourApp directory.
 
 ```js
-var thingIF = require('./thing-if-sdk.js');
+var thingIF = require('./thing-if.js');
 
 // <Replace those values>
 var appID = "appID";
@@ -218,23 +218,23 @@ node Command.js
 
 ## Use in Typescript Project
 
-- install thing-if-sdk with npm
+- install thing-if SDK with npm
 
 ```
-npm install thing-if-sdk --save
+npm install thing-if --save
 ```
 
 - install typings
 
 ```
-typings install npm:thing-if-sdk --save
+typings install npm:thing-if --save
 ```
 
 - add reference to your code
 
 ```
-/// <reference path="./typings/modules/thing-if-sdk/index.d.ts" />
-import * as ThingIFSDK from 'thing-if-sdk'
+/// <reference path="./typings/modules/thing-if/index.d.ts" />
+import * as ThingIFSDK from 'thing-if'
 
 ```
 

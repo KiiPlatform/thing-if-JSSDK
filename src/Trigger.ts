@@ -8,40 +8,36 @@ import {Predicate} from './Predicate'
  * @prop {Predicate} predicate Predicate of the condition met for the trigger to execute.
  * @prop {Command} command Definition of the command to execute.
  * @prop {ServerCode} serverCode Details of the server code to execute.
- * @prop {boolean} disabled Whether the trigger is disabled or not. 
+ * @prop {boolean} disabled Whether the trigger is disabled or not.
  * @prop {string} disabledReason Reasons for disabled trigger
  * @prop {string} title Title of the trigger
  * @prop {string} description Description of the trigger
  * @prop {Object} metadata Metadata of the trigger
  */
 export class Trigger {
-
-    public triggerID: string;
-    public predicate: Predicate;
-    public command: Command;
-    public serverCode: ServerCode;
-    public disabled: boolean;
-    public disabledReason: string;
-    public title: string;
-    public description: string;
-    public metadata: any;
-
     /**
      * Create a Trigger.
      * @constructor
+     * @param {string} triggerID ID of trigger.
      * @param {Predicate} Predicate of the condition met for the trigger to execute.
-     * @param {Command} Definition of the command to execute.
-     * @param {ServerCode} Details of the server code to execute.
+     * @param {boolean} disabled Whether the trigger is disabled or not.
+     * @param {Command} [command] Definition of the command to execute.
+     * @param {ServerCode} [serverCode] Details of the server code to execute.
+     * @param {string} [disabledReason] Reasons for disabled trigger
+     * @param {string} [title] Title of the trigger
+     * @param {string} [description] Description of the trigger
+     * @param {Object} [metadata] Metadata of the trigger
      */
     constructor(
-        predicate: Predicate,
-        command: Command,
-        serverCode: ServerCode
-    ) {
-        this.predicate = predicate;
-        this.command = command;
-        this.serverCode = serverCode;
-    }
+        public triggerID: string,
+        public predicate: Predicate,
+        public disabled: boolean,
+        public command?: Command,
+        public serverCode?: ServerCode,
+        public disabledReason?: string,
+        public title?: string,
+        public description?: string,
+        public metadata?: any) {}
     /**
      * Gets the string represented TriggersWhat
      * @return {string} TriggersWhat
@@ -52,26 +48,6 @@ export class Trigger {
         }
         return TriggersWhat.SERVER_CODE;
     }
-
-    /**
-     * This method is for internal use only.
-     * @param obj JSON object that represented a trigger.
-     * @return {Trigger} Trigger instance
-     */
-    static fromJson(obj: any): Trigger {
-        let predicate: Predicate = Predicate.fromJson(obj.predicate);
-        let command: Command = obj.command ? Command.fromJson(obj.command) : null;
-        let serverCode: ServerCode = obj.serverCode ? ServerCode.fromJson(obj.serverCode) : null;
-        let trigger = new Trigger(predicate, command, serverCode);
-        trigger.triggerID = obj.triggerID ? obj.triggerID : null;
-        trigger.disabled = obj.disabled === undefined ?  null : obj.disabled;
-        trigger.disabledReason = obj.disabledReason ? obj.disabledReason : null;
-        trigger.title = obj.title ? obj.title : null;
-        trigger.description = obj.description ? obj.description : null;
-        trigger.metadata = obj.metadata ? obj.metadata : null;
-        return trigger;
-    }
-
 }
 /** Represents the type of condition to fire a trigger.
 <ul>

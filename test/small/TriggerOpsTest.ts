@@ -21,21 +21,24 @@ import {Trigger, TriggersWhen, TriggersWhat} from '../../src/Trigger';
 import {Command, CommandState} from '../../src/Command';
 import {Predicate, StatePredicate, SchedulePredicate, ScheduleOncePredicate, EventSource} from '../../src/Predicate';
 import {Condition} from '../../src/Condition';
-import {Clause, Equals, NotEquals, Range, And, Or} from '../../src/Clause';
 import {ServerCode} from '../../src/ServerCode';
 import {ServerCodeResult} from '../../src/ServerCodeResult';
 import {QueryResult} from '../../src/QueryResult';
 import {ThingIFError, HttpRequestError, Errors} from '../../src/ThingIFError';
 import * as TestUtil from './utils/TestUtil'
+import { EqualsClauseInTrigger } from '../../src/TriggerClause';
+import { AliasAction, Action } from '../../src/AliasAction';
+import { Logger, LogLevel } from '../../src/Logger';
 let testApp = new TestApp();
 let ownerToken = "4qxjayegngnfcq3f8sw7d9l0e9fleffd";
 let owner = new TypedID(Types.User, "userid-01234");
 let target = new TypedID(Types.Thing, "th.01234-abcde");
 let au = new APIAuthor(ownerToken, testApp.app);
+Logger.getInstance().setLogLevel(LogLevel.Debug);
 let triggerOps = new TriggerOps(au, target);
 let commandTarget = new TypedID(Types.Thing, "th.2355-eftef");
 
-describe('Test TriggerOps', function () {
+describe('Test TriggerOps', () => {
 
     beforeEach(function() {
         nock.cleanAll();
@@ -44,8 +47,29 @@ describe('Test TriggerOps', function () {
     let expectedTriggerID = "46bc25c0-4f12-11e6-ae54-22000ad9164c";
     let schema = "LED";
     let schemaVersion = 1;
-    let actions = [{turnPower: {power:true}}, {setColor: {color: [255,0,255]}}];
-    let condition = new Condition(new Equals("power", "false"));
+    let actions = [
+        new AliasAction("alias1", [
+            new Action("turnPower", true),
+            new Action("setPresetTemp", 23)
+        ]),
+        new AliasAction("alias2", [
+            new Action("setPresetHum", 45)
+        ])
+    ];
+    let jsonActions = [
+        {
+            alias1: [
+                {turnPower: true},
+                {setPresetTemp: 23}
+            ],
+        },
+        {
+            alias2: [
+                {setPresetHum: 45}
+            ]
+        }
+    ]
+    let condition = new Condition(new EqualsClauseInTrigger("alias1", "power", "false"));
     let statePredicate = new StatePredicate(condition, TriggersWhen.CONDITION_CHANGED);
     let schedulePredicate = new SchedulePredicate("0 12 1 * *");
     let scheduleOncePredicate = new ScheduleOncePredicate(1469089120402);
@@ -54,17 +78,15 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "type":"eq","alias": "alias1","field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
-            "actions": actions
+            "actions": jsonActions
         },
         "disabled":false
     }
@@ -76,11 +98,9 @@ describe('Test TriggerOps', function () {
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
-            "actions": actions
+            "actions": jsonActions
         },
         "disabled":false
     }
@@ -92,11 +112,9 @@ describe('Test TriggerOps', function () {
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": target.toString(),
             "issuer": owner.toString(),
-            "actions": actions
+            "actions": jsonActions
         },
         "disabled":false
     }
@@ -108,7 +126,7 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+               "alias": "alias1", "type":"eq","field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
@@ -152,10 +170,10 @@ describe('Test TriggerOps', function () {
         "disabled":false
     }
 
-    describe('#postCommandTrigger() with promise', function () {
+    describe('#postCommandTrigger() with promise', () => {
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, target, owner);
-        it("with StatePredicate", function (done) {
+        let commandRequest = new TriggerCommandObject(actions, target, owner);
+        it("with StatePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -164,22 +182,23 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postCommandTriggerPath, {
-                    "predicate":{
-                        "triggersWhen":"CONDITION_CHANGED",
-                        "condition":{
-                            "type":"eq","field":"power","value":"false"
+                }).post(postCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
+                        "predicate":{
+                            "triggersWhen":"CONDITION_CHANGED",
+                            "condition":{
+                                "type":"eq","alias": "alias1", "field":"power","value":"false"
+                            },
+                            "eventSource":"STATES"
                         },
-                        "eventSource":"STATES"
-                    },
-                    "triggersWhat":"COMMAND",
-                    "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
-                        "target": target.toString(),
-                        "issuer": owner.toString(),
-                        "actions": actions
-                    }
+                        "triggersWhat":"COMMAND",
+                        "command":{
+                            "target": target.toString(),
+                            "issuer": owner.toString(),
+                            "actions": jsonActions
+                        }
+                    });
+                    return true;
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
             let request = new PostCommandTriggerRequest(commandRequest, statePredicate);
@@ -190,12 +209,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -204,7 +221,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with SchedulePredicate", function (done) {
+        it("with SchedulePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -213,19 +230,20 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postCommandTriggerPath, {
-                    "predicate":{
-                        "schedule":"0 12 1 * *",
-                        "eventSource":"SCHEDULE"
-                    },
-                    "triggersWhat":"COMMAND",
-                    "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
-                        "target": target.toString(),
-                        "issuer": owner.toString(),
-                        "actions": actions
-                    }
+                }).post(postCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
+                        "predicate":{
+                            "schedule":"0 12 1 * *",
+                            "eventSource":"SCHEDULE"
+                        },
+                        "triggersWhat":"COMMAND",
+                        "command":{
+                            "target": target.toString(),
+                            "issuer": owner.toString(),
+                            "actions": jsonActions
+                        }
+                    });
+                    return true;
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
@@ -236,12 +254,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -250,7 +266,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with ScheduleOncePredicate", function (done) {
+        it("with ScheduleOncePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -259,19 +275,20 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postCommandTriggerPath, {
+                }).post(postCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "scheduleAt": 1469089120402,
                         "eventSource":"SCHEDULE_ONCE"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
+                    });
+                    return true;
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
@@ -282,12 +299,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -296,7 +311,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "WRONG_TRIGGER",
                 "message": "The provided trigger is not valid"
@@ -309,22 +324,23 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postCommandTriggerPath, {
+                }).post(postCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
+                    });
+                    return true;
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
@@ -352,12 +368,8 @@ describe('Test TriggerOps', function () {
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
                 new TestCase(null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject(null, 1, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("", 1, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is empty"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target, owner), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target, owner), predicate), Errors.ArgumentError, "actions of command is null", "should handle error when actions is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, owner), null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
-                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target, null), predicate), Errors.ArgumentError, "issuerID of command is null", "should handle error when issuerID is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject([new AliasAction("alias1", [new Action("turnPower", true)])], target, owner), null), Errors.ArgumentError, "predicate is null", "should handle error when predicate is null"),
+                new TestCase(new PostCommandTriggerRequest(new TriggerCommandObject([new AliasAction("alias1", [new Action("turnPower", true)])], target, null), predicate), Errors.ArgumentError, "issuerID of command is null", "should handle error when issuerID is null"),
                 new TestCase(new PostCommandTriggerRequest(null, predicate), Errors.ArgumentError, "command is null", "should handle error when command is null"),
             ]
             tests.forEach(function(test) {
@@ -378,11 +390,11 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#postCommandTrigger() with promise(cross thing command trigger)', function () {
+    describe('#postCommandTrigger() with promise(cross thing command trigger)', () => {
         let postCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, owner);
+        let commandRequest = new TriggerCommandObject(actions, commandTarget, owner);
 
-        it("with StatePredicate", function (done) {
+        it("with StatePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -391,22 +403,23 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postCommandTriggerPath, {
+                }).post(postCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": commandTarget.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
+                    });
+                    return true;
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
@@ -418,12 +431,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(commandTarget);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -433,9 +444,9 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#postServerCodeTriggger() with promise', function () {
+    describe('#postServerCodeTriggger() with promise', () => {
         let postServerCodeTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        it("with StatePredicate", function (done) {
+        it("with StatePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -444,11 +455,12 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postServerCodeTriggerPath, {
+                }).post(postServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -459,6 +471,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
@@ -470,7 +484,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -483,7 +497,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with SchedulePredicate", function (done) {
+        it("with SchedulePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -492,7 +506,8 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postServerCodeTriggerPath, {
+                }).post(postServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "schedule":"0 12 1 * *",
                         "eventSource":"SCHEDULE"
@@ -504,6 +519,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
@@ -514,7 +531,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -527,7 +544,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with ScheduleOncePredicate", function (done) {
+        it("with ScheduleOncePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -536,7 +553,8 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postServerCodeTriggerPath, {
+                }).post(postServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "scheduleAt": 1469089120402,
                         "eventSource":"SCHEDULE_ONCE"
@@ -548,6 +566,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(201, {triggerID: expectedTriggerID}, {"Content-Type": "application/json"});
 
@@ -558,7 +578,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -571,7 +591,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "WRONG_TRIGGER",
                 "message": "The provided trigger is not valid"
@@ -584,11 +604,12 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).post(postServerCodeTriggerPath, {
+                }).post(postServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -599,6 +620,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
@@ -648,14 +671,14 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#patchCommandTrigger() with promise', function () {
+    describe('#patchCommandTrigger() with promise', () => {
         // patchCommandTrigger method sends request to server twice.
         // 1. PATCH `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         let patchCommandTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
-        let commandRequest = new TriggerCommandObject(schema, schemaVersion, actions, target, owner);
-        it("with StatePredicate", function (done) {
+        let commandRequest = new TriggerCommandObject(actions, target, owner);
+        it("with StatePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -664,22 +687,23 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchCommandTriggerPath, {
+                }).patch(patchCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
+                    });
+                    return true;
                 })
                 .reply(204, null);
             nock(
@@ -695,17 +719,16 @@ describe('Test TriggerOps', function () {
             let request = new PatchCommandTriggerRequest(commandRequest, statePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
+                    expect(trigger).not.null;
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -714,7 +737,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with SchedulePredicate", function (done) {
+        it("with SchedulePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -730,11 +753,9 @@ describe('Test TriggerOps', function () {
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
                 })
                 .reply(204, null);
@@ -755,12 +776,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -769,7 +788,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with ScheduleOncePredicate", function (done) {
+        it("with ScheduleOncePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -778,19 +797,20 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchCommandTriggerPath, {
+                }).patch(patchCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "scheduleAt": 1469089120402,
                         "eventSource":"SCHEDULE_ONCE"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
+                    });
+                    return true;
                 })
                 .reply(204, null);
             nock(
@@ -810,12 +830,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -824,7 +842,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "WRONG_TRIGGER",
                 "message": "The provided trigger is not valid"
@@ -837,22 +855,23 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchCommandTriggerPath, {
+                }).patch(patchCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": target.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
+                    });
+                    return true;
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
@@ -880,13 +899,10 @@ describe('Test TriggerOps', function () {
             }
             let predicate = new ScheduleOncePredicate(new Date().getTime());
             let tests = [
-                new TestCase(null, new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
-                new TestCase("", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
+                new TestCase(null, new PatchCommandTriggerRequest(new TriggerCommandObject([new AliasAction("alias1", [new Action("turnPower", true)])], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is null"),
+                new TestCase("", new PatchCommandTriggerRequest(new TriggerCommandObject([new AliasAction("alias1", [new Action("turnPower", true)])], target), predicate), Errors.ArgumentError, "triggerID is null or empty", "should handle error when triggerID is empty"),
                 new TestCase("trigger-01234-abcd", null, Errors.ArgumentError, "requestObject is null", "should handle error when requestObject is null"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject(null, 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is null"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("", 1, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schema of command is null or empty", "should handle error when schema is empty"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", null, [{turnPower: {power:true}}], target), predicate), Errors.ArgumentError, "schemaVersion of command is null", "should handle error when schemaVersion is null"),
-                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject("led", 1, null, target), null), Errors.ArgumentError, "actions of command is null", "should handle error when actions and predicate are null"),
+                new TestCase("trigger-01234-abcd", new PatchCommandTriggerRequest(new TriggerCommandObject(null, target), null), Errors.ArgumentError, "aliasActions of command is null", "should handle error when actions and predicate are null"),
             ]
             tests.forEach(function(test) {
                 it(test.description, function(done){
@@ -907,7 +923,7 @@ describe('Test TriggerOps', function () {
         });
     });
 
-    describe('#patchCommandTrigger() with promise(cross thing command trigger)', function () {
+    describe('#patchCommandTrigger() with promise(cross thing command trigger)', () => {
         // patchCommandTrigger method sends request to server twice.
         // 1. PATCH `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
@@ -918,21 +934,19 @@ describe('Test TriggerOps', function () {
         "predicate":{
             "triggersWhen":"CONDITION_CHANGED",
             "condition":{
-                "type":"eq","field":"power","value":"false"
+                "alias": "alias1", "type":"eq","field":"power","value":"false"
             },
             "eventSource":"STATES"
         },
         "triggersWhat":"COMMAND",
         "command":{
-            "schema": schema,
-            "schemaVersion": schemaVersion,
             "target": commandTarget.toString(),
             "issuer": owner.toString(),
-            "actions": actions
+            "actions": jsonActions
         },
         "disabled":false
     }
-        it("with StatePredicate", function (done) {
+        it("with StatePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -941,22 +955,23 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchCommandTriggerPath, {
+                }).patch(patchCommandTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
                     "triggersWhat":"COMMAND",
                     "command":{
-                        "schema": schema,
-                        "schemaVersion": schemaVersion,
                         "target": commandTarget.toString(),
                         "issuer": owner.toString(),
-                        "actions": actions
+                        "actions": jsonActions
                     }
+                    });
+                    return true;
                 })
                 .reply(204, null);
             nock(
@@ -969,7 +984,7 @@ describe('Test TriggerOps', function () {
                 }).get(getTriggerPath)
                 .reply(200, responseBody4CrossThingCommandTriggerWithState, {"Content-Type": "application/json"});
 
-            let request = new PatchCommandTriggerRequest(new TriggerCommandObject(schema, schemaVersion, actions, commandTarget, owner), statePredicate);
+            let request = new PatchCommandTriggerRequest(new TriggerCommandObject(actions, commandTarget, owner), statePredicate);
             triggerOps.patchCommandTrigger(expectedTriggerID, request).then((trigger:Trigger)=>{
                 try {
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
@@ -977,12 +992,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(commandTarget);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -992,13 +1005,13 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#patchServerCodeTrigger() with promise', function () {
+    describe('#patchServerCodeTrigger() with promise', () => {
         // patchServerCodeTrigger method sends request to server twice.
         // 1. PATCH `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
         let patchServerCodeTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
         let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
-        it("with StatePredicate", function (done) {
+        it("with StatePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -1007,11 +1020,12 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchServerCodeTriggerPath, {
+                }).patch(patchServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -1022,6 +1036,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(204, null);
             nock(
@@ -1042,7 +1058,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1055,7 +1071,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with SchedulePredicate", function (done) {
+        it("with SchedulePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -1064,7 +1080,8 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchServerCodeTriggerPath, {
+                }).patch(patchServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "schedule":"0 12 1 * *",
                         "eventSource":"SCHEDULE"
@@ -1076,6 +1093,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(204, null);
             nock(
@@ -1095,7 +1114,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1108,7 +1127,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with ScheduleOncePredicate", function (done) {
+        it("with ScheduleOncePredicate", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -1117,7 +1136,8 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchServerCodeTriggerPath, {
+                }).patch(patchServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "scheduleAt": 1469089120402,
                         "eventSource":"SCHEDULE_ONCE"
@@ -1129,6 +1149,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(204, null);
             nock(
@@ -1148,7 +1170,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1161,7 +1183,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "WRONG_TRIGGER",
                 "message": "The provided trigger is not valid"
@@ -1174,11 +1196,12 @@ describe('Test TriggerOps', function () {
                         "Authorization":"Bearer " + ownerToken,
                         "Content-Type": "application/json"
                     }
-                }).patch(patchServerCodeTriggerPath, {
+                }).patch(patchServerCodeTriggerPath, (body: any) => {
+                    expect(body).deep.equal({
                     "predicate":{
                         "triggersWhen":"CONDITION_CHANGED",
                         "condition":{
-                            "type":"eq","field":"power","value":"false"
+                            "alias": "alias1", "type":"eq","field":"power","value":"false"
                         },
                         "eventSource":"STATES"
                     },
@@ -1189,6 +1212,8 @@ describe('Test TriggerOps', function () {
                         "executorAccessToken" : ownerToken,
                         "targetAppID": testApp.appID
                     }
+                    });
+                    return true;
                 })
                 .reply(400, errResponse, {"Content-Type": "application/json"});
 
@@ -1240,8 +1265,8 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#enableTrigger() with promise', function () {
-        it("to enable", function (done) {
+    describe('#enableTrigger() with promise', () => {
+        it("to enable", (done) => {
             // enableTrigger method sends request to server twice.
             // 1. PUT `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/enable`
             // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
@@ -1274,12 +1299,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -1288,7 +1311,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("to disable", function (done) {
+        it("to disable", (done) => {
             // enableTrigger method sends request to server twice.
             // 1. PUT `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/disable`
             // 2. GET  `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`
@@ -1321,12 +1344,10 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                     done();
                 } catch (err) {
                     done(err);
@@ -1335,7 +1356,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "TRIGGER_NOT_FOUND",
                 "message": "The trigger is not found"
@@ -1396,8 +1417,8 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#deleteTrigger() with promise', function () {
-        it("should send a request to the thing-if server", function (done) {
+    describe('#deleteTrigger() with promise', () => {
+        it("should send a request to the thing-if server", (done) => {
             let deleteTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
             nock(
                 testApp.site,
@@ -1420,7 +1441,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "TRIGGER_NOT_FOUND",
                 "message": "The trigger is not found"
@@ -1478,14 +1499,14 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#getTrigger() with promise', function () {
+    describe('#getTrigger() with promise', () => {
         let getTriggerPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}`;
-        it("should send a request to the thing-if server", function (done) {
+        it("should send a request to the thing-if server", (done) => {
             // getTrigger() method is used by other methods internally.
             // So we can skip small test for getTrigger() method.
             done();
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "TRIGGER_NOT_FOUND",
                 "message": "The trigger is not found"
@@ -1542,7 +1563,7 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#listTriggers() with promise', function () {
+    describe('#listTriggers() with promise', () => {
         let paginationKey = "1/2"
         let responseBody4ListTriggers1 = {
             triggers: [
@@ -1560,7 +1581,7 @@ describe('Test TriggerOps', function () {
             ]
         }
         let listTriggersPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers`;
-        it("with bestEffortLimit", function (done) {
+        it("with bestEffortLimit", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -1582,7 +1603,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1593,7 +1614,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1604,7 +1625,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1617,7 +1638,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("with pagination", function (done) {
+        it("with pagination", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -1648,36 +1669,30 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
 
                     trigger = result.results[1];
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
 
                     trigger = result.results[2];
                     expect(trigger.triggerID).to.equal(expectedTriggerID);
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command.schema).to.equal(schema);
-                    expect(trigger.command.schemaVersion).to.equal(schemaVersion);
-                    expect(trigger.command.actions).to.deep.equal(actions);
+                    expect(trigger.command.aliasActions).to.deep.equal(actions);
                     expect(trigger.command.targetID).to.deep.equal(target);
                     expect(trigger.command.issuerID).to.deep.equal(owner);
-                    expect(trigger.serverCode).to.be.null;
+                    expect(trigger.serverCode).undefined;
                 } catch (err) {
                     done(err);
                 }
@@ -1693,7 +1708,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.predicate.getEventSource()).to.equal("STATES");
                     expect((<StatePredicate>trigger.predicate).triggersWhen).to.equal("CONDITION_CHANGED");
                     expect((<StatePredicate>trigger.predicate).condition).to.deep.equal(condition);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1704,7 +1719,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE");
                     expect((<SchedulePredicate>trigger.predicate).schedule).to.equal("0 12 1 * *");
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1715,7 +1730,7 @@ describe('Test TriggerOps', function () {
                     expect(trigger.disabled).to.be.false;
                     expect(trigger.predicate.getEventSource()).to.equal("SCHEDULE_ONCE");
                     expect((<ScheduleOncePredicate>trigger.predicate).scheduleAt).to.equal(1469089120402);
-                    expect(trigger.command).to.be.null;
+                    expect(trigger.command).undefined;
                     expect(trigger.serverCode.endpoint).to.equal(endpoint);
                     expect(trigger.serverCode.executorAccessToken).to.equal(ownerToken);
                     expect(trigger.serverCode.targetAppID).to.equal(testApp.appID);
@@ -1728,7 +1743,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "WRONG_TOKEN",
                 "message": "The provided token is not valid"
@@ -1755,7 +1770,7 @@ describe('Test TriggerOps', function () {
             });
         });
     });
-    describe('#listServerCodeResults() with promise', function () {
+    describe('#listServerCodeResults() with promise', () => {
         let paginationKey = "1/2"
         let responseBody4ListServerCodeResults1 = {
             triggerServerCodeResults: [
@@ -1803,7 +1818,7 @@ describe('Test TriggerOps', function () {
             ]
         }
         let listServerCodeResultsPath = `/thing-if/apps/${testApp.appID}/targets/${target.toString()}/triggers/${expectedTriggerID}/results/server-code`;
-        it("with bestEffortLimit", function (done) {
+        it("with bestEffortLimit", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -1831,15 +1846,15 @@ describe('Test TriggerOps', function () {
                     expect(serverCodeResults.executedAt).to.equal(1469102511274);
                     expect(serverCodeResults.returnedValue).to.deep.equal({score:1000, bonus:400});
                     expect(serverCodeResults.error).to.be.null;
+                    done();
                 } catch (err) {
                     done(err);
                 }
-                done();
             }).catch((err:ThingIFError)=>{
                 done(err);
             });
         });
-        it("with pagination", function (done) {
+        it("with pagination", (done) => {
             nock(
                 testApp.site,
                 <any>{
@@ -1916,7 +1931,7 @@ describe('Test TriggerOps', function () {
                 done(err);
             });
         });
-        it("handle error response", function (done) {
+        it("handle error response", (done) => {
             let errResponse = {
                 "errorCode": "WRONG_TOKEN",
                 "message": "The provided token is not valid"

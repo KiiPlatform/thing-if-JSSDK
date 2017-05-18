@@ -1,5 +1,5 @@
-machine: 
-  node: 
+machine:
+  node:
     version: v6.1.0
 dependencies:
   post:
@@ -13,12 +13,12 @@ test:
     # uglify library
     - >
       npm run build-src-uglify &&
-      cp ./dist/thing-if-sdk.js $CIRCLE_ARTIFACTS/thing-if-sdk-min.js &&
-      cp ./dist/thing-if-sdk.js.map $CIRCLE_ARTIFACTS/thing-if-sdk-min.js.map
+      cp ./dist/thing-if.js $CIRCLE_ARTIFACTS/thing-if-min.js &&
+      cp ./dist/thing-if.js.map $CIRCLE_ARTIFACTS/thing-if-min.js.map
 
    # build sdk
     - npm run build-src
-    - cp ./dist/thing-if-sdk* $CIRCLE_ARTIFACTS/
+    - cp ./dist/thing-if* $CIRCLE_ARTIFACTS/
   post:
     - npm run test-cov
 deployment:

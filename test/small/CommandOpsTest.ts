@@ -17,6 +17,8 @@ import {QueryResult} from '../../src/QueryResult'
 import * as TestUtil from './utils/TestUtil'
 
 import * as nock from 'nock'
+import { AliasAction, Action } from '../../src/AliasAction';
+import { AliasActionResult, ActionResult } from '../../src/AliasActionResult';
 let scope : nock.Scope;
 let testApp = new TestApp();
 let au = new APIAuthor("dummy-token", testApp.app);
@@ -28,34 +30,23 @@ describe("Test CommandOps", function() {
         describe("Validate parameters", function () {
             class TestCase {
                 constructor(
-                    public schema: any,
-                    public schemeVersion: any,
                     public actions: any,
                     public issuerID: any,
                     public expectedError: string
                 ){}
             }
             let tests: Array<TestCase> = [
-                new TestCase(null, 1, [{"turnPower": {"power": true}}], new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", null, [{"turnPower":{"power":true}}], new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, null, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, [{"turnPower":{"power":true}}], null, Errors.ArgumentError),
-                new TestCase({}, 1, {}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", "1", [{"turnPower":{"power":true}}], new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, {"turnPower": {"power": true}}, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
-                new TestCase("LED schema", 1, [{"turnPower":{"power":true}}], {id: "dummyID"}, Errors.ArgumentError)
+                new TestCase(null, new TypedID(Types.User, "dummyID"), Errors.ArgumentError),
+                new TestCase([new AliasAction("alias1",[new Action("turnPower", true)])], null, Errors.ArgumentError),
+                new TestCase([new AliasAction("alias1",[new Action("turnPower", true)])], {id: "dummyID"}, Errors.ArgumentError)
             ]
 
             tests.forEach(function(test) {
-                it("when schema="+test.schema
-                    +", schemeVersion ="+test.schemeVersion
-                    +", actions ="+JSON.stringify(test.actions)
+                it("when actions ="+JSON.stringify(test.actions)
                     +", issuerID ="+JSON.stringify(test.issuerID) + ", "
                     +test.expectedError+" error should be returned",
                     function (done) {
                     cmdOp.postNewCommand(new Options.PostCommandRequest(
-                        test.schema,
-                        test.schemeVersion,
                         test.actions,
                         test.issuerID))
                     .then(()=>{
@@ -70,14 +61,14 @@ describe("Test CommandOps", function() {
         describe("handle http response", function() {
             let path = `/thing-if/apps/${testApp.appID}/targets/${targetID.toString()}/commands`;
             let expectedReqHeaders = {
-                "Content-Type": "application/json",
+                "Content-Type": "application/vnd.kii.CommandCreationRequest+json",
                 "Authorrization": `Bearer ${au.token}`
             };
             let issuerUserID = "123456"
             let expectedReqBody:any = {
                 schema: "led",
                 schemaVersion: 1,
-                actions: [{turnPower: {power: true}}],
+                actions: [{"alias1":[{turnPower: {power: true}}]}],
                 issuer: `user:${issuerUserID}`,
                 title: "title of led",
                 description: "represent led",
@@ -99,19 +90,15 @@ describe("Test CommandOps", function() {
                     );
                 var issuerID = new TypedID(Types.User, issuerUserID);
                 var cmdRequest = new Options.PostCommandRequest(
-                    expectedReqBody.schema,
-                    expectedReqBody.schemaVersion,
-                    expectedReqBody.actions,
+                    [new AliasAction("alias1", [new Action("turnPower", true)])],
                     issuerID,
                     expectedReqBody.title,
                     expectedReqBody.description,
                     expectedReqBody.metadata);
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
                     expect(cmd.commandID).to.be.equal(expectedCommandID);
-                    expect(cmd.schema).to.be.equal(expectedReqBody.schema);
-                    expect(cmd.schemaVersion).to.be.equal(expectedReqBody.schemaVersion);
-                    expect(cmd.actions).to.be.deep.equal(expectedReqBody.actions);
-                    expect(cmd.actionResults).to.be.undefined;
+                    expect(cmd.aliasActions).to.be.deep.equal([new AliasAction("alias1", [new Action("turnPower", true)])]);
+                    expect(cmd.aliasActionResults).to.be.undefined;
                     expect(cmd.commandState).to.be.undefined;
                     expect(cmd.title).to.be.equal(expectedReqBody.title);
                     expect(cmd.description).to.be.equal(expectedReqBody.description);
@@ -136,8 +123,6 @@ describe("Test CommandOps", function() {
                     );
                 var issuerID = new TypedID(Types.User, issuerUserID);
                 var cmdRequest = new Options.PostCommandRequest(
-                    expectedReqBody.schema,
-                    expectedReqBody.schemaVersion,
                     [],
                     issuerID);
                 cmdOp.postNewCommand(cmdRequest).then((cmd)=>{
@@ -205,7 +190,7 @@ describe("Test CommandOps", function() {
                     "target": "thing:"+targetID.id,
                     "commandState": "SENDING",
                     "issuer": "user:"+issuerUserID,
-                    "actions": [
+                    "actions":[ {"alias1": [
                         {
                         "changeColor": {
                             "Red": 0,
@@ -214,8 +199,8 @@ describe("Test CommandOps", function() {
                             "Green": 0
                         }
                         }
-                    ],
-                    "actionResults": [
+                    ]}],
+                    "actionResults": [{"alias1":[
                     {
                         "changeColor":  {
                             "succeeded":true,
@@ -227,7 +212,7 @@ describe("Test CommandOps", function() {
                                 "Green": 0
                             }
                         }
-                    }],
+                    }]}],
                     "commandID": commandID,
                     "createdAt": date.getTime(),
                     "modifiedAt": date.getTime(),
@@ -246,10 +231,24 @@ describe("Test CommandOps", function() {
                     );
                 cmdOp.getCommand(commandID).then((cmd)=>{
                     expect(cmd.commandID).to.be.equal(commandID);
-                    expect(cmd.schema).to.be.equal(responseBody.schema);
-                    expect(cmd.schemaVersion).to.be.equal(responseBody.schemaVersion);
-                    expect(cmd.actions).to.be.deep.equal(responseBody.actions);
-                    expect(cmd.actionResults).to.be.deep.equal(responseBody.actionResults);
+                    expect(cmd.aliasActions).to.be.deep.equal(
+                        [new AliasAction("alias1", [
+                            new Action("changeColor", {Red: 0, White:0, Blue:50, Green:0})
+                            ])
+                        ]
+                    );
+                    expect(cmd.aliasActionResults).to.be.deep.equal([
+                        new AliasActionResult("alias1", [
+                            new ActionResult(
+                                "changeColor",
+                                true, {
+                                "Red": 0,
+                                "White": 0,
+                                "Blue": 50,
+                                "Green": 0
+                                }, "")
+                        ])
+                    ]);
                     expect(cmd.commandState).to.be.equal(CommandState.SENDING);
                     expect(TestUtil.sameDate(cmd.modified, date)).to.true;
                     expect(TestUtil.sameDate(cmd.created, date));
@@ -329,23 +328,19 @@ describe("Test CommandOps", function() {
                         let responseBody:any = {
                             "commands":[
                                 {
-                                    "schema": "LED",
-                                    "schemaVersion": 1,
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
-                                    "actions": [{"turnPower": {"power": true}}],
+                                    "actions": [{"alias1":[{"turnPower": true}]}],
                                     "commandID": "id1",
                                     "createdAt": (new Date()).getTime(),
                                     "modifiedAt": (new Date()).getTime(),
                                 },
                                 {
-                                    "schema": "LED",
-                                    "schemaVersion": 1,
                                     "target": "thing:"+targetID.id,
                                     "commandState": "SENDING",
                                     "issuer": "user:"+issuerUserID,
-                                    "actions": [{"turnPower": {"power": false}}],
+                                    "actions": [{"alias1":[{"turnPower": false}]}],
                                     "commandID": "id2",
                                     "createdAt": (new Date()).getTime(),
                                     "modifiedAt": (new Date()).getTime(),
@@ -371,10 +366,10 @@ describe("Test CommandOps", function() {
                             var cmd1 = result.results[0];
                             var expectedCmd1 = responseBody.commands[0];
                             expect(cmd1.commandID).to.be.equal(expectedCmd1.commandID);
-                            expect(cmd1.schema).to.be.equal(expectedCmd1.schema);
-                            expect(cmd1.schemaVersion).to.be.equal(expectedCmd1.schemaVersion);
-                            expect(cmd1.actions).to.be.deep.equal(expectedCmd1.actions);
-                            expect(cmd1.actionResults).to.be.deep.equal(expectedCmd1.actionResults);
+                            expect(cmd1.aliasActions).to.be.deep.equal([
+                                new AliasAction("alias1", [new Action("turnPower", true)])
+                            ]);
+                            expect(cmd1.aliasActionResults).to.undefined;
                             expect(cmd1.commandState).to.be.equal(CommandState.SENDING);
                             expect(TestUtil.sameDate(cmd1.modified, new Date(expectedCmd1.modifiedAt))).to.true;
                             expect(TestUtil.sameDate(cmd1.created, new Date(expectedCmd1.createdAt))).to.true;
@@ -387,10 +382,10 @@ describe("Test CommandOps", function() {
                             var cmd2 = result.results[1];
                             var expectedCmd2 = responseBody.commands[1];
                             expect(cmd2.commandID).to.be.equal(expectedCmd2.commandID);
-                            expect(cmd2.schema).to.be.equal(expectedCmd2.schema);
-                            expect(cmd2.schemaVersion).to.be.equal(expectedCmd2.schemaVersion);
-                            expect(cmd2.actions).to.be.deep.equal(expectedCmd2.actions);
-                            expect(cmd2.actionResults).to.be.deep.equal(expectedCmd2.actionResults);
+                            expect(cmd2.aliasActions).to.be.deep.equal([
+                                new AliasAction("alias1", [new Action("turnPower", false)])
+                            ]);
+                            expect(cmd2.aliasActionResults).undefined;
                             expect(cmd2.commandState).to.be.equal(CommandState.SENDING);
                             expect(TestUtil.sameDate(cmd2.modified, new Date(expectedCmd2.modifiedAt))).to.true;
                             expect(TestUtil.sameDate(cmd2.created, new Date(expectedCmd2.createdAt))).to.true;
