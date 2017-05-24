@@ -5,6 +5,8 @@
 Javascript SDK for Kii Thing Interaction Framework.
 
 ## Dependecies
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/KiiPlatform/thing-if-JSSDK.svg)](https://greenkeeper.io/)
 - [make-error-cause](https://github.com/blakeembrey/make-error-cause).
 - [es6-promise](https://github.com/stefanpenner/es6-promise).
 - [popsicle](https://github.com/blakeembrey/popsicle).
