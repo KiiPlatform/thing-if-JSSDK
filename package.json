@@ -11,7 +11,7 @@
   "scripts": {
     "build-test": "rm -fr built && npm run build-src && tsc test/*/*Test.ts test/*/*/*Test.ts --target es5 --module commonjs --outDir built",
     "pretest": "npm run build-test",
-    "test": "mocha 'built/test/*/*.js' 'built/test/*/*/*.js' --timeout 20000",
+    "test": "mocha 'built/test/*/*.js' 'built/test/*/*/*.js' --timeout 20000 --reporter mocha-junit-reporter",
     "test-cov": "npm run build-test && istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec 'built/test/small/*.js' 'built/test/small/*/*.js' && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "test-cov-local": "npm run build-test && istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec 'built/test/small/*.js' 'built/test/small/*/*.js'&& open coverage/lcov-report/index.html",
     "small-test": "npm run build-test && mocha 'built/test/small/*.js' 'built/test/small/*/*.js'",
@@ -49,6 +49,7 @@
     "jsdoc": "^3.4.3",
     "minami": "^1.1.1",
     "mocha": "^3.4.0",
+    "mocha-junit-reporter": "^1.18.0",
     "nock": "^9.0.12",
     "simple-mock": "^0.7.3",
     "ts-loader": "^2.0.3",
