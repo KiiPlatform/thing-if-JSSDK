@@ -1,5 +1,5 @@
-/// <reference path="../../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../../typings/globals/chai/index.d.ts" />
+/// <reference path="../../../node_modules/@types/mocha/index.d.ts" />
+/// <reference path="../../../node_modules/@types/chai/index.d.ts" />
 import { QueryGroupedHistoryStatesRequest } from '../../../src/RequestObjects';
 import { TimeRange } from '../../../src/TimeRange';
 import { expect } from 'chai';

@@ -1,5 +1,5 @@
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../typings/globals/chai/index.d.ts" />
+/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
+/// <reference path="../../node_modules/@types/chai/index.d.ts" />
 import {expect} from 'chai';
 import {apiHelper, KiiUser} from './utils/APIHelper';
 import {testApp} from './utils/TestApp';
