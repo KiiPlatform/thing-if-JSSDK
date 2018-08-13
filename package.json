@@ -5,12 +5,11 @@
   "main": "lib/ThingIFSDK.js",
   "files": [
     "lib/",
-    "typings.json",
     "LICENSE.txt",
     "README.md"
   ],
   "scripts": {
-    "build-test": "rm -fr built && npm run build-src && tsc test/*/*Test.ts test/*/*/*Test.ts ./typings/globals/node/index.d.ts --target es5 --module commonjs --outDir built",
+    "build-test": "rm -fr built && npm run build-src && tsc test/*/*Test.ts test/*/*/*Test.ts --target es5 --module commonjs --outDir built",
     "pretest": "npm run build-test",
     "test": "mocha 'built/test/*/*.js' 'built/test/*/*/*.js' --timeout 20000",
     "test-cov": "npm run build-test && istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec 'built/test/small/*.js' 'built/test/small/*/*.js' && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
@@ -18,8 +17,8 @@
     "small-test": "npm run build-test && mocha 'built/test/small/*.js' 'built/test/small/*/*.js'",
     "large-test": "npm run build-src && npm run build-test && mocha 'built/test/large/*.js' --timeout 20000",
     "build-lib": "rm -fr built && rm -fr lib && tsc && cp -fr built lib",
-    "prepublish": "typings install && npm run build-lib",
-    "build-src-for-doc": "tsc src/*.ts typings/globals/node/index.d.ts --target es6 --module commonjs --outDir built-for-doc",
+    "prepublish": "npm run build-lib",
+    "build-src-for-doc": "tsc src/*.ts --target es6 --module commonjs --outDir built-for-doc",
     "build-doc": "npm run build-src-for-doc && rm -fr jsdoc/html && jsdoc built-for-doc -c jsdoc/conf.json -R README.md",
     "build-src": "webpack",
     "build-src-uglify": "webpack --optimize-minimize"
@@ -37,6 +36,9 @@
   "author": "kii-corp",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/form-data": "^2.2.1",
+    "@types/node": "^10.5.8",
+    "@types/tough-cookie": "^2.3.3",
     "chai": "^3.5.0",
     "coveralls": "^2.13.0",
     "istanbul": "^0.4.5",
@@ -47,13 +49,12 @@
     "simple-mock": "^0.7.3",
     "ts-loader": "^2.0.3",
     "typescript": "^2.1.5",
-    "typings": "^2.1.1",
     "webpack": "^2.3.3"
   },
   "dependencies": {
-    "es6-promise": "^4.1.0",
+    "es6-promise": "^4.2.4",
     "make-error-cause": "^1.2.2",
-    "popsicle": "^9.1.0",
+    "popsicle": "^9.2.0",
     "winston": "^2.3.1"
   }
 }

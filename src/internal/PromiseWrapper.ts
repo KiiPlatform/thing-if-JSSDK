@@ -1,4 +1,4 @@
-/// <reference path="../../typings/modules/es6-promise/index.d.ts" />
+
 import {Promise as P} from 'es6-promise';
 
 export function promise(

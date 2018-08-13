@@ -1,8 +1,7 @@
-/// <reference path="../../typings/modules/es6-promise/index.d.ts" />
-/// <reference path="../../typings/modules/popsicle/index.d.ts" />
+
 import {Promise} from 'es6-promise';
 import * as popsicle from 'popsicle';
-import {RequestOptions} from '~popsicle/dist/request';
+import {RequestOptions} from 'popsicle/dist/request';
 
 import {Response} from './Response'
 import {HttpRequestError, ThingIFError, Errors} from '../ThingIFError'

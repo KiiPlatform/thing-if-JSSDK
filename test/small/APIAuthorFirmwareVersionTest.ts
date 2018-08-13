@@ -1,7 +1,7 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/chai/index.d.ts" />
 /// <reference path="../../typings/globals/simple-mock/index.d.ts" />
-/// <reference path="../../typings/modules/es6-promise/index.d.ts" />
+
 import { Promise as P } from 'es6-promise'
 import TestApp from './TestApp'
 import { expect } from 'chai';

@@ -1,3 +1,4 @@
+declare var require: any
 let winston: any = require('winston');
 
 /**

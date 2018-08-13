@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/modules/es6-promise/index.d.ts" />
+
 /// <reference path="../../../typings/modules/popsicle/index.d.ts" />
 
 import {Promise} from 'es6-promise';
