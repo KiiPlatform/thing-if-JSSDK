@@ -42,17 +42,19 @@ jobs:
         steps:
             - attach_workspace:
                 at: ~/KiiPlatform/thing-if-JSSDK
-            - run: mkdir ~/junit
+            - run: mkdir ~/test-results/mocha
             - run: npm test
+                environment:
+                    MOCHA_FILE: ~/test-results/mocha/results.xml
             # This is based on your 1.0 configuration file or project settings
             - run: npm run test-cov
             - store_test_results:
-                path: test-results.xml
+                path: ~/test-results
             # Save artifacts
             - store_artifacts:
                 path: /tmp/circleci-artifacts
             - store_artifacts:
-                path: test-results.xml
+                path: ~/test-results
     deploy:
         <<: *defaults
         steps:
