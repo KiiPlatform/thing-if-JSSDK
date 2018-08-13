@@ -41,7 +41,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run:
         working_directory: ~/KiiPlatform/thing-if-JSSDK
-        command: nvm install v6.1.0 && nvm alias default v6.1.0
+        command: nvm install v10.8.0 && nvm alias default v10.8.0
     # Dependencies
     #   This would typically go in either a build or a build-and-test job when using workflows
     # Restore the dependency cache
@@ -57,8 +57,6 @@ jobs:
     - run: if [ -z "${NODE_ENV:-}" ]; then export NODE_ENV=test; fi
     - run: export PATH="~/KiiPlatform/thing-if-JSSDK/node_modules/.bin:$PATH"
     - run: npm install
-    # This is based on your 1.0 configuration file or project settings
-    - run: typings install
     # Save dependency cache
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
