@@ -43,9 +43,7 @@ jobs:
             - attach_workspace:
                 at: ~/KiiPlatform/thing-if-JSSDK
             - run: mkdir ~/junit
-            - run: |
-                npm run build-test
-                mocha 'built/test/*/*.js' 'built/test/*/*/*.js' --timeout 20000 --reporter mocha-junit-reporter
+            - run: npm test
             # This is based on your 1.0 configuration file or project settings
             - run: npm run test-cov
             - store_test_results:
