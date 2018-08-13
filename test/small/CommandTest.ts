@@ -1,5 +1,5 @@
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../typings/globals/chai/index.d.ts" />
+/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
+/// <reference path="../../node_modules/@types/chai/index.d.ts" />
 import { Command, CommandState } from '../../src/Command';
 import { TypedID, Types } from '../../src/TypedID';
 import { AliasAction, Action } from '../../src/AliasAction';

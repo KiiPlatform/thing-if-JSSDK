@@ -1,10 +1,8 @@
 
-/// <reference path="../../../typings/modules/popsicle/index.d.ts" />
-
 import {Promise} from 'es6-promise';
 import * as request from 'popsicle';
 import {App} from '../../../src/App'
-import {RequestOptions} from '~popsicle/dist/request';
+import {RequestOptions} from 'popsicle/dist/request';
 import * as TestApp from './TestApp'
 
 function newError(res:Object): Error{

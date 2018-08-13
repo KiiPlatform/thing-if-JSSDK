@@ -1,6 +1,6 @@
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../typings/globals/chai/index.d.ts" />
-/// <reference path="../../typings/modules/nock/index.d.ts" />
+/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
+/// <reference path="../../node_modules/@types/chai/index.d.ts" />
+/// <reference path="../../node_modules/@types//nock/index.d.ts" />
 
 import {expect} from 'chai';
 import * as nock from 'nock'
