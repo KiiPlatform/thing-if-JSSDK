@@ -4,6 +4,9 @@ references:
         working_directory: ~/KiiPlatform/thing-if-JSSDK
         docker:
             - image: circleci/node:10.8.0
+        environment:
+            CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+            CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
 jobs:
     build:
         <<: *defaults
