@@ -44,7 +44,7 @@ jobs:
                 at: ~/KiiPlatform/thing-if-JSSDK
             - run: mkdir -p ~/test-results/mocha
             - run:
-                command: npm test
+                command: echo $MOCHA_FILE ; npm test -- --mochaFile=~/test-results/mocha/results.xml
                 environment:
                     MOCHA_FILE: ~/test-results/mocha/results.xml
             - run:
