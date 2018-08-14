@@ -42,7 +42,7 @@ jobs:
         steps:
             - attach_workspace:
                 at: ~/KiiPlatform/thing-if-JSSDK
-            - run: mkdir ~/test-results/mocha
+            - run: mkdir -p ~/test-results/mocha
             - run:
                 command: npm test
                 environment:
