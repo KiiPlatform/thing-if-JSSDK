@@ -7,7 +7,6 @@ references:
         environment:
             CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
             CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-            MOCHA_FILE: ~/test-results/mocha/results.xml
 jobs:
     build:
         <<: *defaults
@@ -44,8 +43,14 @@ jobs:
             - attach_workspace:
                 at: ~/KiiPlatform/thing-if-JSSDK
             - run: mkdir -p ~/test-results/mocha
-            - run: npm test
-            - run: npm run test-cov
+            - run:
+                command: npm test
+                environment:
+                    MOCHA_FILE: ~/test-results/mocha/results.xml
+            - run:
+                command: cp ~/test-results/mocha/results.xml CIRCLE_TEST_REPORTS/
+                when: always
+            - run: npm run ~/test-results/mocha/test-cov
             - store_test_results:
                 path: ~/test-results
             # Save artifacts
