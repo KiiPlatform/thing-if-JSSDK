@@ -46,7 +46,7 @@ jobs:
             - run:
                 command: npm test
                 environment:
-                    MOCHA_FILE: ~/junit/test-results.xml
+                  MOCHA_FILE: ~/junit/test-results.xml
             # This is based on your 1.0 configuration file or project settings
             - run: npm run test-cov
             - store_test_results:
