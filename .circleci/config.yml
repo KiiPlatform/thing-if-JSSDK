@@ -42,20 +42,20 @@ jobs:
         steps:
             - attach_workspace:
                 at: ~/KiiPlatform/thing-if-JSSDK
-            - run: mkdir ~/junit
+            - run: mkdir junit
             - run:
-                command: npm test
+                command: npm test; cp -fr junit $CIRCLE_TEST_REPORTS/
                 environment:
-                  MOCHA_FILE: ~/junit/test-results.xml
+                  MOCHA_FILE: junit/test-results.xml
             # This is based on your 1.0 configuration file or project settings
             - run: npm run test-cov
             - store_test_results:
-                path: ~/junit
+                path: junit
             # Save artifacts
             - store_artifacts:
                 path: /tmp/circleci-artifacts
             - store_artifacts:
-                path: ~/junit
+                path: junit
     deploy:
         <<: *defaults
         steps:
