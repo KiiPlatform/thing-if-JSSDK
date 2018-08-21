@@ -1,0 +1,94 @@
+version: 2
+references:
+    defaults: &defaults
+        working_directory: ~/KiiPlatform/thing-if-JSSDK
+        docker:
+            - image: circleci/node:10.8.0
+        environment:
+            CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+            CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+jobs:
+    build:
+        <<: *defaults
+        steps:
+            - checkout
+            - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
+            - restore_cache:
+                keys:
+                # This branch if available
+                - v3-dep-{{ checksum "package.json" }}
+                # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
+                - v3-dep-
+            - run: npm install
+            # Save dependency cache
+            - save_cache:
+                key: v3-dep-{{ checksum "package.json" }}
+                paths:
+                    - node_modules
+            - run: npm run build-doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
+            - run: |
+                npm run build-src-uglify && cp ./dist/thing-if.js $CIRCLE_ARTIFACTS/thing-if-min.js && cp ./dist/thing-if.js.map $CIRCLE_ARTIFACTS/thing-if-min.js.map
+            - run: npm run build-src
+            - run: cp ./dist/thing-if* $CIRCLE_ARTIFACTS/
+            - persist_to_workspace:
+                root: ~/KiiPlatform/thing-if-JSSDK
+                paths: .
+            - store_artifacts:
+                path: /tmp/circleci-artifacts
+    test:
+        <<: *defaults
+        steps:
+            - attach_workspace:
+                at: ~/KiiPlatform/thing-if-JSSDK
+            - run: mkdir junit
+            - run:
+                command: npm test; cp -fr junit $CIRCLE_TEST_REPORTS/
+                environment:
+                  MOCHA_FILE: junit/test-results.xml
+            # This is based on your 1.0 configuration file or project settings
+            - run: npm run test-cov
+            - store_test_results:
+                path: junit
+            # Save artifacts
+            - store_artifacts:
+                path: /tmp/circleci-artifacts
+            - store_artifacts:
+                path: junit
+    deploy:
+        <<: *defaults
+        steps:
+            - attach_workspace:
+                at: ~/KiiPlatform/thing-if-JSSDK
+            - run: |
+                echo "//registry.npmjs.org/:_authToken=${NPM_AUTHTOKEN}" >> .npmrc; npm publish ./
+                bash ./circleci_scripts/release_doc.sh
+workflows:
+    version: 2
+    build_test:
+        jobs:
+            - build:
+                filters:
+                    tags:
+                        ignore: /.*/
+            - test:
+                requires:
+                    - build
+                filters:
+                    tags:
+                        ignore: /.*/
+    deployment:
+        jobs:
+            - build:
+                filters:
+                    branches:
+                        ignore: /.*/
+                    tags:
+                        only: /[0-9]+(\.[0-9]+){0,2}([-+].+)?/
+            - deploy:
+                requires:
+                    - build
+                filters:
+                    branches:
+                        ignore: /.*/
+                    tags:
+                        only: /[0-9]+(\.[0-9]+){0,2}([-+].+)?/

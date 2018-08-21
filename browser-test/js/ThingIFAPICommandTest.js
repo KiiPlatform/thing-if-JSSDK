@@ -16,7 +16,7 @@ QUnit.module("TriggerTest", {
             api = new ThingIF.ThingIFAPI(owner, newUser._accessToken, testApp);
             var vendorThingID = "vendor-" + new Date().getTime();
             var password = "password";
-            var request = new ThingIF.OnboardWithVendorThingIDRequest(vendorThingID, password, owner);
+            var request = new ThingIF.OnboardWithVendorThingIDRequest(vendorThingID, password, owner, "MyAirConditioner", "v1");
             return api.onboardWithVendorThingID(request);
         }).then(function(result) {
             targetThingID = result.thingID;
@@ -32,8 +32,22 @@ QUnit.module("TriggerTest", {
 QUnit.test("Large Tests for Command Trigger on the Web Browser", function(assert) {
     var done = assert.async();
 
-    var postCommandRequest = new ThingIF.PostCommandRequest("led", 1, [{turnPower: {power:true}}])
-    var postCommandRequest2 = new ThingIF.PostCommandRequest("light", 2, [{turnPower: {power:false}}])
+    var postCommandRequest =
+        new ThingIF.PostCommandRequest(
+            [
+                new ThingIF.AliasAction("AirConditionerAlias", [
+                    new ThingIF.Action("turnPower", true),
+                    new ThingIF.Action("setPresetTemperature", 23)
+                ]),
+                new ThingIF.AliasAction("HumidityAlias", [
+                    new ThingIF.Action("setPresetHumidity", 45)
+                ])
+            ]);
+    var postCommandRequest2 = new ThingIF.PostCommandRequest([
+        new ThingIF.AliasAction("AirConditionerAlias", [
+            new ThingIF.Action("turnPower", false)
+        ])
+    ]);
     var command1;
     var command2;
     api.postNewCommand(postCommandRequest).then(function(cmd) {

@@ -232,7 +232,8 @@ describe("Test QueryOps#aggregateQuery", () => {
                                         putAggregationInto: "max"
                                     }
                                 ]
-                            }
+                            },
+                            firmwareVersion: "v1"
                         })
                         .reply(
                         200,

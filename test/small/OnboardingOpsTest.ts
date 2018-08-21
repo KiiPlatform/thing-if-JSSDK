@@ -1,6 +1,6 @@
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../typings/globals/chai/index.d.ts" />
-/// <reference path="../../typings/modules/nock/index.d.ts" />
+/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
+/// <reference path="../../node_modules/@types/chai/index.d.ts" />
+/// <reference path="../../node_modules/@types//nock/index.d.ts" />
 
 import {expect} from 'chai';
 import * as nock from 'nock'
@@ -135,7 +135,9 @@ describe('Test OnboardingOps', function () {
                     thingPassword: "password",
                     owner: owner.toString(),
                     firmwareVersion: "v1.0.0",
-                    layoutPosition: "ENDNODE"
+                    layoutPosition: "ENDNODE",
+                    thingType: null,
+                    thingProperties: null
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
             var request = new RequestObjects.OnboardWithVendorThingIDRequest(
