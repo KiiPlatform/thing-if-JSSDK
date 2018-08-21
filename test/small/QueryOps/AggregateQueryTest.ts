@@ -192,7 +192,7 @@ describe("Test QueryOps#aggregateQuery", () => {
             nock.cleanAll();
         });
 
-        describe("handle success response", () => {
+        describe.only("handle success response", () => {
             describe("provide valid parameters", () => {
                 it("when return not empty result, query result should be rexpected", (done) => {
                     let requestObj =
@@ -232,7 +232,8 @@ describe("Test QueryOps#aggregateQuery", () => {
                                         putAggregationInto: "max"
                                     }
                                 ]
-                            }
+                            },
+                            firmwareVersion: "v1"
                         })
                         .reply(
                         200,

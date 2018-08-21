@@ -135,7 +135,9 @@ describe('Test OnboardingOps', function () {
                     thingPassword: "password",
                     owner: owner.toString(),
                     firmwareVersion: "v1.0.0",
-                    layoutPosition: "ENDNODE"
+                    layoutPosition: "ENDNODE",
+                    thingType: null,
+                    thingProperties: null
                 })
                 .reply(200, responseBody, {"Content-Type": "application/json"});
             var request = new RequestObjects.OnboardWithVendorThingIDRequest(
