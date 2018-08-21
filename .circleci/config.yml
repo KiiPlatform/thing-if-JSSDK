@@ -16,15 +16,13 @@ jobs:
             - restore_cache:
                 keys:
                 # This branch if available
-                - v2-dep-{{ .Branch }}-
-                # Default branch if not
-                - v2-dep-develop-
+                - v3-dep-{{ checksum "package.json" }}
                 # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-                - v2-dep-
+                - v3-dep-
             - run: npm install
             # Save dependency cache
             - save_cache:
-                key: v2-dep-{{ .Branch }}-{{ epoch }}
+                key: v3-dep-{{ checksum "package.json" }}
                 paths:
                     - node_modules
             - run: npm run build-doc; cp -fr ./jsdoc/html $CIRCLE_ARTIFACTS/
