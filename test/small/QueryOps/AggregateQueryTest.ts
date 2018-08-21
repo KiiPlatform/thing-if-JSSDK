@@ -192,7 +192,7 @@ describe("Test QueryOps#aggregateQuery", () => {
             nock.cleanAll();
         });
 
-        describe.only("handle success response", () => {
+        describe("handle success response", () => {
             describe("provide valid parameters", () => {
                 it("when return not empty result, query result should be rexpected", (done) => {
                     let requestObj =
