@@ -1,6 +1,6 @@
 {
   "name": "thing-if",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Javascript SDK for Kii Thing Interaction Framework.",
   "main": "lib/ThingIFSDK.js",
   "files": [
