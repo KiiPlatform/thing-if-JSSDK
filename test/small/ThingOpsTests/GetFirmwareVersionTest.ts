@@ -73,9 +73,9 @@ describe('Test ThingOps#getFirmwareVersion', function () {
             done(err);
         });
     });
-    it("handle 404 error response of THING_WITHOUT_THING_TYPE, promise should reject", function (done) {
+    it("handle 404 error response of THING_WITHOUT_FIRMWARE_VERSION, promise should reject", function (done) {
         let errResponse = {
-            "errorCode": "THING_WITHOUT_THING_TYPE",
+            "errorCode": "THING_WITHOUT_FIRMWARE_VERSION",
             "message": `The thing does not have thing type associated`,
         };
 
@@ -84,7 +84,7 @@ describe('Test ThingOps#getFirmwareVersion', function () {
             .reply(
             404,
             errResponse,
-            { "Content-Type": "application/vnd.kii.ThingWithoutThingTypeException+json" }
+            { "Content-Type": "application/vnd.kii.ThingWithoutFirmwareVersionException+json" }
             );
 
         thingOp.getFirmwareVersion().then((fwVersion) => {
