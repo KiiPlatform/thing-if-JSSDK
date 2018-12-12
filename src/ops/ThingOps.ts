@@ -151,7 +151,7 @@ export default class ThingOps extends BaseOp {
                 resolve((<any>res.body)["firmwareVersion"]);
             }).catch((err)=>{
                 if (err instanceof HttpRequestError) {
-                    if (err.status === 404 && err.body.errorCode === "THING_WITHOUT_THING_TYPE") {
+                    if (err.status === 404 && err.body.errorCode === "THING_WITHOUT_FIRMWARE_VERSION") {
                         resolve(null);
                         return;
                     }
