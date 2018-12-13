@@ -17,13 +17,6 @@ Javascript SDK for Kii Thing Interaction Framework.
 $ npm install
 ```
 
-### Install typings
-
-```
-$ npm install typings -g
-$ typings install
-```
-
 ### Build SDK
 thing-if SDK is built as UMD(Universal Module Definition) library.
 So your code can load it either with CommonJS style, AMD style or script tag.
@@ -222,12 +215,6 @@ node Command.js
 
 ```
 npm install thing-if --save
-```
-
-- install typings
-
-```
-typings install npm:thing-if --save
 ```
 
 - add reference to your code
