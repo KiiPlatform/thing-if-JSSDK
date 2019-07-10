@@ -118,8 +118,12 @@ kiicloud.KiiUser.authenticate(username, pass).then(function (authedUser) {
             "https://api-jp.kii.com")
     );
 
-    let onboardRequest = new thingIF.OnboardWithVendorThingIDRequest("vendorthing-id", "password", "USER:" + ownerId);
-    return apiAuthor.onboardWithVendorThingID(onboardRequest);
+    var onboardRequest = new thingIF.OnboardWithVendorThingIDRequest(
+        'vendorthing-id', 
+        'password', 
+        new thingIF.TypedID(thingIF.Types.User, ownerId));
+
+return apiAuthor.onboardWithVendorThingID(onboardRequest);
 }).then(function (res) {
     console.log("onboarded:"+JSON.stringify(res));
 }).catch(function (err) {
@@ -154,17 +158,22 @@ var thingPassword = "password";
 
 var app = new thingIF.App(appID, appKey, appSite);
 var apiAuthor = new thingIF.APIAuthor(ownerToken ,app);
-var onboardOptions = new thingIF.OnboardWithVendorThingIDRequest(vendorThingID, thingPassword, ownerID);
+var onboardRequest = new thingIF.OnboardWithVendorThingIDRequest(
+    vendorThingID, 
+    thingPassword, 
+    new thingIF.TypedID(thingIF.Types.User, ownerID));
 
 // using promise
 apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     var thingID = res.thingID;
+    var actions = [
+        new thingIF.AliasAction('alias', [
+            new thingIF.Action('power', true)
+        ])
+    ];
     var commandOptions = new thingIF.PostCommandRequest(
-        "led-schema",
-        1,
-        {turnPower:{power: true}},
-        "issuer-id", // user id of issuer for this command
-        "command-target-id" // thingID of thing to send this command
+        actions,
+        new thingIF.TypedID(thingIF.Types.User, ownerId)
     );
     return apiAuthor.postNewCommand(thingID, commandOptions);
 }).then(function(command){
@@ -173,34 +182,6 @@ apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
     console.log(err);
 });
 
-// using callbacks
-apiAuthor.onboardWithVendorThingID(onboardOptions,
-    function(err, res){
-        if (err == null || err == undefined) {
-            cosnole.log("onboard failed:" + err);
-            // handling err
-            return;
-        }
-        var thingID = res.thingID;
-        var commandOptions = new thingIF.PostCommandRequest(
-            "led-schema",
-            1,
-            {turnPower:{power: true}},
-            "issuer-id", // user id of issuer for this command
-            "command-target-id" // thingID of thing to send this command
-        );
-        apiAuthor.postNewCommand(thingID, commandOptions,
-            function(err, command){
-                if (err == null || err == undefined) {
-                    cosnole.log("post command failed:" + err);
-                    // handling err
-                    return;
-                }
-                console.log("command created:"+command.commandID);
-            }
-        );
-    }
-);
 ```
 
 Execute with node.
