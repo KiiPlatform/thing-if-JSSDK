@@ -175,7 +175,7 @@ apiAuthor.onboardWithVendorThingID(onboardOptions).then(function(res){
         actions,
         new thingIF.TypedID(thingIF.Types.User, ownerId)
     );
-    return apiAuthor.postNewCommand(thingID, commandOptions);
+    return apiAuthor.postNewCommand(new thingIF.TypedID(thingIF.Types.Thing, thingID), commandOptions);
 }).then(function(command){
     console.log("command created:"+command.commandID);
 }).catch(function(err){
