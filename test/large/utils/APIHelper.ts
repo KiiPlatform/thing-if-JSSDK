@@ -2,7 +2,6 @@
 import {Promise} from 'es6-promise';
 import * as request from 'popsicle';
 import {App} from '../../../src/App'
-import {RequestOptions} from 'popsicle/dist/request';
 import * as TestApp from './TestApp'
 
 function newError(res:Object): Error{
@@ -91,18 +90,24 @@ export class APIHelper {
             })
             .use(request.plugins.parse(['json'], false))
             .then((res)=>{
-                if(res.status == 201){
-                    return request.post(<any>{
-                        url: `${this.app.site}/api/oauth2/token`,
-                        headers: reqHeader,
-                        body: {
-                            username: loginName,
-                            password: password
-                        }
-                    }).use(request.plugins.parse(['json'], false))
-                }else {
-                    reject(newError(res));
-                }
+                return new Promise<request.Response>((resolve, reject)=>{
+                    if(res.status == 201){
+                        return request.post(<any>{
+                            url: `${this.app.site}/api/oauth2/token`,
+                            headers: reqHeader,
+                            body: {
+                                username: loginName,
+                                password: password
+                            }
+                        })
+                        .use(request.plugins.parse(['json'], false))
+                        .then((res)=>{
+                            resolve(res);
+                        });
+                    }else {
+                        reject(newError(res));
+                    }
+                });
             }).then((res)=>{
                 if(res.status == 200){
                     let userID = (<any>res.body)["id"];
