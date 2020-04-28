@@ -36,6 +36,7 @@
   "author": "kii-corp",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@types/angular": "^1.7.0",
     "@types/chai": "^4.1.4",
     "@types/form-data": "^2.2.1",
     "@types/mocha": "^5.2.5",
@@ -53,13 +54,14 @@
     "nock": "^9.0.12",
     "simple-mock": "^0.7.3",
     "ts-loader": "^2.0.3",
-    "typescript": "^2.1.5",
+    "typescript": "^3.8.3",
+    "winston": "^2.3.1",
+    "yargs": "^15.3.1",
     "webpack": "^2.3.3"
   },
   "dependencies": {
     "es6-promise": "^4.2.4",
     "make-error-cause": "^1.2.2",
-    "popsicle": "^9.2.0",
-    "winston": "^2.3.1"
+    "popsicle": "^9.2.0"
   }
 }
