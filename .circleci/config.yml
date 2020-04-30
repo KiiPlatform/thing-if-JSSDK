@@ -60,8 +60,8 @@ jobs:
             - attach_workspace:
                 at: ~/KiiPlatform/thing-if-JSSDK
             - run:
-              name: Avoid hosts unknown for github
-              command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+                name: Avoid hosts unknown for github
+                command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             - run: |
                 bash ./circleci_scripts/release_doc.sh
                 echo "//registry.npmjs.org/:_authToken=${NPM_AUTHTOKEN}" >> .npmrc; npm publish ./
